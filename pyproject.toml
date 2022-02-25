@@ -8,8 +8,23 @@ authors = ["AlanLatte <shukurovfoteh@gmail.com>"]
 python = "^3.9"
 fastapi = "^0.74.1"
 uvicorn = "^0.17.5"
+pydantic = {extras = ["dotenv"], version = "^1.9.0"}
+dependency-injector = "^4.37.0"
+yoyo-migrations = "^7.3.2"
+aiocache = {extras = ["redis"], version = "^0.11.1"}
 
 [tool.poetry.dev-dependencies]
+autoflake = "^1.4"
+isort = "^5.10.1"
+black = "^22.1.0"
+docformatter = "^1.4"
+add-trailing-comma = "^2.2.1"
+flake8 = "^4.0.1"
+mypy = "^0.931"
+safety = "^1.10.3"
+bandit = "^1.7.1"
+itsdangerous = "^2.0.1"
+MarkupSafe = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
