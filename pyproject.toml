@@ -12,6 +12,7 @@ pydantic = {extras = ["dotenv"], version = "^1.9.0"}
 dependency-injector = "^4.37.0"
 yoyo-migrations = "^7.3.2"
 aiocache = {extras = ["redis"], version = "^0.11.1"}
+pytest-aio = "^1.4.1"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"
