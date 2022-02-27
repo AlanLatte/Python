@@ -1,3 +1,5 @@
+"""Wire packages to the declarative containers."""
+
 from dependency_injector.containers import Container
 from typing import Callable, List
 
@@ -18,6 +20,6 @@ def wire_packages(
 
     Returns:
         None
-
     """
+
     container().wire(packages=[pkg_name, *packages])
