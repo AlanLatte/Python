@@ -1,7 +1,7 @@
 from typing import List
 
-from app.internal.pkg.repository.postgresql.connection import get_connection
-from app.internal.pkg.repository.repository import Repository
+from app.internal.repository.postgresql.connection import get_connection
+from app.internal.repository.repository import Repository
 from app.pkg import models
 from .handlers.collect_response import collect_response
 

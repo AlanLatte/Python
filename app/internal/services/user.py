@@ -1,8 +1,8 @@
 """User service."""
 from typing import List
 
-from app.internal.pkg.repository.postgresql import user
-from app.internal.pkg.repository.repository import BaseRepository
+from app.internal.repository.postgresql import user
+from app.internal.repository.repository import BaseRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import UniqueViolation
 from app.pkg.models.exceptions.user import UserAlreadyExist
