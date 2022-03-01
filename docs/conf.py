@@ -51,19 +51,26 @@ napoleon_attr_annotations = True
 add_module_names = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = []
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-autodoc_member_order = "alphabetical"
-autoapi_ignore = ["*tests*", "*migrations*"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "*tests*", "*migrations*"]
+
+autodoc_default_options = {
+    "members": "var1, var2",
+    "member-order": "groupwise",
+    "special-members": "__init__",
+    "undoc-members": True,
+    "exclude-members": "__weakref__",
+}
+
 autoapi_options = [
     "members",
     "undoc-members",
-    'private-members',
-    'special-members',
+    "private-members",
+    "special-members",
     "show-inheritance",
     "show-module-summary",
     "imported-members",
