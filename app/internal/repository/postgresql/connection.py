@@ -13,7 +13,7 @@ __all__ = ["get_connection"]
 @asynccontextmanager
 @inject
 async def get_connection(
-    postgresql: Postgresql = Provide[Connectors.postgres],
+    postgresql: Postgresql = Provide[Connectors.postgresql],
 ) -> Cursor:
     """Get async connection to postgresql of pool."""
     async with postgresql.get_connect() as connection:
