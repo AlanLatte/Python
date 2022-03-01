@@ -48,9 +48,9 @@ class BaseModel(pydantic.BaseModel):
 
     class Config:
 
-        #: Boolean: Use enum values.  #Unresolved reference
+        #: Boolean: Use enum values.
         use_enum_values = True
-        #: Dict[object, Callable]: custom json encoder.  #Unresolved reference
+        #: Dict[object, Callable]: custom json encoder.
         json_encoders = {
             pydantic.SecretStr: lambda v: v.get_secret_value() if v else None,
             pydantic.SecretBytes: lambda v: v.get_secret_value() if v else None,
