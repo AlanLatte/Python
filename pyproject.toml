@@ -28,6 +28,9 @@ safety = "^1.10.3"
 bandit = "^1.7.1"
 itsdangerous = "^2.0.1"
 MarkupSafe = "^2.1.0"
+Sphinx = "^4.4.0"
+sphinx-pydantic = "^0.1.1"
+sphinx-rtd-theme = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
