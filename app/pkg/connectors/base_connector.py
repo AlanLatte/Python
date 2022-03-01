@@ -1,4 +1,8 @@
-"""Abstract connector."""
+"""Abstract connector.
+
+Note:
+    All connectors must be inherited by ``BaseConnector`` and implement its method.
+"""
 
 from abc import abstractmethod
 from contextlib import asynccontextmanager
@@ -9,13 +13,13 @@ __all__ = ["BaseConnector"]
 class BaseConnector:
     @abstractmethod
     def get_dsn(self) -> str:
-        """Function for build DSN of connection."""
+        """Build DSN of connection."""
 
         raise NotImplementedError()
 
     @abstractmethod
     @asynccontextmanager
     async def get_connect(self):
-        """Function for getting connection pool in async context."""
+        """Getting connection pool in asynchronous context."""
 
         raise NotImplementedError()

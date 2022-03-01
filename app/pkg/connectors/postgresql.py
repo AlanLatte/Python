@@ -2,14 +2,25 @@
 
 from contextlib import asynccontextmanager
 from typing import Any, Dict
+from aiopg import Connection
 import pydantic
 
 import aiopg
 
+from .base_connector import BaseConnector
+
 __all__ = ["Postgresql"]
 
 
-class Postgresql:
+class Postgresql(BaseConnector):
+    """
+    Attributes:
+        username: username.
+        password: password.
+        host: host.
+        port: port.
+        database_name: database name.
+    """
     settings: Dict[str, Any]
 
     def __init__(
@@ -20,6 +31,15 @@ class Postgresql:
         port: pydantic.PositiveInt,
         database_name: str,
     ):
+        """
+
+        Args:
+            username:
+            password:
+            host:
+            port:
+            database_name:
+        """
         self.pool = None
         self.username = username
         self.password = password
@@ -28,6 +48,7 @@ class Postgresql:
         self.database_name = database_name
 
     def get_dsn(self):
+        """Description of ``BaseConnector.get_dsn``."""
         return (
             f"postgresql://"
             f"{self.username}:"
@@ -37,8 +58,12 @@ class Postgresql:
         )
 
     @asynccontextmanager
-    async def get_connect(self):
-        """Connect to a Postgres database."""
+    async def get_connect(self) -> Connection:
+        """Create pool of connectors to a Postgres database.
+
+        Yields:
+            ``aiopg.Connection instance`` in asynchronous context manager.
+        """
         if self.pool is None:
             self.pool = aiopg.create_pool(dsn=self.get_dsn())
 
