@@ -8,6 +8,7 @@ from .user_role import UserRole, UserRoleFields
 
 __all__ = [
     "User",
+    "UserFields",
     "CreateUserCommand",
     "ReadUserByIdQuery",
     "ReadUserByEmailQuery",
