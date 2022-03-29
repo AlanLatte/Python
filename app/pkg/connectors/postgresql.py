@@ -1,11 +1,10 @@
 """Postgresql connector."""
 
 from contextlib import asynccontextmanager
-from typing import Any, Dict
-from aiopg import Connection
-import pydantic
 
 import aiopg
+import pydantic
+from aiopg import Connection
 
 from .base_connector import BaseConnector
 
@@ -13,16 +12,6 @@ __all__ = ["Postgresql"]
 
 
 class Postgresql(BaseConnector):
-    """
-    Attributes:
-        username: username.
-        password: password.
-        host: host.
-        port: port.
-        database_name: database name.
-    """
-    settings: Dict[str, Any]
-
     def __init__(
         self,
         username: str,
@@ -31,14 +20,14 @@ class Postgresql(BaseConnector):
         port: pydantic.PositiveInt,
         database_name: str,
     ):
-        """
+        """Settings for create postgresql dsn.
 
         Args:
-            username:
-            password:
-            host:
-            port:
-            database_name:
+            username: database username.
+            password: database password.
+            host: the host where the database is located.
+            port: the port of database server.
+            database_name: database name.
         """
         self.pool = None
         self.username = username

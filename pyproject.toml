@@ -13,8 +13,8 @@ dependency-injector = "^4.37.0"
 yoyo-migrations = "^7.3.2"
 aiocache = {extras = ["redis"], version = "^0.11.1"}
 aiopg = "^1.3.3"
-pytest-asyncio = "^0.18.1"
 bcrypt = "^3.2.0"
+pytest = "^7.0.1"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"
@@ -31,6 +31,9 @@ MarkupSafe = "^2.1.0"
 Sphinx = "^4.4.0"
 sphinx-pydantic = "^0.1.1"
 sphinx-rtd-theme = "^1.0.0"
+pytest-asyncio = "^0.18.2"
+pytest = "^7.0.1"
+coverage = "^6.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

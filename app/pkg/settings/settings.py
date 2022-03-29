@@ -35,9 +35,16 @@ class Settings(_Settings):
     REDIS_PORT: PositiveInt
     REDIS_PASSWORD: SecretStr
 
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: PositiveInt
+    RABBITMQ_USER: str
+    RABBITMQ_PASSWORD: SecretStr
+
 
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""
-
+    print("=====================")
+    print(find_dotenv(".env"))
+    print("=====================")
     return Settings(_env_file=find_dotenv(env_file))

@@ -4,7 +4,7 @@ create users table
 
 from yoyo import step
 
-__depends__ = {}
+__depends__ = {"20220227_02_SEvNK-create-user-roles-table"}
 
 steps = [
     step(

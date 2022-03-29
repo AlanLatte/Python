@@ -23,6 +23,7 @@ class User:
 
     async def create_user(self, cmd: models.CreateUserCommand) -> models.User:
         """Function for create user. User password will be encrypted.
+
         Args:
             cmd: `CreateUserCommand`.
 

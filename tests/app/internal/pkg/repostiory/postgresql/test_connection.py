@@ -1,6 +1,9 @@
-import pytest
+from app.internal.repository.postgresql.connection import get_connection
 
 
-@pytest.mark.skip(reason="Not implemented")
 async def test_connection():
-    raise NotImplementedError
+    async with get_connection() as cursor:
+        await cursor.execute("SELECT 'TEST_CONNECTION' as response")
+        response = await cursor.fetchone()
+
+    assert dict(response) == {"response": "TEST_CONNECTION"}

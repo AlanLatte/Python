@@ -18,9 +18,9 @@ class Connectors(containers.DeclarativeContainer):
     #: Postgresql: Connector to postgresql.
     postgresql = providers.Factory(
         Postgresql,
-        username=configuration.POSTGRES_HOST,
-        password=configuration.POSTGRES_PORT,
-        host=configuration.POSTGRES_USER,
-        port=configuration.POSTGRES_PASSWORD,
+        username=configuration.POSTGRES_USER,
+        password=configuration.POSTGRES_PASSWORD,
+        host=configuration.POSTGRES_HOST,
+        port=configuration.POSTGRES_PORT,
         database_name=configuration.POSTGRES_DATABASE_NAME,
     )

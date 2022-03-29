@@ -1,10 +1,18 @@
 import pytest
+from dependency_injector import providers
 
 from app.internal.repository.postgresql import connection
+from app.pkg.connectors import Connectors
 
 
 @pytest.fixture(autouse=True)
-async def _clean_postgres():
+async def overwrite_connection(settings):
+    config: providers.Configuration = Connectors.configuration
+    config.from_pydantic(settings)
+
+
+@pytest.fixture(autouse=True)
+async def _clean_postgres(overwrite_connection):
     """Deleting database values before each test."""
     await clean_postgres()
 
@@ -26,6 +34,6 @@ async def clean_postgres():
         END;
         $$ LANGUAGE plpgsql;
     """
-    async with connection.get_connection(testing=True) as cursor:
+    async with connection.get_connection() as cursor:
         await cursor.execute(query)
         await cursor.execute("select truncate_tables();")

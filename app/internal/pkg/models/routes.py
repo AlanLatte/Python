@@ -1,3 +1,5 @@
+"""Model for contain ``APIRouter`` instance."""
+
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -20,7 +22,7 @@ class Routes:
             app: ``FastAPI`` application instance.
 
         Examples:
-            Usage::
+            For register routes, you **must** provide routers to model.::
 
                 from routers import users, auth
                 __routes__ = Routes(
@@ -29,6 +31,14 @@ class Routes:
                         auth.router
                     )
                 )
+
+            If you call ``register_routes``, all routes from *self.routers* will be
+            included to the ``FastAPI`` instance.::
+
+                from fastapi import FastAPI
+
+                app = FastAPI()
+                __routes__.register_routes(app=app)
 
         Returns:
             None

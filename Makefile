@@ -1,8 +1,16 @@
 include .env
 export
 
-files_to_fmt ?= app # enumeration of * .py file storage or folders is required.
-files_to_check ?= app # enumeration of * .py files storage or folders is required.
+# enumeration of * .py files storage or folders is required.
+files_to_fmt 	?= app tests
+files_to_check 	?= app tests
+
+# Sphinx settings
+SPHINX_BUILD 	?= sphinx-build
+SPHINX_TEMPLATES ?= ./docs/_templates
+SOURCE_DIR     	= ./docs
+BUILD_DIR      	= ./docs/_build
+
 
 ## Default target
 .DEFAULT_GOAL := run
@@ -13,6 +21,19 @@ docker_up:
 
 run:
 	uvicorn app:create_app --host localhost --reload --port ${API_SERVER_PORT}
+
+# Build sphinx docs
+docs: build_docs rst_builder
+build_docs:
+	: # Build *.rst from docstrings
+	poetry run sphinx-apidoc -f -o "$(SOURCE_DIR)" . -t="$(SPHINX_TEMPLATES)"
+
+
+rst_builder:
+	: # Build html pages from *.rst
+	poetry run $(SPHINX_BUILD) -b html "$(SOURCE_DIR)" "$(BUILD_DIR)"
+
+
 
 ## Format all
 fmt: format

@@ -7,3 +7,4 @@ __all__ = ["__routes__"]
 
 
 __routes__ = Routes(routers=(user.router,))
+# TODO: Добавить документацию.
