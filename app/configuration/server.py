@@ -1,17 +1,21 @@
 """Server configuration."""
-
+import logging
 from typing import TypeVar
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette_prometheus import PrometheusMiddleware, metrics
 
-from app.pkg.models.base import BaseAPIException
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.routes import __routes__
+from app.pkg.models.base import BaseException
+
 from .events import on_startup
+from .logger import EndpointFilter
 
 __all__ = ["Server"]
 
+from app.pkg.jwt import JWT
 
 FastAPIInstance = TypeVar("FastAPIInstance", bound="FastAPI")
 
@@ -82,7 +86,7 @@ class Server:
         Returns: None
         """
 
-        app.add_exception_handler(BaseAPIException, handle_api_exceptions)
+        app.add_exception_handler(BaseException, handle_api_exceptions)
 
     @staticmethod
     def __register_cors_origins(app: FastAPIInstance):
@@ -117,8 +121,8 @@ class Server:
         jwt.wire(
             packages=[
                 "app.internal.routes",
-                "app.internal.pkg.jwt",
-                "app.settings.settings",
+                "app.pkg.jwt",
+                "app.pkg.settings",
             ],
         )
         app.jwt = jwt
