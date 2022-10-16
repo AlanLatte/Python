@@ -423,3 +423,4 @@ cython_debug/
 ## S/MIME message
 *.smime
 
+/src/
