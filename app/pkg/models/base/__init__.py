@@ -1,5 +1,8 @@
-"""Base business models. All models *must* be inherited by them."""
+"""Base business models.
+
+All models *must* be inherited by them.
+"""
 
 from .enum import BaseEnum
-from .exception import BaseAPIException
+from .exception import BaseException
 from .model import BaseModel, Model
