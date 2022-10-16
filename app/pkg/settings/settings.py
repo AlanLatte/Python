@@ -2,9 +2,10 @@
 Module for load settings form `.env` or
 if server running with parameter `dev` from `.env.dev`
 """
-
+import pathlib
 from functools import lru_cache
 
+import pydantic
 from dotenv import find_dotenv
 from pydantic.env_settings import BaseSettings
 from pydantic.types import PositiveInt, SecretStr
@@ -35,10 +36,27 @@ class Settings(_Settings):
     REDIS_PORT: PositiveInt
     REDIS_PASSWORD: SecretStr
 
+    # JWT
+    JWT_SECRET_KEY: SecretStr
+    JWT_ACCESS_TOKEN_NAME: str
+    JWT_REFRESH_TOKEN_NAME: str
+
     RABBITMQ_HOST: str
     RABBITMQ_PORT: PositiveInt
     RABBITMQ_USER: str
     RABBITMQ_PASSWORD: SecretStr
+
+    OTP_KEY: SecretStr
+
+    # logger
+    LOGGER_LEVEL: pydantic.StrictStr
+    LOGGER_FILE_PATH: pathlib.Path
+
+    @pydantic.validator("LOGGER_FILE_PATH")
+    def check_secrets_dir_exists(cls, v: pathlib.Path) -> pathlib.Path:
+        if not v.parent.exists():
+            v.parent.mkdir(parents=True, exist_ok=True)
+        return v
 
 
 @lru_cache()
