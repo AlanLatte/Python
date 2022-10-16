@@ -1,9 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter, status, Depends
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends, Security, status
+
+from app.internal.services import Services
+from app.internal.services.user import UserService
 from app.pkg import models
-from app.internal import services
+from app.pkg.jwt import JwtAuthorizationCredentials, access_security
 
 router = APIRouter(prefix="/user", tags=["User"])
 
@@ -18,8 +21,7 @@ router = APIRouter(prefix="/user", tags=["User"])
 @inject
 async def create_user(
     cmd: models.CreateUserCommand,
-    # jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
-    user_service: services.User = Depends(Provide[services.Services.user]),
+    user_service: UserService = Depends(Provide[Services.user_service]),
 ):
     return await user_service.create_user(cmd=cmd)
 
@@ -33,8 +35,8 @@ async def create_user(
 )
 @inject
 async def read_all_users(
-    user_service: services.User = Depends(Provide[services.Services.user]),
-    # jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    user_service: UserService = Depends(Provide[Services.user_service]),
+    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.read_all_users()
 
@@ -49,8 +51,8 @@ async def read_all_users(
 @inject
 async def read_user(
     user_id: int = models.UserFields.id,
-    user_service: services.User = Depends(Provide[services.Services.user]),
-    # jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    user_service: UserService = Depends(Provide[Services.user_service]),
+    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.read_specific_user_by_id(
         query=models.ReadUserByIdQuery(id=user_id),
@@ -67,9 +69,9 @@ async def read_user(
 @inject
 async def delete_user(
     user_id: int = models.UserFields.id,
-    user_service: services.User = Depends(Provide[services.Services.user]),
-    # jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    user_service: UserService = Depends(Provide[Services.user_service]),
+    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.delete_specific_user(
-        cmd=models.DeleteUserCommand(id=user_id)
+        cmd=models.DeleteUserCommand(id=user_id),
     )

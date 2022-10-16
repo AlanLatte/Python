@@ -1,5 +1,5 @@
 from pydantic import Field
-from .base import BaseEnum, BaseModel
+from app.pkg.models.base import BaseEnum, BaseModel
 
 
 __all__ = ["UserRole", "CreateUserRoleCommand", "UserRoleFields"]
