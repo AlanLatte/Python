@@ -30,4 +30,3 @@ def check_password(password: SecretBytes, hashed: SecretBytes) -> bool:
 
     """
     return bcrypt.checkpw(password.get_secret_value(), hashed.get_secret_value())
-

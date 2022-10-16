@@ -55,7 +55,7 @@ def collect_response(
 
 async def __convert_response(response: RealDictRow, annotations: str):
     """
-    Converts the response of the request to an List of models or to a single model.
+    Converts the response of the request to a List of models or to a single model.
     Args:
         response: Response of aiopg query.
         annotations: Annotations of `fn`.
