@@ -1,32 +1,25 @@
 from typing import List
 
+from app.internal.repository.postgresql.handlers.collect_response import collect_response
 from app.internal.repository.postgresql.connection import get_connection
 from app.internal.repository.repository import Repository
 from app.pkg import models
-from .handlers.collect_response import collect_response
 
-__all__ = ["User"]
+__all__ = ["UserRepository"]
 
 
-class User(Repository):
+class UserRepository(Repository):
     @collect_response
     async def create(self, cmd: models.CreateUserCommand) -> models.User:
         q = """
-            with ur as (
-                select id, role_name from user_roles where role_name = %(role_name)s
-            )
             insert into users(
-                email, password, role_id
+                username, password, role_id
+            ) values (
+                %(username)s,
+                %(password)s::bytea,
+                (select id from user_roles where role_name = %(role_name)s)
             )
-                values (
-                    %(email)s, 
-                    %(password)s::bytea,
-                    (select id from ur),
-                    %(percent)s
-                )
-            returning id, email, password, balance, invited_by, percent, (
-                select role_name from ur
-            );
+            returning id, username, password, (select role_name from user_roles where role_name = %(role_name)s);
         """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
@@ -35,10 +28,10 @@ class User(Repository):
     @collect_response
     async def read(self, query: models.ReadUserByIdQuery) -> models.User:
         q = """
-            select 
-                users.id, 
-                email, 
-                password, 
+            select
+                users.id,
+                username,
+                password,
                 ur.role_name
             from users
                 left join user_roles ur on ur.id = users.role_id
@@ -48,27 +41,30 @@ class User(Repository):
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response
-    async def read_by_email(self, query: models.ReadUserByEmailQuery) -> models.User:
+    @collect_response(nullable=True)
+    async def read_by_username(
+        self,
+        query: models.ReadUserByUserNameQuery,
+    ) -> models.User:
         q = """
-            select 
-                users.id, email, password, ur.role_name
+            select
+                users.id, username, password, ur.role_name as role_name
             from users
                 left join user_roles ur on ur.id = users.role_id
-            where email = %(email)s
+            where username = %(username)s
         """
         async with get_connection() as cur:
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response
+    @collect_response(nullable=True)
     async def read_all(self) -> List[models.User]:
         q = """
-            select 
-                users.id, 
-                email, 
-                password, 
-                ur.role_name
+            select
+                users.id,
+                username,
+                password,
+                ur.role_name as role_name
             from users
                 left join user_roles ur on ur.id = users.role_id;
         """
@@ -82,15 +78,15 @@ class User(Repository):
             with ur as (
                 select id, role_name from user_roles where role_name = %(role_name)s
             )
-            update users 
-                set 
-                    email = %(email)s, 
+            update users
+                set
+                    username = %(username)s,
                     password = %(password)s,
                     role_id = (select id from ur),
                     password_updated_at = current_timestamp
                 where id = %(id)s
-            returning 
-                id, email, password, 
+            returning
+                id, username, password,
                 (select role_name from ur);
         """
         async with get_connection() as cur:
@@ -101,8 +97,8 @@ class User(Repository):
     async def delete(self, cmd: models.DeleteUserCommand) -> models.User:
         q = """
             delete from users where id = %(id)s
-            returning id, email, password, (
-                select role_name from user_roles 
+            returning id, username, password, (
+                select role_name from user_roles
                     where id=users.role_id
             );
         """

@@ -1,28 +1,27 @@
 from pydantic.fields import Field
 from pydantic.types import PositiveInt
-from pydantic import EmailStr
 
-from .base import BaseModel
-from .types import EncryptedSecretBytes
-from .user_role import UserRole, UserRoleFields
+from app.pkg.models.base import BaseModel
+from app.pkg.models.types import EncryptedSecretBytes
+from app.pkg.models.user_role import UserRole, UserRoleFields
 
 __all__ = [
     "User",
     "UserFields",
     "CreateUserCommand",
     "ReadUserByIdQuery",
-    "ReadUserByEmailQuery",
+    "ReadUserByUserNameQuery",
     "UpdateUserCommand",
     "DeleteUserCommand",
-    "ChangeUserPasswordCommand"
+    "ChangeUserPasswordCommand",
 ]
 
 
 class UserFields:
     id = Field(description="User id.", example=2)
-    email = Field(description="User email.", example="ivan.ivanov@example.com")
+    username = Field(description="User Login", example="TestTest")
     password = Field(
-        description="User password.",
+        description="User password",
         example="strong password",
         min_length=6,
         max_length=256,
@@ -48,21 +47,21 @@ class BaseUser(BaseModel):
 
 class User(BaseUser):
     id: PositiveInt = UserFields.id
-    email: EmailStr = UserFields.email
+    username: str = UserFields.username
     password: EncryptedSecretBytes = UserFields.password
     role_name: UserRole = UserFields.role_name
 
 
 # Commands.
 class CreateUserCommand(BaseUser):
-    email: EmailStr = UserFields.email
+    username: str = UserFields.username
     password: EncryptedSecretBytes
     role_name: UserRole = UserFields.role_name
 
 
 class UpdateUserCommand(BaseUser):
     id: PositiveInt = UserFields.id
-    email: EmailStr = UserFields.email
+    username: str = UserFields.username
     password: EncryptedSecretBytes
     role_name: UserRole = UserFields.role_name
 
@@ -78,8 +77,8 @@ class ChangeUserPasswordCommand(BaseUser):
 
 
 # Query
-class ReadUserByEmailQuery(BaseUser):
-    email: EmailStr = UserFields.email
+class ReadUserByUserNameQuery(BaseUser):
+    username: str = UserFields.username
 
 
 class ReadUserByIdQuery(BaseUser):

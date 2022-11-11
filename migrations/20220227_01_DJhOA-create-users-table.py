@@ -9,11 +9,11 @@ __depends__ = {"20220227_02_SEvNK-create-user-roles-table"}
 steps = [
     step(
         """
-            create table users(
+            create table if not exists users(
                 id serial primary key,
-                email text unique not null,
+                username text unique not null,
                 password bytea not null,
-                role_name int references user_roles(id)
+                role_id int references user_roles(id)
             )
         """,
         """

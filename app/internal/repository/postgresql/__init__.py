@@ -1,6 +1,9 @@
 from dependency_injector import containers, providers
-from .user import User
+
+from .refresh_tokens import RefreshTokenRepository
+from .user import UserRepository
 
 
-class Repository(containers.DeclarativeContainer):
-    user = providers.Factory(User)
+class Repositories(containers.DeclarativeContainer):
+    user_repository = providers.Factory(UserRepository)
+    refresh_token_repository = providers.Factory(RefreshTokenRepository)

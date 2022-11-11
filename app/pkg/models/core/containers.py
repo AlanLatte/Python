@@ -16,7 +16,7 @@ class Container:
 
     #: List[str]: Array of packages to which the injector will be available.
     #  Default: ["app"]
-    packages: List[str] = field(default_factory=lambda: ["app", "tests"])
+    packages: List[str] = field(default_factory=lambda: ["app"])
 
 
 @dataclass(frozen=True)

@@ -1,47 +1,61 @@
+import functools
 from functools import wraps
-from typing import List, Union
+from typing import Union, List
 
 import pydantic
 from psycopg2.extras import RealDictRow
 
+from app.internal.repository.exceptions import EmptyResult
+from app.internal.repository.postgresql.handlers.handle_exception import handle_exception
 from app.pkg.models.base import Model
-from app.pkg.models.exceptions.repository import EmptyResult
-from .handle_exception import handle_exception
-
-__all__ = ["collect_response"]
 
 
-def collect_response(fn):
-    """
-
-    Args:
-        fn: Target function that contains a query in postgresql.
-
-    Returns:
-        The model that is specified in type hints of `fn`.
-
-    Raises:
-        EmptyResult: when query of `fn` returns None.
-
-    """
+def collect_response(
+    fn=None,
+    convert_to_pydantic=True,
+    nullable=False,
+):
+    # fn is None when params for decorator are provided
+    if fn is None:
+        return functools.partial(
+            collect_response,
+            convert_to_pydantic=convert_to_pydantic,
+            nullable=nullable,
+        )
 
     @wraps(fn)
     @handle_exception
-    async def inner(*args: object, **kwargs: object) -> Union[List[Model], Model]:
+    async def inner(*args: object, **kwargs: object) -> Union[List[Model], Model, None]:
         response = await fn(*args, **kwargs)
         if not response:
+            # some responses are empty lists we should allow them.
+            # isinstance cannot digest List[int], only List, so __origin__ is used
+
+            if "return" in fn.__annotations__:
+                return_class = fn.__annotations__["return"]
+                if hasattr(return_class, "__origin__"):
+                    return_class = return_class.__origin__
+                if isinstance([], return_class):
+                    return []
+                if nullable:
+                    return None
+
             raise EmptyResult
-        return pydantic.parse_obj_as(
-            (ann := fn.__annotations__["return"]),
-            await __convert_response(response=response, annotations=str(ann)),
-        )
+
+        if convert_to_pydantic:
+            return pydantic.parse_obj_as(
+                (ann := fn.__annotations__["return"]),
+                await __convert_response(response=response, annotations=str(ann)),
+            )
+
+        return response
 
     return inner
 
 
 async def __convert_response(response: RealDictRow, annotations: str):
     """
-    Converts the response of the request to an List of models or to a single model.
+    Converts the response of the request to a List of models or to a single model.
     Args:
         response: Response of aiopg query.
         annotations: Annotations of `fn`.

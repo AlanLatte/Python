@@ -1,12 +1,12 @@
-"""
-handlers that handle internal error raise and returns ``http json`` response.
+"""handlers that handle internal error raise and returns ``http json``
+response.
 
 Examples:
     For example, if in some level in code you raise error inherited by
-    BaseAPIException::
+    BaseException::
 
         ...  # exceptions.py
-        class E(BaseAPIException):
+        class E(BaseException):
             status_code = status.HTTP_200_OK
             message = "test error."
 
@@ -20,17 +20,16 @@ Examples:
         {
             "message": "test error."
         }
-
 """
 
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from app.pkg.models.base import BaseAPIException
+from app.pkg.models.base import BaseException
 
 
-def handle_api_exceptions(request: Request, exc: BaseAPIException):
-    """Handle all internal exceptions which inherited from `BaseAPIException`."""
+def handle_api_exceptions(request: Request, exc: BaseException):
+    """Handle all internal exceptions which inherited from `BaseException`."""
     _ = request
 
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})
