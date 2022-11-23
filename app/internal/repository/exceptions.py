@@ -9,10 +9,10 @@ __all__ = [
 
 from fastapi import status
 
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 
-class UniqueViolation(BaseException):
+class UniqueViolation(BaseAPIException):
     def __init__(self, message: str = "ForeignKeyViolation"):
         if message:
             self.message = message
@@ -21,12 +21,12 @@ class UniqueViolation(BaseException):
     status_code = status.HTTP_409_CONFLICT
 
 
-class EmptyResult(BaseException):
+class EmptyResult(BaseAPIException):
     message = "Empty result"
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class ForeignKeyViolation(BaseException):
+class ForeignKeyViolation(BaseAPIException):
     def __init__(self, message: str = "ForeignKeyViolation"):
         if message:
             self.message = message
@@ -35,7 +35,7 @@ class ForeignKeyViolation(BaseException):
     status_code = status.HTTP_400_BAD_REQUEST
 
 
-class CheckViolation(BaseException):
+class CheckViolation(BaseAPIException):
     def __init__(self, message: str = None):
         if message:
             self.message = message
@@ -44,7 +44,7 @@ class CheckViolation(BaseException):
     status_code = status.HTTP_400_BAD_REQUEST
 
 
-class NumericValueOutOfRange(BaseException):
+class NumericValueOutOfRange(BaseAPIException):
     def __init__(self, message: str = None):
         if message:
             self.message = message
@@ -53,7 +53,7 @@ class NumericValueOutOfRange(BaseException):
     status_code = status.HTTP_400_BAD_REQUEST
 
 
-class DriverError(BaseException):
+class DriverError(BaseAPIException):
     def __init__(self, message: str = None):
         if message:
             self.message = message

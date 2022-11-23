@@ -7,7 +7,7 @@ from app.internal.pkg.middlewares.x_auth_token import get_x_token_key
 
 from fastapi import FastAPI
 from app.configuration import __containers__
-from app.configuration.server import Server
+from app.pkg.models.types.server import Server
 
 
 def create_app() -> FastAPI:

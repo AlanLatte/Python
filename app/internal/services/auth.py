@@ -1,13 +1,11 @@
 from typing import Optional
-
-from app.internal.pkg.handlers import password
+from app.internal.pkg.password import password
 from app.internal.repository.exceptions import EmptyResult, UniqueViolation
 from app.internal.repository.postgresql import RefreshTokenRepository
 from app.internal.services.user import UserService
 from app.pkg.jwt import UnAuthorized, WrongToken
 from app.pkg.models.auth import AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
-from app.pkg.models.otp import Check2FACommand
 from app.pkg.models.refresh_token import (
     CreateJWTTokenCommand,
     DeleteJWTTokenCommand,
@@ -17,7 +15,6 @@ from app.pkg.models.refresh_token import (
     UpdateJWTTokenCommand,
 )
 from app.pkg.models.user import ReadUserByUserNameQuery, User
-from app.pkg.otp.otp import OTPService
 
 __all__ = ["AuthService"]
 
@@ -25,20 +22,14 @@ __all__ = ["AuthService"]
 class AuthService:
     refresh_token_repository: RefreshTokenRepository
     user_service: UserService
-    otp_service: OTPService
 
     def __init__(
         self,
         user_service: UserService,
         refresh_token_repository: RefreshTokenRepository,
-        otp_service: OTPService,
     ):
         self.user_service = user_service
         self.refresh_token_repository = refresh_token_repository
-        self.otp_service = otp_service
-
-    def check_2fa(self, cmd: Check2FACommand):
-        return self.otp_service.verify_2fa_auth(cmd)
 
     async def check_user_password(self, cmd: AuthCommand) -> User:
         user = await self.user_service.read_specific_user_by_username(

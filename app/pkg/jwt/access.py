@@ -3,9 +3,11 @@ from typing import Optional, Set
 
 from fastapi import Security
 from jose import jwt
+from pydantic import SecretStr
 
 from app.pkg.jwt.base import JwtAuthBase
 from app.pkg.jwt.credentionals import JwtAuthorizationCredentials
+from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = ["JwtAccessBearer"]
 
@@ -16,7 +18,7 @@ class JwtAccess(JwtAuthBase):
 
     def __init__(
         self,
-        secret_key: str,
+        secret_key: SecretStr,
         places: Optional[Set[str]] = None,
         auto_error: bool = True,
         algorithm: str = jwt.ALGORITHMS.HS256,
@@ -42,7 +44,7 @@ class JwtAccess(JwtAuthBase):
         if payload:
             return JwtAuthorizationCredentials(
                 subject=payload["subject"],
-                raw_token=raw_token,
+                raw_token=NotEmptySecretStr(raw_token),
                 jti=payload.get("jti", None),
             )
         return None
@@ -51,7 +53,7 @@ class JwtAccess(JwtAuthBase):
 class JwtAccessBearer(JwtAccess):
     def __init__(
         self,
-        secret_key: str,
+        secret_key: SecretStr,
         auto_error: bool = True,
         algorithm: str = jwt.ALGORITHMS.HS256,
         access_expires_delta: Optional[timedelta] = None,

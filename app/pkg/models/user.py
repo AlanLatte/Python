@@ -55,14 +55,14 @@ class User(BaseUser):
 # Commands.
 class CreateUserCommand(BaseUser):
     username: str = UserFields.username
-    password: EncryptedSecretBytes
+    password: EncryptedSecretBytes = UserFields.password
     role_name: UserRole = UserFields.role_name
 
 
 class UpdateUserCommand(BaseUser):
     id: PositiveInt = UserFields.id
     username: str = UserFields.username
-    password: EncryptedSecretBytes
+    password: EncryptedSecretBytes = UserFields.password
     role_name: UserRole = UserFields.role_name
 
 

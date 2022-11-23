@@ -119,7 +119,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
 
   centrifugo:
-    container_name: api-centrifugo-auth
+    container_name: api-centrifugo
     build:
       context: .
       dockerfile: docker/centrifugo/Dockerfile

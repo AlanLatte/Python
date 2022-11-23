@@ -4,7 +4,7 @@ from app.pkg.settings import settings
 
 from .access import JwtAccessBearer
 from .credentionals import JwtAuthorizationCredentials
-from .exceptions import TokenTimeExpired, UnAuthorized, WrongToken
+from app.pkg.models.exceptions.jwt import TokenTimeExpired, UnAuthorized, WrongToken
 from .refresh import JwtRefreshBearer
 
 __all__ = [
@@ -32,9 +32,9 @@ class JWT(containers.DeclarativeContainer):
 
     access: JwtAccessBearer = providers.Factory(
         JwtAccessBearer,
-        secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+        secret_key=settings.JWT_SECRET_KEY,
     )
     refresh: JwtRefreshBearer = providers.Factory(
         JwtRefreshBearer,
-        secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+        secret_key=settings.JWT_SECRET_KEY,
     )

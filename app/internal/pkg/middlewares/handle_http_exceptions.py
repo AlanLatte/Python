@@ -3,10 +3,10 @@ response.
 
 Examples:
     For example, if in some level in code you raise error inherited by
-    BaseException::
+    BaseAPIException::
 
         ...  # exceptions.py
-        class E(BaseException):
+        class E(BaseAPIException):
             status_code = status.HTTP_200_OK
             message = "test error."
 
@@ -25,11 +25,11 @@ Examples:
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 
-def handle_api_exceptions(request: Request, exc: BaseException):
-    """Handle all internal exceptions which inherited from `BaseException`."""
+def handle_api_exceptions(request: Request, exc: BaseAPIException):
+    """Handle all internal exceptions which inherited from `BaseAPIException`."""
     _ = request
 
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})

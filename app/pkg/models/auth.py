@@ -1,14 +1,21 @@
-from typing import Optional, Type
+from pydantic import Field
 
-from pydantic import SecretStr, validator
-
-from app.pkg.models.base import BaseModel, Model
-from app.pkg.models.exceptions.auth import IncorrectLengthFingerprint
+from app.pkg.models import UserFields, UserRole
+from app.pkg.models.base import BaseModel
 from app.pkg.models.types import EncryptedSecretBytes, NotEmptySecretStr
 
-__all__ = ["Auth", "AuthCommand"]
+__all__ = ["Auth", "AuthCommand", "LogoutCommand"]
 
-from app.pkg.models import UserRole
+
+class AuthFields:
+    access_token = Field(description="Bearer access token", example="exam.ple.token")
+    refresh_token = Field(description="Bearer refresh token", example="exam.ple.token")
+    fingerprint = Field(
+        description="Unique fingerprint of user device", example="u-u-i-d"
+    )
+    role_name = UserFields.role_name
+    username = UserFields.username
+    password = UserFields.password
 
 
 class BaseAuth(BaseModel):
@@ -16,23 +23,17 @@ class BaseAuth(BaseModel):
 
 
 class Auth(BaseAuth):
-    access_token: NotEmptySecretStr
-    refresh_token: NotEmptySecretStr
-    user_role_name: Optional[UserRole]
+    access_token: NotEmptySecretStr = AuthFields.access_token
+    refresh_token: NotEmptySecretStr = AuthFields.refresh_token
+    role_name: UserRole = AuthFields.role_name
 
 
 class AuthCommand(BaseAuth):
-    username: str
-    password: EncryptedSecretBytes
-    fingerprint: NotEmptySecretStr
-    verify_code: SecretStr
+    username: str = AuthFields.username
+    password: EncryptedSecretBytes = AuthFields.password
+    fingerprint: NotEmptySecretStr = AuthFields.fingerprint
 
-    @validator("fingerprint")
-    def validate_min_length(
-        cls: Type["Model"],
-        value: NotEmptySecretStr,
-    ) -> NotEmptySecretStr:
-        min_length: int = 6
-        if value.get_secret_value().__len__() < min_length:
-            raise IncorrectLengthFingerprint
-        return value
+
+class LogoutCommand(BaseAuth):
+    username: str = AuthFields.username
+    refresh_token: NotEmptySecretStr = AuthFields.refresh_token

@@ -1,18 +1,18 @@
 from fastapi import status
 
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 
-class UserAlreadyExist(BaseException):
+class UserAlreadyExist(BaseAPIException):
     status_code = status.HTTP_409_CONFLICT
     message = "User already exist."
 
 
-class IncorrectPasswordLength(BaseException):
+class IncorrectPasswordLength(BaseAPIException):
     status_code = status.HTTP_400_BAD_REQUEST
     message = "Incorrect password length"
 
 
-class IncorrectOldPassword(BaseException):
+class IncorrectOldPassword(BaseAPIException):
     status_code = status.HTTP_400_BAD_REQUEST
     message = "Incorrect old password."

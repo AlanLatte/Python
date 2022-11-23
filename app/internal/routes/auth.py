@@ -1,5 +1,5 @@
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Body, Depends, Security, status
+from fastapi import APIRouter, Depends, Security, status
 from starlette.responses import Response
 
 from app.internal.services import Services
@@ -13,7 +13,6 @@ from app.pkg.jwt import (
 )
 from app.pkg.models.auth import Auth, AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
-from app.pkg.models.otp import Check2FACommand
 from app.pkg.models.refresh_token import (
     CreateJWTTokenCommand,
     DeleteJWTTokenCommand,
@@ -29,40 +28,19 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     "/login",
     response_model=Auth,
     status_code=status.HTTP_200_OK,
-    responses={
-        **IncorrectUsernameOrPassword().build_docs(),
-    },
-    description="Rout for authorize"
-    + "Required in headers Authorized Bearer access token",
+    description=(
+        "Route for authorize. " "Required in headers Authorized Bearer access token"
+    ),
 )
 @inject
 async def auth_user(
     response: Response,
+    cmd: AuthCommand,
     access: JwtAccessBearer = Depends(Provide[JWT.access]),
     refresh: JwtRefreshBearer = Depends(Provide[JWT.refresh]),
     auth_service: AuthService = Depends(Provide[Services.auth_service]),
-    cmd: AuthCommand = Body(
-        ...,
-        examples={
-            "correct": {
-                "summary": "A correct example",
-                "value": {
-                    "username": "admin",
-                    "password": "pass",
-                    "fingerprint": "string",
-                    "verify_code": "111111",
-                },
-            },
-            "wrong": {
-                "summary": "A wrong example",
-                "value": {"username": "admin", "password": "admin", "fingerprint": ""},
-            },
-        },
-    ),
 ):
     user = await auth_service.check_user_password(cmd=cmd)
-    if not await auth_service.check_2fa(Check2FACommand(verify_code=cmd.verify_code)):
-        raise IncorrectUsernameOrPassword
 
     at = access.create_access_token(
         subject={"user_id": user.id, "role_name": user.role_name},
@@ -137,11 +115,7 @@ async def create_new_token_pair(
     return Auth(access_token=at, refresh_token=irt.refresh_token.get_secret_value())
 
 
-@router.post(
-    "/logout",
-    status_code=status.HTTP_200_OK,
-    description="Route for logout."
-)
+@router.post("/logout", status_code=status.HTTP_200_OK, description="Route for logout.")
 @inject
 async def logout(
     auth_service: AuthService = Depends(Provide[Services.auth_service]),

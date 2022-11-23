@@ -1,10 +1,10 @@
 """MySql connector."""
 
 from contextlib import asynccontextmanager
+import urllib.parse
 
-import aiomysql
 import pydantic
-from aiomysql import Connection, DictCursor
+import aiomysql
 
 from .base_connector import BaseConnector
 
@@ -37,13 +37,13 @@ class Mysql(BaseConnector):
         return (
             f"aiomysql://"
             f"{self.username}:"
-            f"{self.password.get_secret_value()}@"
+            f"{urllib.parse.quote_plus(self.password.get_secret_value())}@"
             f"{self.host}:{self.port}/"
             f"{self.database_name}"
         )
 
     @asynccontextmanager
-    async def get_connect(self) -> Connection:
+    async def get_connect(self) -> aiomysql.Connection:
         if self.pool is None:
             self.pool = await aiomysql.create_pool(
                 host=self.host,
@@ -51,7 +51,7 @@ class Mysql(BaseConnector):
                 user=self.username,
                 password=self.password.get_secret_value(),
                 db=self.database_name,
-                cursorclass=DictCursor,
+                cursorclass=aiomysql.DictCursor,
             )
 
         async with self.pool.acquire() as conn:

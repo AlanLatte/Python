@@ -8,18 +8,19 @@ from uuid import uuid4
 from fastapi.responses import Response
 from fastapi.security import APIKeyCookie, HTTPBearer
 from jose import jwt
-
-__all__ = ["JwtAuthBase"]
+from pydantic import SecretStr
 
 from app.pkg.settings import settings
 
-from .exceptions import (
+from app.pkg.models.exceptions.jwt import (
     CSRFError,
     JWTDecodeError,
     TokenTimeExpired,
     UnAuthorized,
     WrongToken,
 )
+
+__all__ = ["JwtAuthBase"]
 
 
 class JwtAuthBase(ABC):
@@ -53,10 +54,10 @@ class JwtAuthBase(ABC):
 
     def __init__(
         self,
-        secret_key: str,
+        secret_key: SecretStr,
         places: Optional[Set[str]] = None,
         auto_error: bool = True,
-        algorithm: str = jwt.ALGORITHMS.HS256,
+        algorithm: jwt.ALGORITHMS = jwt.ALGORITHMS.HS256,
         access_expires_delta: Optional[timedelta] = None,
         refresh_expires_delta: Optional[timedelta] = None,
     ):
@@ -95,11 +96,11 @@ class JwtAuthBase(ABC):
             refresh_expires_delta=refresh_expires_delta or other.refresh_expires_delta,
         )
 
-    def _decode(self, token: str) -> Optional[Dict[str, Any]]:
+    def _decode(self, token: SecretStr) -> Optional[Dict[str, Any]]:
         try:
             payload: Dict[str, Any] = jwt.decode(
-                token,
-                self.secret_key,
+                token.get_secret_value(),
+                self.secret_key.get_secret_value(),
                 algorithms=[self.algorithm],
                 options={"leeway": 10},
             )
@@ -116,8 +117,8 @@ class JwtAuthBase(ABC):
         else:
             csrf_value = (
                 jwt.decode(
-                    token,
-                    self.secret_key,
+                    token.get_secret_value(),
+                    self.secret_key.get_secret_value(),
                     algorithms=[self.algorithm],
                     options={"leeway": 10, "verify_signature": False},
                 ).get("csrf", None),
@@ -161,16 +162,13 @@ class JwtAuthBase(ABC):
         elif cookie:
             token = str(cookie)
 
-        # Check token exist
         if not token:
             if self.auto_error:
                 raise UnAuthorized
             else:
                 return None, None
 
-        # Try to decode jwt token. auto_error on error
-
-        payload = self._decode(token)
+        payload = self._decode(SecretStr(token))
         return payload, token
 
     def create_access_token(
@@ -189,7 +187,7 @@ class JwtAuthBase(ABC):
         )
         jwt_encoded: str = jwt.encode(
             to_encode,
-            self.secret_key,
+            self.secret_key.get_secret_value(),
             algorithm=self.algorithm,
         )
         return jwt_encoded
@@ -210,7 +208,7 @@ class JwtAuthBase(ABC):
         )
         jwt_encoded: str = jwt.encode(
             to_encode,
-            self.secret_key,
+            self.secret_key.get_secret_value(),
             algorithm=self.algorithm,
         )
         return jwt_encoded
@@ -234,8 +232,5 @@ class JwtAuthBase(ABC):
     @staticmethod
     def unset_refresh_cookie(response: Response) -> None:
         response.set_cookie(
-            key=settings.JWT_REFRESH_TOKEN_NAME,
-            value="",
-            httponly=True,
-            max_age=-1,
+            key=settings.JWT_REFRESH_TOKEN_NAME, httponly=True, max_age=-1
         )
