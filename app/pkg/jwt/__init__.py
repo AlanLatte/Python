@@ -20,10 +20,10 @@ __all__ = [
 ]
 
 
-access_security = JwtAccessBearer(secret_key=settings.JWT_SECRET_KEY.get_secret_value())
+access_security = JwtAccessBearer(secret_key=settings.JWT_SECRET_KEY)
 
 refresh_security = JwtRefreshBearer(
-    secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+    secret_key=settings.JWT_SECRET_KEY,
 )
 
 

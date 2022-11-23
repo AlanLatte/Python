@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
+from pydantic.utils import update_not_none
+from pydantic.validators import constr_length_validator
 
 from pydantic import SecretStr
 
 __all__ = ["NotEmptySecretStr", "NotEmptyStr"]
-
-
-from pydantic.typing import CallableGenerator
-from pydantic.utils import update_not_none
-from pydantic.validators import constr_length_validator
 
 
 # TODO: Use generic pydantic model for create min and max range
@@ -36,7 +33,7 @@ class NotEmptyStr(str):
         )
 
     @classmethod
-    def __get_validators__(cls) -> "CallableGenerator":
+    def __get_validators__(cls):
         yield constr_length_validator
 
     def __init__(self, value: str):

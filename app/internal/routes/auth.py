@@ -65,7 +65,6 @@ async def auth_user(
             "role_name": user.role_name,
         },
     )
-
     await auth_service.create_refresh_token(
         cmd=CreateJWTTokenCommand(
             refresh_token=rt,

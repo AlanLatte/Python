@@ -1,11 +1,11 @@
 from typing import Optional
 from app.internal.pkg.password import password
-from app.internal.repository.exceptions import EmptyResult, UniqueViolation
 from app.internal.repository.postgresql import RefreshTokenRepository
 from app.internal.services.user import UserService
 from app.pkg.jwt import UnAuthorized, WrongToken
 from app.pkg.models.auth import AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
+from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
 from app.pkg.models.refresh_token import (
     CreateJWTTokenCommand,
     DeleteJWTTokenCommand,

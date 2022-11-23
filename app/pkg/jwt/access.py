@@ -26,7 +26,7 @@ class JwtAccess(JwtAuthBase):
         refresh_expires_delta: Optional[timedelta] = None,
     ):
         super().__init__(
-            secret_key,
+            secret_key.get_secret_value(),
             places=places,
             auto_error=auto_error,
             algorithm=algorithm,

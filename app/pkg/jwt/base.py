@@ -54,7 +54,7 @@ class JwtAuthBase(ABC):
 
     def __init__(
         self,
-        secret_key: SecretStr,
+        secret_key: str,
         places: Optional[Set[str]] = None,
         auto_error: bool = True,
         algorithm: jwt.ALGORITHMS = jwt.ALGORITHMS.HS256,
@@ -100,7 +100,7 @@ class JwtAuthBase(ABC):
         try:
             payload: Dict[str, Any] = jwt.decode(
                 token.get_secret_value(),
-                self.secret_key.get_secret_value(),
+                self.secret_key,
                 algorithms=[self.algorithm],
                 options={"leeway": 10},
             )
@@ -118,7 +118,7 @@ class JwtAuthBase(ABC):
             csrf_value = (
                 jwt.decode(
                     token.get_secret_value(),
-                    self.secret_key.get_secret_value(),
+                    self.secret_key,
                     algorithms=[self.algorithm],
                     options={"leeway": 10, "verify_signature": False},
                 ).get("csrf", None),
@@ -187,7 +187,7 @@ class JwtAuthBase(ABC):
         )
         jwt_encoded: str = jwt.encode(
             to_encode,
-            self.secret_key.get_secret_value(),
+            self.secret_key,
             algorithm=self.algorithm,
         )
         return jwt_encoded
@@ -208,7 +208,7 @@ class JwtAuthBase(ABC):
         )
         jwt_encoded: str = jwt.encode(
             to_encode,
-            self.secret_key.get_secret_value(),
+            self.secret_key,
             algorithm=self.algorithm,
         )
         return jwt_encoded

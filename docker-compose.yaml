@@ -136,7 +136,7 @@ services:
       - ${API_CENTRIFUGO_DATA_VOLUME}:/var/log/centrifugo
     depends_on:
       - api
-    command: [ "sh", "init-centrifugo.sh" ]
+    command: [ "sh", "init.centrifugo.sh" ]
 
 networks:
   default:

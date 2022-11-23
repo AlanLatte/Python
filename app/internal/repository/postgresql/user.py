@@ -44,7 +44,7 @@ class UserRepository(Repository):
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response(nullable=True)
+    @collect_response
     async def read_by_username(
         self,
         query: models.ReadUserByUserNameQuery,
@@ -60,7 +60,7 @@ class UserRepository(Repository):
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response(nullable=True)
+    @collect_response
     async def read_all(self) -> List[models.User]:
         q = """
             select
