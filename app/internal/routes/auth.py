@@ -12,7 +12,6 @@ from app.pkg.jwt import (
     refresh_security,
 )
 from app.pkg.models.auth import Auth, AuthCommand
-from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
 from app.pkg.models.refresh_token import (
     CreateJWTTokenCommand,
     DeleteJWTTokenCommand,
@@ -23,7 +22,7 @@ from app.pkg.models.refresh_token import (
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-
+# TODO: make it simple pls
 @router.post(
     "/login",
     response_model=Auth,
@@ -77,6 +76,7 @@ async def auth_user(
     return Auth(access_token=at, refresh_token=rt, user_role_name=user.role_name)
 
 
+# TODO: make it simple pls
 @router.patch(
     "/refresh",
     response_model=Auth,
@@ -114,6 +114,7 @@ async def create_new_token_pair(
     return Auth(access_token=at, refresh_token=irt.refresh_token.get_secret_value())
 
 
+# TODO: make it simple pls
 @router.post("/logout", status_code=status.HTTP_200_OK, description="Route for logout.")
 @inject
 async def logout(

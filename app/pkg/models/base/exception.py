@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import HTTPException
+
 from app.pkg.models.types.strings import NotEmptyStr
 
 __all__ = ["BaseAPIException"]

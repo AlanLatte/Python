@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import List, TypeVar
+
 from app.pkg.models.base import Model
 
 __all__ = ["Repository", "BaseRepository"]

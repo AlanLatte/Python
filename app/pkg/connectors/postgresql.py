@@ -1,7 +1,7 @@
 """Postgresql connector."""
 
-from contextlib import asynccontextmanager
 import urllib.parse
+from contextlib import asynccontextmanager
 
 import aiopg
 import pydantic

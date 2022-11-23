@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional
+
 from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = ["JwtAuthorizationCredentials"]

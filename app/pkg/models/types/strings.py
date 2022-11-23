@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
-from pydantic.utils import update_not_none
-from pydantic.validators import constr_length_validator
 
 from pydantic import SecretStr
+from pydantic.utils import update_not_none
+from pydantic.validators import constr_length_validator
 
 __all__ = ["NotEmptySecretStr", "NotEmptyStr"]
 

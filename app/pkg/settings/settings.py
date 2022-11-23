@@ -1,7 +1,5 @@
-"""
-Module for load settings form `.env` or
-if server running with parameter `dev` from `.env.dev`
-"""
+"""Module for load settings form `.env` or if server running with parameter
+`dev` from `.env.dev`"""
 import pathlib
 from functools import lru_cache
 
@@ -24,7 +22,10 @@ class _Settings(BaseSettings):
 
 
 class Settings(_Settings):
-    """Server settings. Formed from `.env` or `.env.dev`."""
+    """Server settings.
+
+    Formed from `.env` or `.env.dev`.
+    """
 
     #: str: Postgresql host.
     POSTGRES_HOST: str

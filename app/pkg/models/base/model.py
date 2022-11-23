@@ -74,7 +74,8 @@ class BaseModel(pydantic.BaseModel):
         """
 
         return pydantic.parse_obj_as(
-            model.__annotations__, self.to_dict(show_secrets=True)
+            model.__annotations__,
+            self.to_dict(show_secrets=True),
         )
 
     class Config:

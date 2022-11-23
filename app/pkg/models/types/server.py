@@ -4,13 +4,13 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette_prometheus import PrometheusMiddleware, metrics
-from app.pkg.models.types.fastapi import FastAPIInstance
 
+from app.configuration.events import on_startup
+from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.routes import __routes__
 from app.pkg.models.base import BaseAPIException
-from app.configuration.events import on_startup
-from app.configuration.logger import EndpointFilter
+from app.pkg.models.types.fastapi import FastAPIInstance
 
 __all__ = ["Server"]
 

@@ -1,5 +1,4 @@
-"""
-Handlers for postgresql queries.
+"""Handlers for postgresql queries.
 
 - Collect response
 - Handle exceptions

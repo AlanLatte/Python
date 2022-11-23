@@ -1,3 +1,1 @@
-"""
-Internal packages for correct work business logic.
-"""
+"""Internal packages for correct work business logic."""

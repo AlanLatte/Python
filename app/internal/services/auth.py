@@ -1,4 +1,5 @@
 from typing import Optional
+
 from app.internal.pkg.password import password
 from app.internal.repository.postgresql import RefreshTokenRepository
 from app.internal.services.user import UserService

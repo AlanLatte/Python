@@ -1,7 +1,8 @@
 import pytest
+from dependency_injector.wiring import Provide, inject
+
 from app.internal.repository.postgresql import Repository
 from app.internal.repository.postgresql.user import User
-from dependency_injector.wiring import inject, Provide
 
 
 @pytest.fixture()

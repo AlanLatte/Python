@@ -11,7 +11,8 @@ class AuthFields:
     access_token = Field(description="Bearer access token", example="exam.ple.token")
     refresh_token = Field(description="Bearer refresh token", example="exam.ple.token")
     fingerprint = Field(
-        description="Unique fingerprint of user device", example="u-u-i-d"
+        description="Unique fingerprint of user device",
+        example="u-u-i-d",
     )
     role_name = UserFields.role_name
     username = UserFields.username

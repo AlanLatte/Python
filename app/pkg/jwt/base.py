@@ -10,8 +10,6 @@ from fastapi.security import APIKeyCookie, HTTPBearer
 from jose import jwt
 from pydantic import SecretStr
 
-from app.pkg.settings import settings
-
 from app.pkg.models.exceptions.jwt import (
     CSRFError,
     JWTDecodeError,
@@ -19,6 +17,7 @@ from app.pkg.models.exceptions.jwt import (
     UnAuthorized,
     WrongToken,
 )
+from app.pkg.settings import settings
 
 __all__ = ["JwtAuthBase"]
 
@@ -232,5 +231,7 @@ class JwtAuthBase(ABC):
     @staticmethod
     def unset_refresh_cookie(response: Response) -> None:
         response.set_cookie(
-            key=settings.JWT_REFRESH_TOKEN_NAME, httponly=True, max_age=-1
+            key=settings.JWT_REFRESH_TOKEN_NAME,
+            httponly=True,
+            max_age=-1,
         )

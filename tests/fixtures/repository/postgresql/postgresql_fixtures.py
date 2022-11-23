@@ -24,8 +24,8 @@ async def clean_postgres():
         DECLARE
             statements CURSOR FOR
                 SELECT tablename FROM pg_tables
-                WHERE schemaname = 'public' 
-                    and tablename not like '%yoyo%' 
+                WHERE schemaname = 'public'
+                    and tablename not like '%yoyo%'
                     and tablename not like 'user_roles';
         BEGIN
             FOR stmt IN statements LOOP

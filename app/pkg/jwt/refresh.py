@@ -7,7 +7,6 @@ from pydantic import SecretStr
 
 from app.pkg.jwt.base import JwtAuthBase
 from app.pkg.jwt.credentionals import JwtAuthorizationCredentials
-
 from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = ["JwtRefreshBearer"]

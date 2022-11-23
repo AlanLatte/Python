@@ -1,10 +1,10 @@
 """MySql connector."""
 
-from contextlib import asynccontextmanager
 import urllib.parse
+from contextlib import asynccontextmanager
 
-import pydantic
 import aiomysql
+import pydantic
 
 from .base_connector import BaseConnector
 

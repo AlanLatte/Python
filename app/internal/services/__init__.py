@@ -9,6 +9,7 @@ from app.pkg.settings import settings
 
 class Services(containers.DeclarativeContainer):
     """Containers with services."""
+
     configuration = providers.Configuration(
         name="settings",
         pydantic_settings=[settings],

@@ -6,6 +6,7 @@ from psycopg2.extras import RealDictRow
 
 from app.pkg.models.base import Model
 from app.pkg.models.exceptions.repository import EmptyResult
+
 from .handle_exception import handle_exception
 
 __all__ = ["collect_response"]
@@ -56,8 +57,7 @@ async def __convert_response(response: RealDictRow, annotations: str):
 
 
 async def __convert_memory_viewer(r: RealDictRow):
-    """
-    Convert memory viewer in bytes.
+    """Convert memory viewer in bytes.
 
     Notes: aiopg returns memory viewer in query response,
         when in database type of cell `bytes`.

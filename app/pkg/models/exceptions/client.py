@@ -7,7 +7,7 @@ from app.pkg.models.types.strings import NotEmptyStr
 class BaseClientException(BaseAPIException):
     def __init__(self, client_name: str):
         super(BaseClientException, self).__init__(
-            message=NotEmptyStr(self.message.format(client_name))
+            message=NotEmptyStr(self.message.format(client_name)),
         )
 
 
