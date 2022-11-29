@@ -8,7 +8,7 @@ if you need x-auth-token auth
 from fastapi import FastAPI
 
 from app.configuration import __containers__
-from app.pkg.models.types.server import Server
+from app.configuration.server import Server
 
 
 def create_app() -> FastAPI:
