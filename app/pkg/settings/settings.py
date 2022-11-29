@@ -1,7 +1,5 @@
-"""
-Module for load settings form `.env` or
-if server running with parameter `dev` from `.env.dev`
-"""
+"""Module for load settings form `.env` or if server running with parameter
+`dev` from `.env.dev`"""
 import pathlib
 from functools import lru_cache
 
@@ -24,32 +22,48 @@ class _Settings(BaseSettings):
 
 
 class Settings(_Settings):
-    """Server settings. Formed from `.env` or `.env.dev`."""
+    """Server settings.
 
+    Formed from `.env` or `.env.dev`.
+    """
+
+    #: str: Postgresql host.
     POSTGRES_HOST: str
+    #: PositiveInt: positive int (x > 0) port of postgresql.
     POSTGRES_PORT: PositiveInt
+    #: str: Postgresql user.
     POSTGRES_USER: str
+    #: SecretStr: Postgresql password.
     POSTGRES_PASSWORD: SecretStr
+    #: str: Postgresql database name.
     POSTGRES_DATABASE_NAME: str
 
+    #: str: Redis host.
     REDIS_HOST: str
+    #: PositiveInt: positive int (x > 0) port of redis.
     REDIS_PORT: PositiveInt
+    #: SecretStr: Redis password.
     REDIS_PASSWORD: SecretStr
 
-    # JWT
+    #: SecretStr: Key for encrypt payload in jwt.
     JWT_SECRET_KEY: SecretStr
+    #: str: Access token name in headers/body/cookies.
     JWT_ACCESS_TOKEN_NAME: str
+    #: str: Refresh token name in headers/body/cookies.
     JWT_REFRESH_TOKEN_NAME: str
 
+    #: str: rabbitmq host.
     RABBITMQ_HOST: str
+    #: PositiveInt: positive int (x > 0) port of rabbitmq.
     RABBITMQ_PORT: PositiveInt
+    #: str: rabbitmq user.
     RABBITMQ_USER: str
+    #: SecretStr: rabbitmq password.
     RABBITMQ_PASSWORD: SecretStr
 
-    OTP_KEY: SecretStr
-
-    # logger
+    #: StrictStr: Level of logging which outs in std
     LOGGER_LEVEL: pydantic.StrictStr
+    #: pathlib.Path: Path of saving logs on local storage.
     LOGGER_FILE_PATH: pathlib.Path
 
     @pydantic.validator("LOGGER_FILE_PATH")
@@ -62,7 +76,4 @@ class Settings(_Settings):
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""
-    print("=====================")
-    print(find_dotenv(".env"))
-    print("=====================")
     return Settings(_env_file=find_dotenv(env_file))

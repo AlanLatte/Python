@@ -1,5 +1,6 @@
 """Postgresql connector."""
 
+import urllib.parse
 from contextlib import asynccontextmanager
 
 import aiopg
@@ -41,7 +42,7 @@ class Postgresql(BaseConnector):
         return (
             f"postgresql://"
             f"{self.username}:"
-            f"{self.password.get_secret_value()}@"
+            f"{urllib.parse.quote_plus(self.password.get_secret_value())}@"
             f"{self.host}:{self.port}/"
             f"{self.database_name}"
         )

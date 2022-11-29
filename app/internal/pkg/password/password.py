@@ -27,6 +27,5 @@ def check_password(password: SecretBytes, hashed: SecretBytes) -> bool:
 
     Returns:
         True if equality check passed, False otherwise.
-
     """
     return bcrypt.checkpw(password.get_secret_value(), hashed.get_secret_value())

@@ -5,7 +5,7 @@ from app.internal.repository.postgresql import UserRepository
 from app.internal.repository.repository import BaseRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import UniqueViolation
-from app.pkg.models.exceptions.user import UserAlreadyExist
+from app.pkg.models.exceptions.user import IncorrectOldPassword, UserAlreadyExist
 
 __all__ = ["UserService"]
 
@@ -55,8 +55,14 @@ class UserService:
         self,
         cmd: models.ChangeUserPasswordCommand,
     ) -> models.User:
-        ...
+        user = await self.repository.read(query=models.ReadUserByIdQuery(id=cmd.id))
+        if user.password != cmd.old_password:
+            raise IncorrectOldPassword
+
+        user.password = cmd.new_password
+        return await self.repository.update(cmd=user.migrate(models.UpdateUserCommand))
 
     async def delete_specific_user(self, cmd: models.DeleteUserCommand) -> models.User:
         """Delete specific user by user id."""
+
         return await self.repository.delete(cmd=cmd)

@@ -30,7 +30,9 @@ class Containers:
     containers: List[Container]
 
     def wire_packages(
-        self, app: Optional[FastAPI] = None, pkg_name: Optional[str] = None
+        self,
+        app: Optional[FastAPI] = None,
+        pkg_name: Optional[str] = None,
     ):
         """Wire packages to the declarative containers.
 

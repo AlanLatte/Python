@@ -1,10 +1,8 @@
 import logging
-
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from logging.handlers import RotatingFileHandler
 from app.pkg.settings import settings
-
 
 _log_format = (
     "%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%("

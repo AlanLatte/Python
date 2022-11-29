@@ -15,8 +15,7 @@ class Routes:
     routers: Tuple[APIRouter, ...]
 
     def register_routes(self, app: FastAPI):
-        """
-        Include ``APIRouter`` to the ``FastAPI`` application instance.
+        """Include ``APIRouter`` to the ``FastAPI`` application instance.
 
         Args:
             app: ``FastAPI`` application instance.

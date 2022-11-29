@@ -1,5 +1,5 @@
 import pytest
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 
 from app.internal.repository.postgresql import Repository, User
 from app.pkg import models
@@ -7,7 +7,8 @@ from app.pkg import models
 
 @inject
 async def test_correct(
-    overwrite_connection, repository: User = Provide[Repository.user]
+    overwrite_connection,
+    repository: User = Provide[Repository.user],
 ):
     cmd = models.CreateUserCommand(
         email="correct-email@example.ru",

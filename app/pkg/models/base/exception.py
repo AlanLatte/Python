@@ -1,22 +1,20 @@
+from typing import Optional
+
 from fastapi import HTTPException
 
-__all__ = ["BaseException"]
+from app.pkg.models.types.strings import NotEmptyStr
+
+__all__ = ["BaseAPIException"]
 
 
-class BaseException(HTTPException):
-    message: str = ...
+class BaseAPIException(HTTPException):
+    # TODO: Добавить описание
+
+    message: Optional[NotEmptyStr] = ...
     status_code: int = ...
 
-    def __init__(self, message=None):
+    def __init__(self, message: Optional[NotEmptyStr] = None):
         if message is not None:
             self.message = message
 
         super().__init__(status_code=self.status_code, detail=self.message)
-
-    def build_docs(self):
-        return {
-            str(self.status_code): {
-                "description": "Item requested by ID",
-                "content": {"application/json": {"example": {"message": self.message}}},
-            },
-        }

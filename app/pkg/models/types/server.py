@@ -1,23 +1,18 @@
 """Server configuration."""
 import logging
-from typing import TypeVar
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette_prometheus import PrometheusMiddleware, metrics
 
+from app.configuration.events import on_startup
+from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.routes import __routes__
-from app.pkg.models.base import BaseException
-
-from .events import on_startup
-from .logger import EndpointFilter
+from app.pkg.models.base import BaseAPIException
+from app.pkg.models.types.fastapi import FastAPIInstance
 
 __all__ = ["Server"]
-
-from app.pkg.jwt import JWT
-
-FastAPIInstance = TypeVar("FastAPIInstance", bound="FastAPI")
 
 
 class Server:
@@ -25,12 +20,10 @@ class Server:
 
     def __init__(self, app: FastAPI):
         self.__app = app
-        self._register_containers(app)
         self._register_routes(app)
         self._register_events(app)
         self._register_middlewares(app)
         self._register_http_exceptions(app)
-        self._register_jwt(app)
 
     def get_app(self) -> FastAPIInstance:
         """Get current application instance.
@@ -64,17 +57,6 @@ class Server:
         __routes__.register_routes(app)
 
     @staticmethod
-    def _register_containers(app: FastAPIInstance):
-        """Register services __service__ using dependency injection pattern.
-
-        Args:
-            app: ``FastAPI`` application instance.
-
-        Returns: None
-        """
-        ...
-
-    @staticmethod
     def _register_http_exceptions(app: FastAPIInstance):
         """Register http exceptions.
 
@@ -86,7 +68,7 @@ class Server:
         Returns: None
         """
 
-        app.add_exception_handler(BaseException, handle_api_exceptions)
+        app.add_exception_handler(BaseAPIException, handle_api_exceptions)
 
     @staticmethod
     def __register_cors_origins(app: FastAPIInstance):
@@ -107,25 +89,6 @@ class Server:
         app.add_middleware(PrometheusMiddleware)
         app.add_route(metrics_endpoint, metrics)
         self.__filter_logs(metrics_endpoint)
-
-    @staticmethod
-    def _register_jwt(app: FastAPIInstance):
-        """Register jwt handler to fast api context.
-
-        Args:
-            app: ``FastAPI`` application instance
-
-        Returns: None
-        """
-        jwt = JWT()
-        jwt.wire(
-            packages=[
-                "app.internal.routes",
-                "app.pkg.jwt",
-                "app.pkg.settings",
-            ],
-        )
-        app.jwt = jwt
 
     def _register_middlewares(self, app):
         """Apply routes middlewares."""

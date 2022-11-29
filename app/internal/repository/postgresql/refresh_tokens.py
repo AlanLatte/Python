@@ -1,6 +1,8 @@
 from typing import List
 
-from app.internal.repository.postgresql.handlers.collect_response import collect_response
+from app.internal.repository.postgresql.handlers.collect_response import (
+    collect_response,
+)
 from app.internal.repository.repository import Repository
 from app.pkg.models.base import Model
 from app.pkg.models.refresh_token import (

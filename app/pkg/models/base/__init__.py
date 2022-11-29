@@ -4,5 +4,5 @@ All models *must* be inherited by them.
 """
 
 from .enum import BaseEnum
-from .exception import BaseException
+from .exception import BaseAPIException
 from .model import BaseModel, Model

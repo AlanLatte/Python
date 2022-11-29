@@ -1,10 +1,10 @@
 from dependency_injector import containers, providers
 
+from app.pkg.models.exceptions.jwt import TokenTimeExpired, UnAuthorized, WrongToken
 from app.pkg.settings import settings
 
 from .access import JwtAccessBearer
 from .credentionals import JwtAuthorizationCredentials
-from .exceptions import TokenTimeExpired, UnAuthorized, WrongToken
 from .refresh import JwtRefreshBearer
 
 __all__ = [
@@ -20,10 +20,10 @@ __all__ = [
 ]
 
 
-access_security = JwtAccessBearer(secret_key=settings.JWT_SECRET_KEY.get_secret_value())
+access_security = JwtAccessBearer(secret_key=settings.JWT_SECRET_KEY)
 
 refresh_security = JwtRefreshBearer(
-    secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+    secret_key=settings.JWT_SECRET_KEY,
 )
 
 
@@ -32,9 +32,9 @@ class JWT(containers.DeclarativeContainer):
 
     access: JwtAccessBearer = providers.Factory(
         JwtAccessBearer,
-        secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+        secret_key=settings.JWT_SECRET_KEY,
     )
     refresh: JwtRefreshBearer = providers.Factory(
         JwtRefreshBearer,
-        secret_key=settings.JWT_SECRET_KEY.get_secret_value(),
+        secret_key=settings.JWT_SECRET_KEY,
     )

@@ -1,2 +1,4 @@
+"""All custom types must be implemented here/"""
+
 from .secret_bytes import EncryptedSecretBytes
-from .secret_str import NotEmptySecretStr
+from .strings import NotEmptySecretStr

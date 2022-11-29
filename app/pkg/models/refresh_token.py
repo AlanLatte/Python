@@ -1,6 +1,7 @@
 from pydantic import PositiveInt
 
 from app.pkg.models.base import BaseModel
+from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = [
     "JWTToken",
@@ -11,7 +12,9 @@ __all__ = [
     "DeleteJWTTokenCommand",
 ]
 
-from app.pkg.models.types import NotEmptySecretStr
+
+class JWTFields:
+    ...
 
 
 class BaseJWTToken(BaseModel):

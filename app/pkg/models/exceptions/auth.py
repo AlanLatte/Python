@@ -1,22 +1,16 @@
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 __all__ = [
     "IncorrectLengthFingerprint",
-    "IncorrectLengthOTP",
     "IncorrectUsernameOrPassword",
 ]
 
 
-class IncorrectLengthFingerprint(BaseException):
+class IncorrectLengthFingerprint(BaseAPIException):
     status_code = 400
     message = "Incorrect fingerprint"
 
 
-class IncorrectLengthOTP(BaseException):
-    status_code = 400
-    message = "Incorrect OTP"
-
-
-class IncorrectUsernameOrPassword(BaseException):
+class IncorrectUsernameOrPassword(BaseAPIException):
     status_code = 406
     message = "Incorrect username or password or secret key"

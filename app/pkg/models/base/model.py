@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from datetime import date, datetime
-from typing import Any, Dict, List, Tuple, TypeVar
+from typing import Any, Dict, List, T, Tuple, Type, TypeVar
 
 import pydantic
 
@@ -62,6 +62,21 @@ class BaseModel(pydantic.BaseModel):
         """
         delattr(self, attr)
         return self
+
+    def migrate(self, model: Type[T]) -> Model:
+        """Migrate one model to another ignoring missmatch.
+
+        Args:
+            model: Heir BaseModel object.
+
+        Returns:
+            pydantic model parsed from ``model``.
+        """
+
+        return pydantic.parse_obj_as(
+            model.__annotations__,
+            self.to_dict(show_secrets=True),
+        )
 
     class Config:
         use_enum_values = True

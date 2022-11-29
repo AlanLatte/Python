@@ -1,7 +1,7 @@
-from app.pkg.settings.settings import get_settings
-from app.configuration import __containers__
 import pytest
 
+from app.configuration import __containers__
+from app.pkg.settings.settings import get_settings
 
 _settings = get_settings("../../.env")
 

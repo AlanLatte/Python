@@ -1,7 +1,9 @@
 from typing import List
 
-from app.internal.repository.postgresql.handlers.collect_response import collect_response
 from app.internal.repository.postgresql.connection import get_connection
+from app.internal.repository.postgresql.handlers.collect_response import (
+    collect_response,
+)
 from app.internal.repository.repository import Repository
 from app.pkg import models
 
@@ -19,7 +21,9 @@ class UserRepository(Repository):
                 %(password)s::bytea,
                 (select id from user_roles where role_name = %(role_name)s)
             )
-            returning id, username, password, (select role_name from user_roles where role_name = %(role_name)s);
+            returning id, username, password, (
+                select role_name from user_roles where role_name = %(role_name)s
+            );
         """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
@@ -41,7 +45,7 @@ class UserRepository(Repository):
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response(nullable=True)
+    @collect_response
     async def read_by_username(
         self,
         query: models.ReadUserByUserNameQuery,
@@ -57,7 +61,7 @@ class UserRepository(Repository):
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
 
-    @collect_response(nullable=True)
+    @collect_response
     async def read_all(self) -> List[models.User]:
         q = """
             select

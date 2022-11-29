@@ -1,5 +1,4 @@
-"""
-Module ``Repository`` must contain **CRUD** methods.
+"""Module ``Repository`` must contain **CRUD** methods.
 
 Note:
     The repository must contain a minimum set of instructions for interacting with the

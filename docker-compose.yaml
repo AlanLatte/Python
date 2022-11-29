@@ -119,7 +119,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
 
   centrifugo:
-    container_name: api-centrifugo-auth
+    container_name: api-centrifugo
     build:
       context: .
       dockerfile: docker/centrifugo/Dockerfile
@@ -136,7 +136,7 @@ services:
       - ${API_CENTRIFUGO_DATA_VOLUME}:/var/log/centrifugo
     depends_on:
       - api
-    command: [ "sh", "init-centrifugo.sh" ]
+    command: [ "sh", "init.centrifugo.sh" ]
 
 networks:
   default:

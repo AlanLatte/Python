@@ -6,20 +6,20 @@ __all__ = [
 
 from fastapi import status
 
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 
-class UniqueViolation(BaseException):
+class UniqueViolation(BaseAPIException):
     message = "Not unique"
     status_code = status.HTTP_409_CONFLICT
 
 
-class EmptyResult(BaseException):
+class EmptyResult(BaseAPIException):
     message = "Empty result"
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class DriverError(BaseException):
+class DriverError(BaseAPIException):
     def __init__(self, message: str = None):
         if message:
             self.message = message

@@ -22,6 +22,7 @@ router = APIRouter(prefix="/user", tags=["User"])
 async def create_user(
     cmd: models.CreateUserCommand,
     user_service: UserService = Depends(Provide[Services.user_service]),
+    # _: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.create_user(cmd=cmd)
 
@@ -36,7 +37,7 @@ async def create_user(
 @inject
 async def read_all_users(
     user_service: UserService = Depends(Provide[Services.user_service]),
-    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    _: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.read_all_users()
 
@@ -52,7 +53,7 @@ async def read_all_users(
 async def read_user(
     user_id: int = models.UserFields.id,
     user_service: UserService = Depends(Provide[Services.user_service]),
-    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    _: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.read_specific_user_by_id(
         query=models.ReadUserByIdQuery(id=user_id),
@@ -70,7 +71,7 @@ async def read_user(
 async def delete_user(
     user_id: int = models.UserFields.id,
     user_service: UserService = Depends(Provide[Services.user_service]),
-    jwt_credentials: JwtAuthorizationCredentials = Security(access_security),
+    _: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.delete_specific_user(
         cmd=models.DeleteUserCommand(id=user_id),

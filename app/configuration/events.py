@@ -11,4 +11,3 @@ async def on_startup():
     Returns:
         None
     """
-    pass

@@ -1,6 +1,6 @@
 from fastapi import status
 
-from app.pkg.models.base import BaseException
+from app.pkg.models.base import BaseAPIException
 
 __all__ = [
     "UnAuthorized",
@@ -11,12 +11,12 @@ __all__ = [
 ]
 
 
-class UnAuthorized(BaseException):
+class UnAuthorized(BaseAPIException):
     message = "Not authorized"
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class TokenTimeExpired(BaseException):
+class TokenTimeExpired(BaseAPIException):
     def __init__(self, message: Exception = None):
         if message:
             self.message = f"Token time expired: {message}"
@@ -25,7 +25,7 @@ class TokenTimeExpired(BaseException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class WrongToken(BaseException):
+class WrongToken(BaseAPIException):
     def __init__(self, message: Exception = None):
         if message:
             self.message = f"Wrong token: {message}"
@@ -34,11 +34,11 @@ class WrongToken(BaseException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class CSRFError(BaseException):
+class CSRFError(BaseAPIException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "CSRF double submit tokens do not match"
 
 
-class JWTDecodeError(BaseException):
+class JWTDecodeError(BaseAPIException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "Missing claim: csrf"

@@ -3,9 +3,11 @@ from typing import Optional, Set
 
 from fastapi import Security
 from jose import jwt
+from pydantic import SecretStr
 
 from app.pkg.jwt.base import JwtAuthBase
 from app.pkg.jwt.credentionals import JwtAuthorizationCredentials
+from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = ["JwtRefreshBearer"]
 
@@ -16,7 +18,7 @@ class JwtRefresh(JwtAuthBase):
 
     def __init__(
         self,
-        secret_key: str,
+        secret_key: SecretStr,
         places: Optional[Set[str]] = None,
         auto_error: bool = True,
         algorithm: str = jwt.ALGORITHMS.HS256,
@@ -24,7 +26,7 @@ class JwtRefresh(JwtAuthBase):
         refresh_expires_delta: Optional[timedelta] = None,
     ):
         super().__init__(
-            secret_key,
+            secret_key.get_secret_value(),
             places=places,
             auto_error=auto_error,
             algorithm=algorithm,
@@ -42,7 +44,7 @@ class JwtRefresh(JwtAuthBase):
         if payload:
             return JwtAuthorizationCredentials(
                 subject=payload.get("subject"),
-                raw_token=raw_token,
+                raw_token=NotEmptySecretStr(raw_token),
                 jti=payload.get("jti", None),
             )
         return None
@@ -51,7 +53,7 @@ class JwtRefresh(JwtAuthBase):
 class JwtRefreshBearer(JwtRefresh):
     def __init__(
         self,
-        secret_key: str,
+        secret_key: SecretStr,
         auto_error: bool = True,
         algorithm: str = jwt.ALGORITHMS.HS256,
         access_expires_delta: Optional[timedelta] = None,
