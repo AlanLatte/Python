@@ -61,13 +61,11 @@ class JwtAuthBase(ABC):
         refresh_expires_delta: Optional[timedelta] = None,
     ):
         if places:
-            assert places.issubset(
-                {"header", "cookie"},
-            ), "only 'header'/'cookie' are supported"
+            if not places.issubset({"header", "cookie"}):
+                raise IncorrectTokenPlace
         algorithm = algorithm.upper()
-        assert (
-            hasattr(jwt.ALGORITHMS, algorithm) is True
-        ), f"{algorithm} algorithm is not supported by python-jose library"
+        if not hasattr(jwt.ALGORITHMS, algorithm):
+            raise AlgorithIsNotSupported
 
         self.secret_key = secret_key
 
