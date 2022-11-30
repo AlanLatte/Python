@@ -8,6 +8,8 @@ __all__ = [
     "WrongToken",
     "CSRFError",
     "JWTDecodeError",
+    "IncorrectTokenPlace",
+    "AlgorithIsNotSupported",
 ]
 
 
@@ -23,6 +25,20 @@ class TokenTimeExpired(BaseAPIException):
 
     message = "Token time expired"
     status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class IncorrectTokenPlace(BaseAPIException):
+    message = "Only 'header'/'cookie' are supported"
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class AlgorithIsNotSupported(BaseAPIException):
+    def __init__(self, message: Exception = None):
+        if message:
+            self.message = f"{message} is not supported"
+
+    message = "Algorithm is not supported"
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class WrongToken(BaseAPIException):
