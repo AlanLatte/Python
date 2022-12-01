@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Type
 
-from dependency_injector import containers
+from dependency_injector import containers, providers
+from dependency_injector.containers import Container as _Container
 from fastapi import FastAPI
 
 __all__ = ["Container", "Containers"]
@@ -33,6 +34,7 @@ class Containers:
         self,
         app: Optional[FastAPI] = None,
         pkg_name: Optional[str] = None,
+        unwire: bool = False,
     ):
         """Wire packages to the declarative containers.
 
@@ -41,12 +43,18 @@ class Containers:
                 if passed, the containers will be written to the application context.
             pkg_name: Optional __name__ of running module.
 
+            unwire: Optional bool parameter. If `True`, unwiring all containers.
+
         Returns:
             None
         """
         pkg_name = pkg_name if pkg_name else self.pkg_name
         for container in self.containers:
             cont = container.container()
+            if unwire:
+                cont.unwire()
+                continue
+
             cont.wire(packages=[pkg_name, *container.packages])
             if app:
                 setattr(app, container.container.__name__.lower(), cont)
