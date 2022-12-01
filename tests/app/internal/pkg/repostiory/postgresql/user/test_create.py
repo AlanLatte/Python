@@ -48,7 +48,8 @@ async def test_incorrect_user_role_name(user_repository: UserRepository, role: s
     ["1", "12", "123", "1234", "12345"],
 )
 async def test_incorrect_password_length(
-    user_repository: UserRepository, password: str
+    user_repository: UserRepository,
+    password: str,
 ):
     with pytest.raises(expected_exception=ValidationError):
         await user_repository.create(
@@ -56,7 +57,7 @@ async def test_incorrect_password_length(
                 username="correct-1@example.ru",
                 password=password,
                 role_name=models.UserRole.USER,
-            )
+            ),
         )
 
 
@@ -69,7 +70,7 @@ async def test_incorrect_already_exist(user_repository: UserRepository):
                     username="correct-email@example.ru",
                     password="supeR_%$tr0ng-pa$$worD",
                     role_name=models.UserRole.USER,
-                )
+                ),
             )
             tasks.append(feature)
 

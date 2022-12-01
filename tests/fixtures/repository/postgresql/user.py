@@ -6,7 +6,8 @@ from app.pkg import models
 
 @pytest.fixture()
 async def insert_first_user(
-    user_repository: UserRepository, first_user: models.User,
+    user_repository: UserRepository,
+    first_user: models.User,
 ) -> models.User:
     return await user_repository.create(
         cmd=models.CreateUserCommand(
@@ -19,7 +20,8 @@ async def insert_first_user(
 
 @pytest.fixture()
 async def insert_second_user(
-    user_repository: UserRepository, second_user: models.User,
+    user_repository: UserRepository,
+    second_user: models.User,
 ) -> models.User:
     return await user_repository.create(
         cmd=models.CreateUserCommand(

@@ -16,6 +16,7 @@ async def get_connection(
     postgresql: Postgresql = Provide[Connectors.postgresql],
 ) -> Cursor:
     """Get async connection to postgresql of pool."""
+
     async with postgresql.get_connect() as connection:
         async with (await connection.cursor(cursor_factory=RealDictCursor)) as cur:
             yield cur

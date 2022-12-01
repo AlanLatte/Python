@@ -15,5 +15,7 @@ def pytest_sessionstart(session):
     _ = session
 
     __containers__.set_environment(
-        connector_class=Connectors, pkg_name=__name__, testing=True,
+        connector_class=Connectors,
+        pkg_name=__name__,
+        testing=True,
     )

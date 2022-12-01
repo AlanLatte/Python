@@ -18,7 +18,9 @@ from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
     ],
 )
 async def test_correct_username(
-    user_repository: UserRepository, insert_first_user: models.User, username: str,
+    user_repository: UserRepository,
+    insert_first_user: models.User,
+    username: str,
 ):
     await user_repository.update(
         cmd=models.UpdateUserCommand(
@@ -49,7 +51,9 @@ async def test_correct_username(
     ],
 )
 async def test_incorrect_unknown_user(
-    user_repository: UserRepository, first_user: models.User, username: str,
+    user_repository: UserRepository,
+    first_user: models.User,
+    username: str,
 ):
     with pytest.raises(EmptyResult):
         first_user.username = username
@@ -73,7 +77,9 @@ async def test_already_exist(
     ["INCORRECT_ROLE", "SUPE_DUPER_MEGA_ADMIN_ROLE", "USER_1", "HELLO_WORLD"],
 )
 async def test_incorrect_user_role(
-    user_repository: UserRepository, insert_first_user: models.User, user_role: str,
+    user_repository: UserRepository,
+    insert_first_user: models.User,
+    user_role: str,
 ):
 
     insert_first_user.role_name = user_role

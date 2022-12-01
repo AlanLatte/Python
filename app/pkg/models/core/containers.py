@@ -66,11 +66,10 @@ class Containers:
         pkg_name: Optional[str] = None,
         testing: bool = False,
         database_configuration_name: str = "POSTGRES_DATABASE_NAME",
-        prefix: Optional[str] = "test_"
+        prefix: Optional[str] = "test_",
     ) -> None:
-        """
-        Set environment. Using `container.configuration` for rewrite
-            `{{database_configuration_name}}` parameter in `settings`.
+        """Set environment. Using `container.configuration` for rewrite
+        `{{database_configuration_name}}` parameter in `settings`.
 
         Args:
             database_configuration_name: Pydantic settings field name that contains
@@ -80,7 +79,6 @@ class Containers:
                 to database name
             pkg_name: Optional __name__ of running module.
             prefix: A `prefix` that can be concatenated with the database name
-
         """
         self.wire_packages(pkg_name=pkg_name, unwire=True)
 
