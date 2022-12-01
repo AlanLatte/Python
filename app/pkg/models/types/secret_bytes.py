@@ -13,4 +13,4 @@ class EncryptedSecretBytes(SecretBytes):
     max_length = 256
 
     def crypt_password(self) -> None:
-        self._secret_value = password.crypt_password(self._secret_value)
+        self._secret_value = password.crypt_password(self.get_secret_value())
