@@ -8,21 +8,20 @@ from app.internal.repository.repository import Repository
 from app.pkg import models
 from app.pkg.models.base import Model
 
-__all__ = ["UserRole"]
+__all__ = ["UserRoleRepository"]
 
 
-class UserRole(Repository):
+class UserRoleRepository(Repository):
     @collect_response
-    async def create(self, cmd: models.CreateUserRoleCommand) -> models.UserRole:
+    async def create(self, cmd: models.CreateUserRoleCommand) -> None:
         q = """
             insert into user_roles(role_name)
                 values (%(role_name)s) on conflict do nothing
-            returning *;
+            returning role_name;
         """
 
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
-            return await cur.fetchone()
 
     async def read(self, query: Model) -> Model:
         raise NotImplementedError

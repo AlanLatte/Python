@@ -21,10 +21,10 @@ class RefreshTokenRepository(Repository):
     @collect_response
     async def create(self, cmd: CreateJWTTokenCommand) -> JWTToken:
         q = """
-                insert into refresh_tokens(user_id, refresh_token, fingerprint)
-                    values (%(user_id)s, %(refresh_token)s, %(fingerprint)s)
-                returning *;
-            """
+            insert into refresh_tokens(user_id, refresh_token, fingerprint)
+                values (%(user_id)s, %(refresh_token)s, %(fingerprint)s)
+            returning user_id, refresh_token, fingerprint;
+        """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
             return await cur.fetchone()
@@ -32,9 +32,10 @@ class RefreshTokenRepository(Repository):
     @collect_response
     async def read(self, query: ReadJWTTokenQuery) -> JWTToken:
         q = """
-                select user_id, refresh_token, fingerprint from refresh_tokens
-                where user_id = %(user_id)s and refresh_token = %(refresh_token)s;
-            """
+            select user_id, refresh_token, fingerprint 
+                from refresh_tokens
+            where user_id = %(user_id)s and refresh_token = %(refresh_token)s;
+        """
         async with get_connection() as cur:
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
@@ -45,9 +46,10 @@ class RefreshTokenRepository(Repository):
         query: ReadJWTTokenQueryByFingerprint,
     ) -> JWTToken:
         q = """
-                select user_id, refresh_token, fingerprint from refresh_tokens
-                where user_id = %(user_id)s and fingerprint = %(fingerprint)s;
-            """
+            select user_id, refresh_token, fingerprint 
+                from refresh_tokens
+            where user_id = %(user_id)s and fingerprint = %(fingerprint)s;
+        """
         async with get_connection() as cur:
             await cur.execute(q, query.to_dict(show_secrets=True))
             return await cur.fetchone()
@@ -58,10 +60,10 @@ class RefreshTokenRepository(Repository):
     @collect_response
     async def update(self, cmd: UpdateJWTTokenCommand) -> JWTToken:
         q = """
-                update refresh_tokens set refresh_token = %(refresh_token)s
-                    where user_id = %(user_id)s and fingerprint = %(fingerprint)s
-                returning *;
-            """
+            update refresh_tokens set refresh_token = %(refresh_token)s
+                where user_id = %(user_id)s and fingerprint = %(fingerprint)s
+            returning user_id, refresh_token, fingerprint;
+        """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
             return await cur.fetchone()
@@ -69,10 +71,10 @@ class RefreshTokenRepository(Repository):
     @collect_response
     async def delete(self, cmd: DeleteJWTTokenCommand) -> JWTToken:
         q = """
-                delete from refresh_tokens
-                    where user_id = %(user_id)s and fingerprint = %(fingerprint)s
-                returning *;
-            """
+            delete from refresh_tokens
+                where user_id = %(user_id)s and fingerprint = %(fingerprint)s
+            returning user_id, refresh_token, fingerprint;
+        """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict(show_secrets=True))
             return await cur.fetchone()
