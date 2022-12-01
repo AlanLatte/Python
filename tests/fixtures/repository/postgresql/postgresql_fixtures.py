@@ -1,18 +1,10 @@
 import pytest
-from dependency_injector import providers
 
 from app.internal.repository.postgresql import connection
-from app.pkg.connectors import Connectors
 
 
 @pytest.fixture(autouse=True)
-async def overwrite_connection(settings):
-    config: providers.Configuration = Connectors.configuration
-    config.from_pydantic(settings)
-
-
-@pytest.fixture(autouse=True)
-async def _clean_postgres(overwrite_connection):
+async def _clean_postgres():
     """Deleting database values before each test."""
     await clean_postgres()
 
