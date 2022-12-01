@@ -1,4 +1,5 @@
 import pytest
+
 from app.internal.repository.postgresql.user import UserRepository
 
 

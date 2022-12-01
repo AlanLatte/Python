@@ -7,7 +7,7 @@ from app.pkg.models.exceptions.repository import EmptyResult
 
 async def test_correct(user_repository: UserRepository, insert_first_user: models.User):
     user = await user_repository.delete(
-        cmd=models.DeleteUserCommand(id=insert_first_user.id)
+        cmd=models.DeleteUserCommand(id=insert_first_user.id),
     )
     assert insert_first_user == user
 

@@ -40,7 +40,7 @@ async def test_correct_many_users(user_repository: UserRepository):
                 username=f"correct-{i}",
                 password=f"strong-password-user-{i}",
                 user_role=models.UserRole.USER,
-            )
+            ),
         )
         tasks.append(feature)
 

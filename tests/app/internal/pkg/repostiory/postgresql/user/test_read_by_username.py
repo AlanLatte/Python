@@ -7,7 +7,7 @@ from app.pkg.models.exceptions.repository import EmptyResult
 
 async def test_correct(user_repository: UserRepository, insert_first_user: models.User):
     user = await user_repository.read_by_username(
-        query=models.ReadUserByUserNameQuery(username=insert_first_user.username)
+        query=models.ReadUserByUserNameQuery(username=insert_first_user.username),
     )
     assert user == insert_first_user
 
@@ -26,5 +26,5 @@ async def test_correct(user_repository: UserRepository, insert_first_user: model
 async def test_incorrect(user_repository: UserRepository, username: str):
     with pytest.raises(EmptyResult):
         await user_repository.read_by_username(
-            query=models.ReadUserByUserNameQuery(username=username)
+            query=models.ReadUserByUserNameQuery(username=username),
         )
