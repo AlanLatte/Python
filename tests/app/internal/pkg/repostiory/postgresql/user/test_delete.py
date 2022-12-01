@@ -1,21 +1,21 @@
 import pytest
 
-
-@pytest.mark.skip(reason="Not implemented")
-async def test_correct():
-    raise NotImplementedError
-
-
-@pytest.mark.skip(reason="Not implemented")
-async def test_incorrect():
-    raise NotImplementedError
+from app.internal.repository.postgresql import UserRepository
+from app.pkg import models
+from app.pkg.models.exceptions.repository import EmptyResult
 
 
-@pytest.mark.skip(reason="Not implemented")
-async def test_already_exist():
-    raise NotImplementedError
+async def test_correct(user_repository: UserRepository, insert_first_user: models.User):
+    user = await user_repository.delete(
+        cmd=models.DeleteUserCommand(id=insert_first_user.id)
+    )
+    assert insert_first_user == user
 
 
-@pytest.mark.skip(reason="Not implemented")
-async def test_incorrect_email():
-    raise NotImplementedError
+@pytest.mark.parametrize(
+    "_id",
+    [1, 2, 3, 4],
+)
+async def test_incorrect_user_id_not_found(user_repository: UserRepository, _id: int):
+    with pytest.raises(EmptyResult):
+        await user_repository.delete(cmd=models.DeleteUserCommand(id=_id))

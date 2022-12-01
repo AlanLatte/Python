@@ -1,34 +1,76 @@
+import asyncio
+
 import pytest
-from dependency_injector.wiring import Provide, inject
+from pydantic import ValidationError
 
-from app.internal.repository.postgresql import Repository, User
+from app.internal.repository.postgresql.user import UserRepository
 from app.pkg import models
+from app.pkg.models.exceptions.repository import UniqueViolation
 
 
-@inject
-async def test_correct(
-    overwrite_connection,
-    repository: User = Provide[Repository.user],
-):
+@pytest.mark.parametrize(
+    "username",
+    [
+        "correct-1@example.ru",
+        "correct-2@example.ru",
+        "correct-3@example.ru",
+        "correct-4@example.ru",
+        "correct-5@example.ru",
+        "correct-6@example.ru",
+    ],
+)
+async def test_correct(user_repository: UserRepository, username):
     cmd = models.CreateUserCommand(
-        email="correct-email@example.ru",
+        username=username,
         password="supeR_%$tr0ng-pa$$worD",
         role_name=models.UserRole.USER,
     )
-    user = await repository.create(cmd=cmd)
-    assert user == models.User(id=user.id, **cmd.to_dict(show_secrets=True))
+    user = await user_repository.create(cmd=cmd)
+    assert user.username == username
 
 
-@pytest.mark.skip(reason="Not implemented")
-async def test_incorrect():
-    raise NotImplementedError
+@pytest.mark.parametrize(
+    "role",
+    ["INCORRECT_ROLE", "SUPE_DUPER_MEGA_ADMIN_ROLE", "USER_1", "HELLO_WORLD"],
+)
+async def test_incorrect_user_role_name(user_repository: UserRepository, role: str):
+    with pytest.raises(expected_exception=ValidationError):
+        cmd = models.CreateUserCommand(
+            username="correct-email@example.ru",
+            password="supeR_%$tr0ng-pa$$worD",
+            role_name=role,
+        )
+        await user_repository.create(cmd=cmd)
 
 
-@pytest.mark.skip(reason="Not implemented")
-async def test_already_exist():
-    raise NotImplementedError
+@pytest.mark.parametrize(
+    "password",
+    ["1", "12", "123", "1234", "12345"],
+)
+async def test_incorrect_password_length(
+    user_repository: UserRepository, password: str
+):
+    with pytest.raises(expected_exception=ValidationError):
+        await user_repository.create(
+            cmd=models.CreateUserCommand(
+                username="correct-1@example.ru",
+                password=password,
+                role_name=models.UserRole.USER,
+            )
+        )
 
 
-@pytest.mark.skip(reason="Not implemented")
-async def test_incorrect_email():
-    raise NotImplementedError
+async def test_incorrect_already_exist(user_repository: UserRepository):
+    with pytest.raises(expected_exception=UniqueViolation):
+        tasks = []
+        for i in range(2):
+            feature = user_repository.create(
+                cmd=models.CreateUserCommand(
+                    username="correct-email@example.ru",
+                    password="supeR_%$tr0ng-pa$$worD",
+                    role_name=models.UserRole.USER,
+                )
+            )
+            tasks.append(feature)
+
+        await asyncio.gather(*tasks)
