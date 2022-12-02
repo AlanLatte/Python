@@ -2,12 +2,12 @@ from app.internal.repository.postgresql import user_roles
 from app.internal.repository.repository import BaseRepository
 from app.pkg import models
 
-__all__ = ["UserRole"]
+__all__ = ["UserRoleService"]
 
 
-class UserRole:
-    #: user_roles.UserRole: UserRole repository implementation.
-    repository: user_roles.UserRole
+class UserRoleService:
+    #: user_roles.UserRoleRepository: UserRoleRepository repository implementation.
+    repository: user_roles.UserRoleRepository
 
     def __init__(self, repository: BaseRepository):
         self.repository = repository
