@@ -13,14 +13,15 @@ from app.pkg.jwt import (
 )
 from app.pkg.models.auth import Auth, AuthCommand
 from app.pkg.models.refresh_token import (
-    CreateJWTTokenCommand,
-    DeleteJWTTokenCommand,
-    ReadJWTTokenQuery,
-    ReadJWTTokenQueryByFingerprint,
-    UpdateJWTTokenCommand,
+    CreateJWTRefreshTokenCommand,
+    DeleteJWTRefreshTokenCommand,
+    ReadJWTRefreshTokenQuery,
+    ReadJWTRefreshTokenQueryByFingerprint,
+    UpdateJWTRefreshTokenCommand,
 )
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
 
 # TODO: make it simple pls
 @router.post(
@@ -46,7 +47,7 @@ async def auth_user(
     )
 
     if rt := await auth_service.check_user_exist_refresh_token(
-        query=ReadJWTTokenQueryByFingerprint(
+        query=ReadJWTRefreshTokenQueryByFingerprint(
             user_id=user.id,
             fingerprint=cmd.fingerprint,
         ),
@@ -65,7 +66,7 @@ async def auth_user(
         },
     )
     await auth_service.create_refresh_token(
-        cmd=CreateJWTTokenCommand(
+        cmd=CreateJWTRefreshTokenCommand(
             refresh_token=rt,
             fingerprint=cmd.fingerprint,
             user_id=user.id,
@@ -93,7 +94,7 @@ async def create_new_token_pair(
     user_id = credentials.subject.get("user_id")
 
     await auth_service.check_refresh_token_exists(
-        query=ReadJWTTokenQuery(
+        query=ReadJWTRefreshTokenQuery(
             user_id=user_id,
             refresh_token=credentials.raw_token,
         ),
@@ -105,7 +106,7 @@ async def create_new_token_pair(
     )
 
     irt = await auth_service.update_refresh_token(
-        cmd=UpdateJWTTokenCommand(
+        cmd=UpdateJWTRefreshTokenCommand(
             user_id=user_id,
             refresh_token=rt,
             fingerprint=fingerprint,
@@ -126,7 +127,7 @@ async def logout(
     refresh_token = credentials.raw_token
 
     await auth_service.delete_refresh_token(
-        cmd=DeleteJWTTokenCommand(
+        cmd=DeleteJWTRefreshTokenCommand(
             user_id=user_id,
             fingerprint=fingerprint,
             refresh_token=refresh_token,

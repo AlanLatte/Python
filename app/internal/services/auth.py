@@ -1,19 +1,19 @@
 from typing import Optional
 
 from app.internal.pkg.password import password
-from app.internal.repository.postgresql import RefreshTokenRepository
+from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.internal.services.user import UserService
 from app.pkg.jwt import UnAuthorized, WrongToken
 from app.pkg.models.auth import AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
 from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
 from app.pkg.models.refresh_token import (
-    CreateJWTTokenCommand,
-    DeleteJWTTokenCommand,
-    JWTToken,
-    ReadJWTTokenQuery,
-    ReadJWTTokenQueryByFingerprint,
-    UpdateJWTTokenCommand,
+    CreateJWTRefreshTokenCommand,
+    DeleteJWTRefreshTokenCommand,
+    JWTRefreshToken,
+    ReadJWTRefreshTokenQuery,
+    ReadJWTRefreshTokenQueryByFingerprint,
+    UpdateJWTRefreshTokenCommand,
 )
 from app.pkg.models.user import ReadUserByUserNameQuery, User
 
@@ -21,13 +21,13 @@ __all__ = ["AuthService"]
 
 
 class AuthService:
-    refresh_token_repository: RefreshTokenRepository
+    refresh_token_repository: JWTRefreshTokenRepository
     user_service: UserService
 
     def __init__(
         self,
         user_service: UserService,
-        refresh_token_repository: RefreshTokenRepository,
+        refresh_token_repository: JWTRefreshTokenRepository,
     ):
         self.user_service = user_service
         self.refresh_token_repository = refresh_token_repository
@@ -43,8 +43,8 @@ class AuthService:
 
     async def check_user_exist_refresh_token(
         self,
-        query: ReadJWTTokenQueryByFingerprint,
-    ) -> Optional[JWTToken]:
+        query: ReadJWTRefreshTokenQueryByFingerprint,
+    ) -> Optional[JWTRefreshToken]:
         try:
             return await self.refresh_token_repository.read_by_fingerprint(
                 query=query,
@@ -52,7 +52,9 @@ class AuthService:
         except EmptyResult:
             return
 
-    async def check_refresh_token_exists(self, query: ReadJWTTokenQuery) -> JWTToken:
+    async def check_refresh_token_exists(
+        self, query: ReadJWTRefreshTokenQuery
+    ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.read(
                 query=query,
@@ -62,22 +64,28 @@ class AuthService:
         except EmptyResult:
             raise UnAuthorized
 
-    async def create_refresh_token(self, cmd: CreateJWTTokenCommand) -> JWTToken:
+    async def create_refresh_token(
+        self, cmd: CreateJWTRefreshTokenCommand
+    ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.create(cmd=cmd)
         except UniqueViolation:
             return await self.refresh_token_repository.update(
-                cmd=UpdateJWTTokenCommand(
+                cmd=UpdateJWTRefreshTokenCommand(
                     user_id=cmd.user_id,
                     refresh_token=cmd.refresh_token,
                     fingerprint=cmd.fingerprint,
                 ),
             )
 
-    async def update_refresh_token(self, cmd: UpdateJWTTokenCommand) -> JWTToken:
+    async def update_refresh_token(
+        self, cmd: UpdateJWTRefreshTokenCommand
+    ) -> JWTRefreshToken:
         return await self.refresh_token_repository.update(cmd)
 
-    async def delete_refresh_token(self, cmd: DeleteJWTTokenCommand) -> JWTToken:
+    async def delete_refresh_token(
+        self, cmd: DeleteJWTRefreshTokenCommand
+    ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.delete(
                 cmd=cmd,
