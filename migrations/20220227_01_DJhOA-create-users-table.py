@@ -19,6 +19,6 @@ steps = [
         """,
         """
             drop table if exists users; 
-        """
+        """,
     )
 ]
