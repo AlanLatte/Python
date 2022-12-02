@@ -4,24 +4,26 @@ from app.pkg.models.base import BaseModel
 from app.pkg.models.types import NotEmptySecretStr
 
 __all__ = [
-    "JWTToken",
-    "CreateJWTTokenCommand",
-    "ReadJWTTokenQuery",
-    "ReadJWTTokenQueryByFingerprint",
-    "UpdateJWTTokenCommand",
-    "DeleteJWTTokenCommand",
+    "JWTRefreshToken",
+    "CreateJWTRefreshTokenCommand",
+    "ReadJWTRefreshTokenQuery",
+    "ReadJWTRefreshTokenQueryByFingerprint",
+    "UpdateJWTRefreshTokenCommand",
+    "DeleteJWTRefreshTokenCommand",
 ]
 
 
+# TODO: Use fields
 class JWTFields:
+    # user_id: PositiveInt =
     ...
 
 
-class BaseJWTToken(BaseModel):
+class BaseJWTRefreshToken(BaseModel):
     """Base class for refresh token."""
 
 
-class JWTToken(BaseJWTToken):
+class JWTRefreshToken(BaseJWTRefreshToken):
     """RefreshToken from database."""
 
     user_id: PositiveInt
@@ -30,30 +32,30 @@ class JWTToken(BaseJWTToken):
 
 
 # Commands
-class CreateJWTTokenCommand(BaseJWTToken):
+class CreateJWTRefreshTokenCommand(BaseJWTRefreshToken):
     user_id: PositiveInt
     refresh_token: NotEmptySecretStr
     fingerprint: NotEmptySecretStr
 
 
-class UpdateJWTTokenCommand(BaseJWTToken):
+class UpdateJWTRefreshTokenCommand(BaseJWTRefreshToken):
     user_id: PositiveInt
     refresh_token: NotEmptySecretStr
     fingerprint: NotEmptySecretStr
 
 
-class DeleteJWTTokenCommand(BaseJWTToken):
+class DeleteJWTRefreshTokenCommand(BaseJWTRefreshToken):
     user_id: PositiveInt
     fingerprint: NotEmptySecretStr
     refresh_token: NotEmptySecretStr
 
 
 # Queries
-class ReadJWTTokenQuery(BaseJWTToken):
+class ReadJWTRefreshTokenQuery(BaseJWTRefreshToken):
     user_id: PositiveInt
     refresh_token: NotEmptySecretStr
 
 
-class ReadJWTTokenQueryByFingerprint(BaseJWTToken):
+class ReadJWTRefreshTokenQueryByFingerprint(BaseJWTRefreshToken):
     user_id: PositiveInt
     fingerprint: NotEmptySecretStr
