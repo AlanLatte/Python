@@ -5,7 +5,6 @@ import pytest
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import (
-    EmptyResult,
     UniqueViolation,
     DriverError,
 )
@@ -46,37 +45,34 @@ async def test_incorrect_empty_user(
     first_refresh_token: str,
 ):
     with pytest.raises(DriverError):
-        refresh_token: models.JWTRefreshToken = await refresh_token_repository.create(
+        await refresh_token_repository.create(
             cmd=models.CreateJWTRefreshTokenCommand(
                 user_id=1,
                 fingerprint=uuid.uuid4().__str__(),
                 refresh_token=first_refresh_token,
             )
         )
-        wait_for_response = models.JWTRefreshToken(
-            user_id=1,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        )
-        assert refresh_token.refresh_token == wait_for_response.refresh_token
 
 
 async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
+    insert_first_user: models.User,
     first_fingerprint: str,
     first_refresh_token: str,
 ):
-    with pytest.raises(DriverError):
-        refresh_token: models.JWTRefreshToken = await refresh_token_repository.create(
-            cmd=models.CreateJWTRefreshTokenCommand(
-                user_id=1,
-                fingerprint=uuid.uuid4().__str__(),
-                refresh_token=first_refresh_token,
+    with pytest.raises(UniqueViolation):
+        for _ in range(3):
+            await refresh_token_repository.create(
+                cmd=models.CreateJWTRefreshTokenCommand(
+                    user_id=insert_first_user.id,
+                    fingerprint=first_fingerprint,
+                    refresh_token=first_refresh_token,
+                )
             )
-        )
-        wait_for_response = models.JWTRefreshToken(
-            user_id=1,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        )
-        assert refresh_token.refresh_token == wait_for_response.refresh_token
+            await refresh_token_repository.create(
+                cmd=models.CreateJWTRefreshTokenCommand(
+                    user_id=insert_first_user.id,
+                    fingerprint=first_fingerprint,
+                    refresh_token=first_refresh_token,
+                )
+            )
