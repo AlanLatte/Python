@@ -1,12 +1,13 @@
+from fastapi import status
+
+from app.pkg.models.base import BaseAPIException
+
+
 __all__ = [
     "UniqueViolation",
     "EmptyResult",
     "DriverError",
 ]
-
-from fastapi import status
-
-from app.pkg.models.base import BaseAPIException
 
 
 class UniqueViolation(BaseAPIException):
