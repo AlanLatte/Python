@@ -3,6 +3,8 @@ from starlette import status
 from app.pkg.models.base import BaseAPIException
 from app.pkg.models.types.strings import NotEmptyStr
 
+__all__ = ["BaseClientException", "BaseExternalClientException"]
+
 
 class BaseClientException(BaseAPIException):
     def __init__(self, client_name: str):
@@ -11,6 +13,6 @@ class BaseClientException(BaseAPIException):
         )
 
 
-class ClientException(BaseClientException):
+class BaseExternalClientException(BaseClientException):
     message = "{} is not available now"
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
