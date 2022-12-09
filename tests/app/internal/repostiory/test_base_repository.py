@@ -8,6 +8,6 @@ async def test_raising_not_implemented():
     with pytest.raises(NotImplementedError):
         connect.get_dsn()
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(NotImplementedError):
         async with connect.get_connect():
             ...
