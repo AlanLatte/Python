@@ -50,7 +50,7 @@ class AuthService:
                 query=query,
             )
         except EmptyResult:
-            return
+            raise UnAuthorized
 
     async def check_refresh_token_exists(
         self, query: ReadJWTRefreshTokenQuery
@@ -59,8 +59,6 @@ class AuthService:
             return await self.refresh_token_repository.read(
                 query=query,
             )
-        except UniqueViolation:
-            raise WrongToken
         except EmptyResult:
             raise UnAuthorized
 

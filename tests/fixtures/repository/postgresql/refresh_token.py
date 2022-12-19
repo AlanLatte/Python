@@ -42,12 +42,12 @@ def first_refresh_token_response(
 
 @pytest.fixture
 def second_refresh_token_response(
-    insert_postgres_second_user: models.User,
+    insert_second_user: models.User,
     second_refresh_token: models.JWTRefreshToken,
     second_fingerprint: str,
 ):
     return JWTRefreshToken(
-        user_id=insert_postgres_second_user.id,
+        user_id=insert_second_user.id,
         refresh_token=second_refresh_token,
         fingerprint=second_fingerprint,
     )
