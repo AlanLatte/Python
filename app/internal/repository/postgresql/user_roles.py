@@ -1,8 +1,8 @@
 from typing import List
 
 from app.internal.repository.postgresql.connection import get_connection
-from app.internal.repository.postgresql.handlers.collect_response import (
-    collect_response,
+from app.internal.repository.postgresql.handlers.handle_exception import (
+    handle_exception,
 )
 from app.internal.repository.repository import Repository
 from app.pkg import models
@@ -12,7 +12,7 @@ __all__ = ["UserRoleRepository"]
 
 
 class UserRoleRepository(Repository):
-    @collect_response
+    @handle_exception
     async def create(self, cmd: models.CreateUserRoleCommand) -> None:
         q = """
             insert into user_roles(role_name)
