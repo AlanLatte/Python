@@ -11,7 +11,7 @@ async def _clean_postgres():
 
 async def clean_postgres():
     """Truncate all tables (except yoyo migrations) before each test."""
-    query = """
+    q = """
         CREATE OR REPLACE FUNCTION truncate_tables() RETURNS void AS $$
         DECLARE
             statements CURSOR FOR
@@ -27,5 +27,5 @@ async def clean_postgres():
         $$ LANGUAGE plpgsql;
     """
     async with connection.get_connection() as cursor:
-        await cursor.execute(query)
+        await cursor.execute(q)
         await cursor.execute("select truncate_tables();")
