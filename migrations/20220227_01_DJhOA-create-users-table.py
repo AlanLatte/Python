@@ -13,7 +13,7 @@ steps = [
                 id serial primary key,
                 username text unique not null,
                 password bytea not null,
-                role_id int references user_roles(id),
+                role_id int references user_roles(id) not null,
                 password_updated_at timestamp default now() not null
             )
         """,

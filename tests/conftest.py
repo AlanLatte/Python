@@ -8,7 +8,7 @@ pytest_plugins = [
     "tests.fixtures.repository.postgresql.refresh_token",
     "tests.fixtures.services.postgresql.user",
     "tests.fixtures.services.postgresql.auth",
-    "tests.fixtures.services.postgresql.user_roles",
+    "tests.fixtures.services.postgresql.user_role",
     "tests.fixtures.router.app",
     "tests.fixtures.models.user",
     # path to module with fixtures.
