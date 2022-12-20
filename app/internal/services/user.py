@@ -1,6 +1,7 @@
 """User service."""
 from typing import List
 
+from app.internal.pkg.password import password
 from app.internal.repository.postgresql import UserRepository
 from app.internal.repository.repository import BaseRepository
 from app.pkg import models
@@ -85,7 +86,8 @@ class UserService:
         """
 
         user = await self.repository.read(query=models.ReadUserByIdQuery(id=cmd.id))
-        if user.password != cmd.old_password:
+
+        if not password.check_password(cmd.old_password, user.password):
             raise IncorrectOldPassword
 
         user.password = cmd.new_password
