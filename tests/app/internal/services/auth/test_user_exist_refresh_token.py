@@ -36,10 +36,11 @@ async def test_not_exist_token(
     user_id: int,
     fingerprint: str,
 ):
-    with pytest.raises(UnAuthorized):
-        await auth_postgres_service.check_user_exist_refresh_token(
-            query=models.ReadJWTRefreshTokenQueryByFingerprint(
-                user_id=user_id,
-                fingerprint=fingerprint,
-            )
+    result = await auth_postgres_service.check_user_exist_refresh_token(
+        query=models.ReadJWTRefreshTokenQueryByFingerprint(
+            user_id=user_id,
+            fingerprint=fingerprint,
         )
+    )
+
+    assert not result

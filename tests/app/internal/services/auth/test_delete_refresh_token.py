@@ -17,13 +17,13 @@ async def test_correct(
     )
     assert result == insert_first_refresh_token
 
-    with pytest.raises(UnAuthorized):
-        await auth_postgres_service.check_user_exist_refresh_token(
-            query=models.ReadJWTRefreshTokenQueryByFingerprint(
-                user_id=insert_first_refresh_token.user_id,
-                fingerprint=insert_first_refresh_token.fingerprint,
-            )
+    result = await auth_postgres_service.check_user_exist_refresh_token(
+        query=models.ReadJWTRefreshTokenQueryByFingerprint(
+            user_id=insert_first_refresh_token.user_id,
+            fingerprint=insert_first_refresh_token.fingerprint,
         )
+    )
+    assert not result
 
 
 @pytest.mark.parametrize("user_id_offset", [1, 2, 3, 4, 5])
