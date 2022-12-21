@@ -23,13 +23,13 @@ from app.pkg.models.refresh_token import (
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-# TODO: make it simple pls
+# TODO: make it simple pls. And place me to AuthService.
 @router.post(
     "/login",
     response_model=Auth,
     status_code=status.HTTP_200_OK,
     description=(
-        "Route for authorize. " "Required in headers Authorized Bearer access token"
+        "Route for authorize."
     ),
 )
 @inject
@@ -46,6 +46,7 @@ async def auth_user(
         subject={"user_id": user.id, "role_name": user.role_name},
     )
 
+    # TODO: raise EmptyResult and raising UnAuthorized.
     if rt := await auth_service.check_user_exist_refresh_token(
         query=ReadJWTRefreshTokenQueryByFingerprint(
             user_id=user.id,

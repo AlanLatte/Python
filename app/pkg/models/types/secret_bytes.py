@@ -5,6 +5,8 @@ from app.internal.pkg.password import password
 __all__ = ["EncryptedSecretBytes"]
 
 
+# TODO: Inherit from base custom type. ad-hoc overload __validate__ method
+#   custom error handler in middlewares.
 class EncryptedSecretBytes(SecretBytes):
     """Model for verify bytes range [6;256] and crypt than by bcrypt
     algorithm."""
