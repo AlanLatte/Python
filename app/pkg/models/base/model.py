@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from datetime import date, datetime
-from typing import Any, Dict, List, T, Tuple, Type, TypeVar
+from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
 
@@ -58,7 +58,7 @@ class BaseModel(pydantic.BaseModel):
         delattr(self, attr)
         return self
 
-    def migrate(self, model: Type[T]) -> Model:
+    def migrate(self, model: Type[BaseModel]) -> Model:
         """Migrate one model to another ignoring missmatch.
 
         Args:
