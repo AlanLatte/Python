@@ -17,6 +17,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: env
+
     steps:
     - uses: actions/checkout@v3
     - name: Install poetry
@@ -34,15 +35,15 @@ jobs:
         # stop the build if there are Python syntax errors or undefined names
         poetry install --only linters
         
-        poetry run flake8 ${files_to_check}
-        poetry run docformatter -cr ${files_to_check}
-        poetry run black --check ${files_to_check}
-        poetry run mypy ${files_to_check}
+        poetry run flake8 ${{ env.files_to_check }}
+        poetry run docformatter -cr ${{ env.files_to_check }}
+        poetry run black --check ${{ env.files_to_check }}
+        poetry run mypy ${{ env.files_to_check }}
     - name: Start procesing Sasts for code quality
       run: |
         poetry install --only sasts
         
-        poetry run bandit -r $files_to_check -x tests
+        poetry run bandit -r ${{ env.files_to_check }} -x tests
         poetry run safety check --full-report
     - name: Test with pytest
       run: |
