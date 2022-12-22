@@ -7,22 +7,26 @@ from httpx import AsyncClient, Response
 from app import create_app
 from app.pkg import models
 from app.pkg.models.base import BaseModel, Model
+from tests.fixtures.models.user import User
 
 
 class Client:
     client: typing.Union[AsyncClient, TestClient]
     refresh_token: typing.Optional[str] = None
     access_token: typing.Optional[str] = None
+    user: User
 
     def __init__(
         self,
         client: typing.Union[AsyncClient, TestClient],
         refresh_token: typing.Optional[str] = None,
         access_token: typing.Optional[str] = None,
+        user: typing.Optional[User] = None,
     ):
         self.client = client
         self.refresh_token = refresh_token
         self.access_token = access_token
+        self.user = user
 
     @staticmethod
     def __build_auth_headers(token: str) -> typing.Dict[str, str]:
@@ -87,6 +91,7 @@ async def authorized_first_client(
 
     response = response.json()
 
+    client.user = User(inserted=insert_first_user, raw=first_user)
     client.refresh_token = response.get("refresh_token")
     client.access_token = response.get("access_token")
 

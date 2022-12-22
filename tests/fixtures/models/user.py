@@ -1,6 +1,14 @@
+from dataclasses import dataclass
+
 import pytest
 
 from app.pkg import models
+
+
+@dataclass
+class User:
+    inserted: models.User
+    raw: models.User
 
 
 @pytest.fixture()
