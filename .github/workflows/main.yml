@@ -38,8 +38,13 @@ jobs:
     steps:
     - name: Start procesing Linters for code quality
       run: poetry install --only linters,formatters
+
+    - name: Start procesing Linters for code quality
       run: poetry run flake8 ${{ env.FILES_TO_CHECK }}
+    - name: Start procesing Linters for code quality
       run: poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
+    - name: Start procesing Linters for code quality
+    - name: Start procesing Linters for code quality
       run: poetry run black --check ${{ env.FILES_TO_CHECK }}
 #        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
