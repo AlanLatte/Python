@@ -2,9 +2,6 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Python application
-env:
-  files_to_check: app tests
-  files_to_fmt: app tests
 
 on:
   push:
@@ -19,7 +16,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    environment: env
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
