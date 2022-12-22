@@ -35,32 +35,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
 
+    steps:
     - name: Start procesing Linters for code quality
-      run: |
-        poetry install --only linters,formatters
-
-        poetry run flake8 ${{ env.FILES_TO_CHECK }}
-        poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
-        poetry run black --check ${{ env.FILES_TO_CHECK }}
+      run: poetry install --only linters,formatters
+      run: poetry run flake8 ${{ env.FILES_TO_CHECK }}
+      run: poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
+      run: poetry run black --check ${{ env.FILES_TO_CHECK }}
 #        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
   sasts:
     runs-on: ubuntu-latest
     needs: build
 
+    steps:
     - name: Start procesing Sasts for code quality
-      run: |
-        poetry install --only sasts
-
-        poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
-        poetry run safety check --full-report
+      run: poetry install --only sasts
+      run: poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
+      run: poetry run safety check --full-report
 
   tests:
     runs-on: ubuntu-latest
     needs: [build, linters, sasts]
 
+    steps:
     - run: poetry install --only main
     - name: Test with pytest
-      run: |
-        poetry install --only tests
-        poetry run pytest tests
+      run: poetry install --only tests
+      run: poetry run pytest tests
