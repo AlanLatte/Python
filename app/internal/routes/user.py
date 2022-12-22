@@ -22,7 +22,7 @@ router = APIRouter(prefix="/user", tags=["User"])
 async def create_user(
     cmd: models.CreateUserCommand,
     user_service: UserService = Depends(Provide[Services.user_service]),
-    # _: JwtAuthorizationCredentials = Security(access_security),
+    _: JwtAuthorizationCredentials = Security(access_security),
 ):
     return await user_service.create_user(cmd=cmd)
 
