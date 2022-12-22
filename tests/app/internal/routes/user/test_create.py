@@ -4,6 +4,7 @@ from starlette import status
 from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized
 from app.pkg.models.exceptions.user import UserAlreadyExist
+from app.pkg.models.types import EncryptedSecretBytes
 from tests.fixtures.router.client import Client
 
 
@@ -47,10 +48,12 @@ async def test_password_length(
     response_with_error,
 ):
 
+    cmd = second_user.migrate(models.CreateUserCommand)
+    cmd.password = EncryptedSecretBytes(password.encode())
     response = await authorized_first_client.request(
         method="POST",
         url=f"{user_router}/",
-        json=second_user.migrate(models.CreateUserCommand),
+        json=cmd,
     )
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
