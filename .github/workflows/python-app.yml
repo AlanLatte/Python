@@ -14,9 +14,11 @@ permissions:
 
 jobs:
   build:
+    env:
+       FILES_TO_CHECK: 'app tests'
 
     runs-on: ubuntu-latest
-    environment: env
+
 
     steps:
     - uses: actions/checkout@v3
