@@ -19,7 +19,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-
     steps:
     - uses: actions/checkout@v3
     - name: Install poetry
@@ -30,23 +29,36 @@ jobs:
       with:
         python-version: "3.9"
         cache: 'poetry'
-    - run: poetry install --only main
+
+  linters:
+    runs-on: ubuntu-latest
+    needs: build
 
     - name: Start procesing Linters for code quality
       run: |
-        # stop the build if there are Python syntax errors or undefined names
         poetry install --only linters,formatters
-        
+
         poetry run flake8 ${{ env.FILES_TO_CHECK }}
         poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
         poetry run black --check ${{ env.FILES_TO_CHECK }}
 #        poetry run mypy ${{ env.FILES_TO_CHECK }}
+
+  sasts:
+    runs-on: ubuntu-latest
+    needs: build
+
     - name: Start procesing Sasts for code quality
       run: |
         poetry install --only sasts
-        
+
         poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
         poetry run safety check --full-report
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [build, linters, sasts]
+
+    - run: poetry install --only main
     - name: Test with pytest
       run: |
         poetry install --only tests
