@@ -35,7 +35,7 @@ jobs:
     - name: Start procesing Linters for code quality
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        poetry install --only linters
+        poetry install --only linters, formatters
         
         poetry run flake8 ${{ env.FILES_TO_CHECK }}
         poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
