@@ -3,8 +3,8 @@ import typing
 import httpx
 import pytest
 
-from app.pkg.models.base import BaseAPIException
-from tests.types.responses import ErrorCheckerType
+from app.pkg.models.base import BaseAPIException, Model
+from tests.types.responses import ErrorCheckerType, ResponseEqual
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ async def build_error_response():
 
 
 @pytest.fixture()
-def response_without_error(
+def response_with_error(
     build_error_response: typing.Callable[
         [typing.Type[BaseAPIException]], typing.Dict[typing.Union[int, str], typing.Any]
     ],
@@ -67,7 +67,7 @@ def response_without_error(
                     assert response_without_error(response, WrongRoleName, True)
 
         Returns:
-            Wrapped function that returns False if asserts in them results in errors.
+            Boolean that False if asserts in them results in errors.
         """
 
         try:
@@ -81,3 +81,67 @@ def response_without_error(
             return True
 
     return check
+
+
+@pytest.fixture()
+def response_equal() -> ResponseEqual:
+    def wrapped(
+        response: httpx.Response,
+        model: Model,
+        expected_status_code: int,
+        exclude_from_model: typing.Optional[typing.List[str]] = None,
+    ) -> bool:
+        """Checking for equivalence between the model and the request that comes from
+        the API.
+
+        Args:
+            response: httpx Client response.
+            model: Target error model. Must be inherited from `BaseModel`
+            expected_status_code: Response expected status code.
+            exclude_from_model: If the model contains elements that do not need to be
+                compared when checking for equivalence, you must specify in this
+                argument, separated by commas in the string representation,
+                the attributes of the model
+
+        Examples:
+            When you need to check response and model, use::
+
+            async def test_correct(client: Client):
+                response = await client.get("/users")
+                assert response_equal(response, models.User, 200)
+
+            When you need to check equal without specific model attribute, use::
+
+            async def test_correct(client: Client):
+                response = await client.get("/users")
+                assert response_equal(response, models.User, 200, ["password"])
+
+        Returns:
+            Boolean that False if asserts in them results in errors.
+        """
+
+        try:
+            assert response.status_code == expected_status_code
+
+            __json_response = response.json()
+            __json_model = model.to_dict(show_secrets=True)
+
+            if exclude_from_model:
+                for exclude_item in exclude_from_model:
+                    try:
+                        del __json_model[exclude_item]
+                    except KeyError:
+                        pass
+
+                    try:
+                        del __json_response[exclude_item]
+                    except KeyError:
+                        pass
+
+            assert __json_response == __json_model
+        except AssertionError:
+            return False
+        else:
+            return True
+
+    return wrapped

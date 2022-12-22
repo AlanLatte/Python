@@ -90,7 +90,7 @@ async def test_incorrect_sign_by_small_password_length(
     ],
 )
 async def test_incorrect_user_not_found(
-    client: Client, cmd: models.AuthCommand, auth_router: str, response_without_error
+    client: Client, cmd: models.AuthCommand, auth_router: str, response_with_error
 ):
     response = await client.request(
         method="POST",
@@ -102,7 +102,7 @@ async def test_incorrect_user_not_found(
         ),
     )
 
-    assert response_without_error(response, EmptyResult)
+    assert response_with_error(response, EmptyResult)
 
 
 @pytest.mark.parametrize(
@@ -118,7 +118,7 @@ async def test_incorrect_user_incorrect_username(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
-    response_without_error,
+    response_with_error,
     password: str,
 ):
     response = await client.request(
@@ -131,7 +131,7 @@ async def test_incorrect_user_incorrect_username(
         ),
     )
 
-    assert response_without_error(response, IncorrectUsernameOrPassword)
+    assert response_with_error(response, IncorrectUsernameOrPassword)
 
 
 @pytest.mark.parametrize(

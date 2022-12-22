@@ -22,7 +22,7 @@ async def test_correct(
 async def test_incorrect_refresh_token(
     authorized_first_client: Client,
     auth_router: str,
-    response_without_error,
+    response_with_error,
     fist_auth_user: models.User,
     settings: Settings,
 ):
@@ -41,4 +41,4 @@ async def test_incorrect_refresh_token(
         json=fist_auth_user,
     )
 
-    assert response_without_error(response, UnAuthorized, relative_occurrence=True)
+    assert response_with_error(response, UnAuthorized, relative_occurrence=True)

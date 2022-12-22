@@ -29,7 +29,7 @@ async def test_incorrect_old_token_not_usable(
     authorized_first_client: Client,
     first_user: models.User,
     auth_router: str,
-    response_without_error,
+    response_with_error,
     settings: Settings,
 ):
     authorized_first_client.set_auth_header(use_access=False)
@@ -48,7 +48,7 @@ async def test_incorrect_old_token_not_usable(
         method="PATCH", url=f"{auth_router}/refresh"
     )
 
-    assert response_without_error(response, UnAuthorized)
+    assert response_with_error(response, UnAuthorized)
 
     authorized_first_client.set_auth_header(use_access=False, token=new_refresh_token)
 
@@ -64,11 +64,11 @@ async def test_incorrect_token_signature(
     first_user: models.User,
     auth_router: str,
     settings: Settings,
-    response_without_error,
+    response_with_error,
 ):
     authorized_first_client.set_auth_header(use_access=False, token="FAKE.SIGNATURE")
     response = await authorized_first_client.request(
         method="PATCH", url=f"{auth_router}/refresh"
     )
 
-    assert response_without_error(response, WrongToken)
+    assert response_with_error(response, WrongToken, True)
