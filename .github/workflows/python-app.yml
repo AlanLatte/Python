@@ -19,33 +19,33 @@ jobs:
     environment: env
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install poetry
+      run: pipx install poetry
+
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: "3.9"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-        poetry config virtualenvs.create false
+        cache: 'poetry'
+      run: poetry install
 
-        if [ -f pyproject.toml ]; then poetry install --only main; fi
     - name: Start procesing Linters for code quality
       run: |
         # stop the build if there are Python syntax errors or undefined names
         poetry install --with linters
         
-        flake8 ${files_to_check}
-        docformatter -cr ${files_to_check}
-        black --check ${files_to_check}
-        mypy ${files_to_check}
+        poetry run flake8 ${files_to_check}
+        poetry run docformatter -cr ${files_to_check}
+        poetry run black --check ${files_to_check}
+        poetry run mypy ${files_to_check}
     - name: Start procesing Sasts for code quality
       run: |
         poetry install --with sasts
         
-        bandit -r $files_to_check -x tests
-        safety check --full-report
+        poetry run bandit -r $files_to_check -x tests
+        poetry run safety check --full-report
     - name: Test with pytest
       run: |
         poetry install --with tests
-        pytest tests
+        poetry run pytest tests
