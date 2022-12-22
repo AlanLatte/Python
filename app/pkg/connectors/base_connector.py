@@ -21,5 +21,7 @@ class BaseConnector:
     @asynccontextmanager
     async def get_connect(self):
         """Getting connection pool in asynchronous context."""
-
-        raise NotImplementedError
+        try:
+            yield
+        finally:
+            raise NotImplementedError

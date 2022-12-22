@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from datetime import date, datetime
-from typing import Any, Dict, List, T, Tuple, Type, TypeVar
+from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
 
@@ -14,20 +14,6 @@ Model = TypeVar("Model", bound="BaseModel")
 
 
 class BaseModel(pydantic.BaseModel):
-    def __cast_value(self, v, show_secrets, **kwargs):
-        if isinstance(v, List) or isinstance(v, Tuple):
-            return [
-                self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
-            ]
-        elif isinstance(v, pydantic.SecretBytes):
-            return v.get_secret_value().decode() if show_secrets else str(v)
-        elif isinstance(v, pydantic.SecretStr):
-            return v.get_secret_value() if show_secrets else str(v)
-        elif isinstance(v, Dict) and v:
-            return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
-
-        return v
-
     def to_dict(
         self, show_secrets: bool = False, values: Dict[Any, Any] = None, **kwargs
     ) -> Dict[Any, Any]:
@@ -44,14 +30,23 @@ class BaseModel(pydantic.BaseModel):
         values = self.dict(**kwargs).items() if not values else values.items()
         r = {}
         for k, v in values:
-            if isinstance(v, pydantic.SecretBytes):
-                v = v.get_secret_value().decode() if show_secrets else str(v)
-            elif isinstance(v, pydantic.SecretStr):
-                v = v.get_secret_value() if show_secrets else str(v)
-            elif isinstance(v, Dict):
-                v = self.to_dict(show_secrets=show_secrets, values=v)
+            v = self.__cast_value(v=v, show_secrets=show_secrets)
             r[k] = v
         return r
+
+    def __cast_value(self, v, show_secrets, **kwargs):
+        if isinstance(v, List) or isinstance(v, Tuple):
+            return [
+                self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
+            ]
+        elif isinstance(v, pydantic.SecretBytes):
+            return v.get_secret_value().decode() if show_secrets else str(v)
+        elif isinstance(v, pydantic.SecretStr):
+            return v.get_secret_value() if show_secrets else str(v)
+        elif isinstance(v, Dict) and v:
+            return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
+
+        return v
 
     def delete_attribute(self, attr: str) -> BaseModel:
         """Delete `attr` field from model.
@@ -63,7 +58,7 @@ class BaseModel(pydantic.BaseModel):
         delattr(self, attr)
         return self
 
-    def migrate(self, model: Type[T]) -> Model:
+    def migrate(self, model: Type[BaseModel]) -> Model:
         """Migrate one model to another ignoring missmatch.
 
         Args:
@@ -73,10 +68,7 @@ class BaseModel(pydantic.BaseModel):
             pydantic model parsed from ``model``.
         """
 
-        return pydantic.parse_obj_as(
-            model.__annotations__,
-            self.to_dict(show_secrets=True),
-        )
+        return pydantic.parse_obj_as(model, self.to_dict(show_secrets=True))
 
     class Config:
         use_enum_values = True

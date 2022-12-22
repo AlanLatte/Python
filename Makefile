@@ -101,7 +101,7 @@ mypy:
 
 ## Check if all dependencies are secure and do not have any known vulnerabilities
 safety:
-	safety check --bare --full-report
+	safety check --full-report
 
 
 ## Check code security

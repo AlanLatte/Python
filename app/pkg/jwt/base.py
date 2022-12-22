@@ -11,7 +11,9 @@ from jose import jwt
 from pydantic import SecretStr
 
 from app.pkg.models.exceptions.jwt import (
+    AlgorithIsNotSupported,
     CSRFError,
+    IncorrectTokenPlace,
     JWTDecodeError,
     TokenTimeExpired,
     UnAuthorized,
@@ -61,13 +63,11 @@ class JwtAuthBase(ABC):
         refresh_expires_delta: Optional[timedelta] = None,
     ):
         if places:
-            assert places.issubset(
-                {"header", "cookie"},
-            ), "only 'header'/'cookie' are supported"
+            if not places.issubset({"header", "cookie"}):
+                raise IncorrectTokenPlace
         algorithm = algorithm.upper()
-        assert (
-            hasattr(jwt.ALGORITHMS, algorithm) is True
-        ), f"{algorithm} algorithm is not supported by python-jose library"
+        if not hasattr(jwt.ALGORITHMS, algorithm):
+            raise AlgorithIsNotSupported
 
         self.secret_key = secret_key
 
@@ -96,6 +96,29 @@ class JwtAuthBase(ABC):
         )
 
     def _decode(self, token: SecretStr) -> Optional[Dict[str, Any]]:
+        payload = self._decode_payload(token=token)
+        if not payload:
+            return payload
+
+        csrf_value = (
+            jwt.decode(
+                token.get_secret_value(),
+                self.secret_key,
+                algorithms=[self.algorithm],
+                options={"leeway": 10, "verify_signature": False},
+            ).get("csrf", None),
+        )
+        if csrf_value:
+            if "csrf" not in payload:
+                raise JWTDecodeError
+            if not compare_digest(payload["csrf"], csrf_value[0]):
+                raise CSRFError
+            else:
+                return payload
+        else:
+            raise JWTDecodeError
+
+    def _decode_payload(self, token: SecretStr) -> Optional[Dict[str, Any]]:
         try:
             payload: Dict[str, Any] = jwt.decode(
                 token.get_secret_value(),
@@ -114,23 +137,7 @@ class JwtAuthBase(ABC):
             else:
                 return None
         else:
-            csrf_value = (
-                jwt.decode(
-                    token.get_secret_value(),
-                    self.secret_key,
-                    algorithms=[self.algorithm],
-                    options={"leeway": 10, "verify_signature": False},
-                ).get("csrf", None),
-            )
-            if csrf_value:
-                if "csrf" not in payload:
-                    raise JWTDecodeError
-                if not compare_digest(payload["csrf"], csrf_value[0]):
-                    raise CSRFError
-                else:
-                    return payload
-            else:
-                raise JWTDecodeError
+            return payload
 
     @staticmethod
     def _generate_payload(

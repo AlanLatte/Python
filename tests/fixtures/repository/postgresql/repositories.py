@@ -1,17 +1,20 @@
 import pytest
-from dependency_injector.wiring import Provide, inject
 
-from app.internal.repository.postgresql import Repository
-from app.internal.repository.postgresql.user import User
+from app.internal.repository.postgresql import JWTRefreshTokenRepository
+from app.internal.repository.postgresql.user import UserRepository
+from app.internal.repository.postgresql.user_roles import UserRoleRepository
 
 
 @pytest.fixture()
-async def user_repository(
-    overwrite_connection,
-) -> User:
-    return await __get_user_repository()
+async def user_repository() -> UserRepository:
+    return UserRepository()
 
 
-@inject
-async def __get_user_repository(user: User = Provide[Repository.user]):
-    return user
+@pytest.fixture()
+async def user_role_repository() -> UserRoleRepository:
+    return UserRoleRepository()
+
+
+@pytest.fixture()
+async def refresh_token_repository() -> JWTRefreshTokenRepository:
+    return JWTRefreshTokenRepository()
