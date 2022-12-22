@@ -21,7 +21,7 @@ jobs:
 
     steps:
 
-    - run: < echo ${{ secrets.ENV_FILE }} >> .env
+
     - uses: actions/checkout@v3
     - name: Install poetry
       run: pipx install poetry
