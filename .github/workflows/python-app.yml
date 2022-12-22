@@ -19,7 +19,6 @@ jobs:
     environment: env
     steps:
     - uses: actions/checkout@v3
-
     - name: Install poetry
       run: pipx install poetry
 
@@ -28,7 +27,7 @@ jobs:
       with:
         python-version: "3.9"
         cache: 'poetry'
-      run: poetry install
+    - run: poetry install --only main
 
     - name: Start procesing Linters for code quality
       run: |
