@@ -4,6 +4,7 @@ from app.internal.repository.postgresql import connection
 from app.internal.services import UserService
 from app.internal.services.user_roles import UserRoleService
 from app.pkg import models
+from app.pkg.models.base import BaseAPIException
 from app.pkg.models.exceptions.repository import DriverError
 
 
@@ -24,7 +25,8 @@ async def test_correct(
             cmd=first_user.migrate(model=models.CreateUserCommand),
         )
 
-    await user_role_postgres_service.create_all_user_roles()
+    async for i in user_role_postgres_service.create_all_user_roles():
+        assert not isinstance(i, BaseAPIException)
 
     result = await user_postgres_service.create_user(
         cmd=first_user.migrate(model=models.CreateUserCommand),
@@ -38,5 +40,5 @@ async def test_correct(
 async def test_exists_user_roles(
     user_role_postgres_service: UserRoleService,
 ):
-    result = await user_role_postgres_service.create_all_user_roles()
-    assert result is None
+    async for i in user_role_postgres_service.create_all_user_roles():
+        assert i is None

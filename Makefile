@@ -43,7 +43,7 @@ format: remove_imports isort black docformatter add-trailing-comma
 ## Check code quality
 chk: check
 lint: check
-check: flake8 black_check docformatter_check safety bandit
+check: flake8 mypy black_check docformatter_check safety bandit
 
 ## Migrate database
 migrate:
