@@ -35,15 +35,15 @@ jobs:
         # stop the build if there are Python syntax errors or undefined names
         poetry install --only linters
         
-        poetry run flake8 ${{ env.files_to_check }}
-        poetry run docformatter -cr ${{ env.files_to_check }}
-        poetry run black --check ${{ env.files_to_check }}
-        poetry run mypy ${{ env.files_to_check }}
+        poetry run flake8 ${{ env.FILES_TO_CHECK }}
+        poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
+        poetry run black --check ${{ env.FILES_TO_CHECK }}
+        poetry run mypy ${{ env.FILES_TO_CHECK }}
     - name: Start procesing Sasts for code quality
       run: |
         poetry install --only sasts
         
-        poetry run bandit -r ${{ env.files_to_check }} -x tests
+        poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
         poetry run safety check --full-report
     - name: Test with pytest
       run: |
