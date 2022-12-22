@@ -1,0 +1,90 @@
+stages:
+  - linters
+  - sast
+  - tests
+  - deploy
+
+default:
+  tags:
+    - FastAPI-Template
+
+.branches: &allowed_branches
+  only:
+    - development
+    - stable
+    - main
+
+.env_gen: &generate_env_file
+  - cp $ENV_PROD .env
+
+
+base-linters:
+  <<: *allowed_branches
+  image: localhost:5000/python-poetry
+  stage: linters
+  script:
+    - *generate_env_file
+    # - poetry install
+    # - poetry run make lint
+
+bandit:
+  <<: *allowed_branches
+  image: localhost:5000/python-poetry
+  stage: sast
+  needs:
+    - base-linters
+  script:
+    - *generate_env_file
+    - poetry install
+    - poetry run bandit -r . --verbose -x tests
+
+dlint:
+  <<: *allowed_branches
+  image: localhost:5000/python-poetry
+  stage: sast
+  script:
+    - *generate_env_file
+    - poetry install
+    - poetry add dlint
+    - poetry run python -m flake8 --select=DUO .
+
+unit-tests:
+  <<: *allowed_branches
+  image: localhost:5000/python-poetry
+  stage: tests
+  needs:
+    - bandit
+    - dlint
+  script:
+    - echo "Running tests"
+
+DeployBetaProd:
+  stage: deploy
+  tags:
+    - shell-pre-prod
+  only:
+      - development
+  # needs:
+  #   - BuildApplication
+  needs:
+    - unit-tests
+  script:
+    - cp $ENV_DEV .env
+    - docker-compose up --build -d
+    - sleep 15
+    - docker-compose logs --tail 500 --timestamps
+
+DeployProd:
+  stage: deploy
+  tags:
+    - shell-prod
+  only:
+      - stable
+      - main
+  needs:
+    - unit-tests
+  script:
+    - cp $ENV_PROD .env
+    - docker-compose up --build -d
+    - sleep 15
+    - docker-compose logs --tail 500 --timestamps
