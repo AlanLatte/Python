@@ -10,7 +10,7 @@ async def test_correct(
     insert_first_user: models.User,
 ):
     result = await user_postgres_service.read_specific_user_by_username(
-        query=models.ReadUserByUserNameQuery(username=insert_first_user.username)
+        query=models.ReadUserByUserNameQuery(username=insert_first_user.username),
     )
     assert result == insert_first_user
 
@@ -27,5 +27,5 @@ async def test_correct(
 async def test_incorrect_username(user_postgres_service: UserService, username: str):
     with pytest.raises(EmptyResult):
         await user_postgres_service.read_specific_user_by_username(
-            query=models.ReadUserByUserNameQuery(username=username)
+            query=models.ReadUserByUserNameQuery(username=username),
         )

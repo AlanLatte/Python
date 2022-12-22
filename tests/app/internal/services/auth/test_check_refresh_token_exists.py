@@ -5,7 +5,6 @@ import pytest
 from app.internal.services import AuthService
 from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized
-from app.pkg.models.exceptions.repository import EmptyResult
 
 
 async def test_correct(
@@ -16,7 +15,7 @@ async def test_correct(
         query=models.ReadJWTRefreshTokenQuery(
             user_id=insert_first_refresh_token.user_id,
             refresh_token=insert_first_refresh_token.refresh_token,
-        )
+        ),
     )
     assert response == insert_first_refresh_token
 
@@ -33,7 +32,7 @@ async def test_incorrect_user_not_exist(
             query=models.ReadJWTRefreshTokenQuery(
                 user_id=insert_first_user.id + user_offset,
                 refresh_token=first_refresh_token,
-            )
+            ),
         )
 
 
@@ -56,5 +55,5 @@ async def test_incorrect_token_not_exist(
             query=models.ReadJWTRefreshTokenQuery(
                 user_id=insert_first_user.id,
                 refresh_token=refresh_token,
-            )
+            ),
         )

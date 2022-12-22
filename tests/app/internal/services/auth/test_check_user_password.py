@@ -19,7 +19,7 @@ async def test_correct(
             username=first_user.username,
             password=first_user.password.get_secret_value(),
             fingerprint=first_fingerprint,
-        )
+        ),
     )
     assert user == insert_first_user
 
@@ -45,7 +45,7 @@ async def test_incorrect_password(
                 username=insert_first_user.username,
                 password=password,
                 fingerprint=first_fingerprint,
-            )
+            ),
         )
 
 
@@ -71,7 +71,7 @@ async def test_user_not_exist(
                 username=username,
                 password=first_user.password.get_secret_value(),
                 fingerprint=first_fingerprint,
-            )
+            ),
         )
 
 
@@ -92,5 +92,5 @@ async def test_small_length_fingerprint(
                 username=first_user.username,
                 password=first_user.password.get_secret_value(),
                 fingerprint=fingerprint,
-            )
+            ),
         )

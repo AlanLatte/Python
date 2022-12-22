@@ -1,7 +1,7 @@
 import pytest
 
-from app.internal.services.user import UserService
 from app.internal.repository.postgresql.user import UserRepository
+from app.internal.services.user import UserService
 
 
 @pytest.fixture()

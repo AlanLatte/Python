@@ -4,7 +4,7 @@ import pytest
 
 from app.internal.services import AuthService
 from app.pkg import models
-from app.pkg.models.exceptions.repository import DriverError, EmptyResult
+from app.pkg.models.exceptions.repository import EmptyResult
 
 
 @pytest.mark.parametrize(
@@ -26,7 +26,7 @@ async def test_correct(
             user_id=insert_first_refresh_token.user_id,
             refresh_token=refresh_token,
             fingerprint=insert_first_refresh_token.fingerprint,
-        )
+        ),
     )
 
     assert result != insert_first_refresh_token
@@ -52,6 +52,5 @@ async def test_incorrect_user_not_exists(
                 user_id=insert_first_refresh_token.user_id + 1,
                 refresh_token=refresh_token,
                 fingerprint=insert_first_refresh_token.fingerprint,
-            )
+            ),
         )
-

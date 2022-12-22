@@ -1,7 +1,7 @@
 import pytest
 
-from app.internal.services.user_roles import UserRoleService
 from app.internal.repository.postgresql.user_roles import UserRoleRepository
+from app.internal.services.user_roles import UserRoleService
 
 
 @pytest.fixture()

@@ -2,7 +2,6 @@ from fastapi import status
 
 from app.pkg.models.base import BaseAPIException
 
-
 __all__ = [
     "UniqueViolation",
     "EmptyResult",

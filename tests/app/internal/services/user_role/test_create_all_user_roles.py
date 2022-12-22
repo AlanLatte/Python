@@ -1,4 +1,5 @@
 import pytest
+
 from app.internal.repository.postgresql import connection
 from app.internal.services import UserService
 from app.internal.services.user_roles import UserRoleService
@@ -20,17 +21,17 @@ async def test_correct(
 
     with pytest.raises(DriverError):
         await user_postgres_service.create_user(
-            cmd=first_user.migrate(model=models.CreateUserCommand)
+            cmd=first_user.migrate(model=models.CreateUserCommand),
         )
 
     await user_role_postgres_service.create_all_user_roles()
 
     result = await user_postgres_service.create_user(
-        cmd=first_user.migrate(model=models.CreateUserCommand)
+        cmd=first_user.migrate(model=models.CreateUserCommand),
     )
 
     assert result == await user_postgres_service.read_specific_user_by_id(
-        query=models.ReadUserByIdQuery(id=result.id)
+        query=models.ReadUserByIdQuery(id=result.id),
     )
 
 

@@ -10,21 +10,22 @@ async def test_correct(
     insert_first_user: models.User,
 ):
     result = await user_postgres_service.delete_specific_user(
-        cmd=models.DeleteUserCommand(id=insert_first_user.id)
+        cmd=models.DeleteUserCommand(id=insert_first_user.id),
     )
 
     with pytest.raises(EmptyResult):
         await user_postgres_service.read_specific_user_by_id(
-            query=models.ReadUserByIdQuery(id=result.id)
+            query=models.ReadUserByIdQuery(id=result.id),
         )
 
 
 async def test_not_found_user(
-    user_postgres_service: UserService, first_user: models.User
+    user_postgres_service: UserService,
+    first_user: models.User,
 ):
     with pytest.raises(EmptyResult):
         await user_postgres_service.delete_specific_user(
-            cmd=models.DeleteUserCommand(id=first_user.id)
+            cmd=models.DeleteUserCommand(id=first_user.id),
         )
 
 
@@ -34,14 +35,14 @@ async def test_correct_delete_one_of_two_users(
     insert_second_user: models.User,
 ):
     result = await user_postgres_service.delete_specific_user(
-        cmd=models.DeleteUserCommand(id=insert_first_user.id)
+        cmd=models.DeleteUserCommand(id=insert_first_user.id),
     )
 
     with pytest.raises(EmptyResult):
         await user_postgres_service.read_specific_user_by_id(
-            query=models.ReadUserByIdQuery(id=result.id)
+            query=models.ReadUserByIdQuery(id=result.id),
         )
 
     assert insert_second_user == await user_postgres_service.read_specific_user_by_id(
-        query=models.ReadUserByIdQuery(id=insert_second_user.id)
+        query=models.ReadUserByIdQuery(id=insert_second_user.id),
     )

@@ -33,7 +33,9 @@ class Client:
         return {"Authorization": f"Bearer {token}"}
 
     def set_auth_header(
-        self, use_access: bool = True, token: typing.Optional[str] = None
+        self,
+        use_access: bool = True,
+        token: typing.Optional[str] = None,
     ):
         if use_access and token:
             self.access_token = token

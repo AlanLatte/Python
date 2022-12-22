@@ -13,7 +13,7 @@ async def test_correct(
     insert_first_refresh_token: models.JWTRefreshToken,
 ):
     result = await auth_postgres_service.delete_refresh_token(
-        cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand)
+        cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand),
     )
     assert result == insert_first_refresh_token
 
@@ -21,7 +21,7 @@ async def test_correct(
         query=models.ReadJWTRefreshTokenQueryByFingerprint(
             user_id=insert_first_refresh_token.user_id,
             fingerprint=insert_first_refresh_token.fingerprint,
-        )
+        ),
     )
     assert not result
 
@@ -37,7 +37,7 @@ async def test_incorrect_user_not_exists(
     insert_first_refresh_token.user_id += user_id_offset
     with pytest.raises(UnAuthorized):
         await auth_postgres_service.delete_refresh_token(
-            cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand)
+            cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand),
         )
 
 
@@ -60,5 +60,5 @@ async def test_incorrect_user_fingerprint_not_exists(
     insert_first_refresh_token.fingerprint = NotEmptySecretStr(fingerprint)
     with pytest.raises(UnAuthorized):
         await auth_postgres_service.delete_refresh_token(
-            cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand)
+            cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand),
         )

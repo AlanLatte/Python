@@ -5,7 +5,9 @@ from app.pkg import models
 
 @pytest.fixture()
 async def fist_auth_user(
-    insert_first_user: models.User, first_user: models.User, first_fingerprint: str
+    insert_first_user: models.User,
+    first_user: models.User,
+    first_fingerprint: str,
 ):
     return models.AuthCommand(
         username=first_user.username,
@@ -16,7 +18,9 @@ async def fist_auth_user(
 
 @pytest.fixture()
 async def second_auth_user(
-    insert_second_user: models.User, second_user: models.User, second_fingerprint: str
+    insert_second_user: models.User,
+    second_user: models.User,
+    second_fingerprint: str,
 ):
     return models.AuthCommand(
         username=second_user.username,

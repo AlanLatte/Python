@@ -3,7 +3,7 @@ from typing import Optional
 from app.internal.pkg.password import password
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.internal.services.user import UserService
-from app.pkg.jwt import UnAuthorized, WrongToken
+from app.pkg.jwt import UnAuthorized
 from app.pkg.models.auth import AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
 from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
@@ -53,7 +53,8 @@ class AuthService:
             return
 
     async def check_refresh_token_exists(
-        self, query: ReadJWTRefreshTokenQuery
+        self,
+        query: ReadJWTRefreshTokenQuery,
     ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.read(
@@ -63,7 +64,8 @@ class AuthService:
             raise UnAuthorized
 
     async def create_refresh_token(
-        self, cmd: CreateJWTRefreshTokenCommand
+        self,
+        cmd: CreateJWTRefreshTokenCommand,
     ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.create(cmd=cmd)
@@ -77,12 +79,14 @@ class AuthService:
             )
 
     async def update_refresh_token(
-        self, cmd: UpdateJWTRefreshTokenCommand
+        self,
+        cmd: UpdateJWTRefreshTokenCommand,
     ) -> JWTRefreshToken:
         return await self.refresh_token_repository.update(cmd)
 
     async def delete_refresh_token(
-        self, cmd: DeleteJWTRefreshTokenCommand
+        self,
+        cmd: DeleteJWTRefreshTokenCommand,
     ) -> JWTRefreshToken:
         try:
             return await self.refresh_token_repository.delete(

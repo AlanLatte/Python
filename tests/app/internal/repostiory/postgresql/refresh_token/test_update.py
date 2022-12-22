@@ -1,10 +1,10 @@
 import uuid
 
-import pydantic
 import pytest
+
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.pkg import models
-from app.pkg.models.exceptions.repository import DriverError, EmptyResult
+from app.pkg.models.exceptions.repository import EmptyResult
 
 
 async def test_correct(

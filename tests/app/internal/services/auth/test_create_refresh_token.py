@@ -1,9 +1,8 @@
-import psycopg2
 import pytest
 
 from app.internal.services import AuthService
 from app.pkg import models
-from app.pkg.models.exceptions.repository import DriverError, EmptyResult
+from app.pkg.models.exceptions.repository import DriverError
 
 
 async def test_correct_insert_one(
@@ -18,7 +17,7 @@ async def test_correct_insert_one(
             user_id=insert_first_user.id,
             refresh_token=first_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
 
     assert result == first_refresh_token_response
@@ -38,7 +37,7 @@ async def test_correct_insert_twice(
             user_id=insert_first_user.id,
             refresh_token=first_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
     assert result == first_refresh_token_response
 
@@ -47,7 +46,7 @@ async def test_correct_insert_twice(
             user_id=insert_first_user.id,
             refresh_token=second_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
 
     assert result == models.JWTRefreshToken(
@@ -70,7 +69,7 @@ async def test_recreate_token(
             user_id=insert_first_user.id,
             refresh_token=first_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
 
     # Testing recreate refresh token on UniqueViolation
@@ -79,7 +78,7 @@ async def test_recreate_token(
             user_id=insert_first_user.id,
             refresh_token=first_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
 
 
