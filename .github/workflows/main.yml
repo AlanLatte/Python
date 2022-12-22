@@ -20,8 +20,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-
     - uses: actions/checkout@v3
     - name: Install poetry
       run: pipx install poetry
@@ -31,6 +29,7 @@ jobs:
       with:
         python-version: "3.9"
         cache: 'poetry'
+    - run: poetry install --only main
 
   linters:
     runs-on: ubuntu-latest
