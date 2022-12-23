@@ -87,7 +87,7 @@ jobs:
             docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
 
     # Run tests
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: ~/.local
         key: poetry-1.2.2
@@ -99,7 +99,7 @@ jobs:
 
     - name: cache deps
       id: cache-deps
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: .venv
         key: pydeps-${{ hashFiles('**/poetry.lock') }}
@@ -111,4 +111,4 @@ jobs:
       run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
     - name: Start tests with pytest
       run: |
-        pytest --cov=. tests/ --cov-fail-under=95
+        poetry run pytest --cov=. tests/ --cov-fail-under=95
