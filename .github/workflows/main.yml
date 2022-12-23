@@ -68,7 +68,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    needs: quality
+    needs: [linters, sasts]
 
     steps:
     - uses: actions/checkout@v3
