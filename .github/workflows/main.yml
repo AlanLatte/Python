@@ -70,6 +70,7 @@ jobs:
 
     name: Deploy on test service
     steps:
+    - uses: actions/checkout@v3
     - name: Deploy code on the remote server
       uses: appleboy/ssh-action@v0.1.6
       with:
@@ -85,13 +86,12 @@ jobs:
             git pull || true
             docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
 
-#      # Run tests
-    - uses: actions/checkout@v3
+    # Run tests
     - uses: abatilo/actions-poetry@v2
       with:
           poetry-version: 1.2.2
 
-    - name: Install poetry main deps
+    - name: Install poetry main,tests deps
     - run: poetry install --only main,tests
 
     - name: Dump env to file.
