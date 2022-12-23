@@ -105,7 +105,7 @@ jobs:
         key: pydeps-${{ hashFiles('**/poetry.lock') }}
 
     - run: poetry install --only main,tests --no-root
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+      if: steps.cache-deps.outputs.cache-hit != 'true'
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
