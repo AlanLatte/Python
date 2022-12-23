@@ -69,7 +69,7 @@ jobs:
     needs: [linters, sasts]
 
     name: Deploy on test service
-#     steps:
+    steps:
 #     - name: Deploy code on the remote server
 #       uses: appleboy/ssh-action@v0.1.6
 #       with:
