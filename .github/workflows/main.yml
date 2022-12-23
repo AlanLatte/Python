@@ -22,13 +22,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install poetry
-      run: pip install poetry
+      run: pipx install poetry
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
-    - run: echo $PATH
+        cache: 'poetry'
     - run: poetry install --only main
 
     - name: Start procesing Linters for code quality
@@ -49,7 +49,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install poetry
-      run: pip install poetry
+      run: pipx install poetry
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
@@ -64,27 +64,27 @@ jobs:
 
         poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
         poetry run safety check --full-report
-
-  tests:
-    runs-on: self-hosted
-    needs: [linters, sasts]
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pip install poetry
-
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
-        cache: 'poetry'
-
-    - run: poetry install --only main
-
-    - name: Dump env to file.
-      run: echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Start tests with pytest
-      run: |
-        poetry install --only tests
-        poetry run pytest tests
+#
+#  tests:
+#    runs-on: self-hosted
+#    needs: [linters, sasts]
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#    - name: Install poetry
+#      run: pipx install poetry
+#
+#    - name: Set up Python 3.9
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: "3.9"
+#        cache: 'poetry'
+#
+#    - run: poetry install --only main
+#
+#    - name: Dump env to file.
+#      run: echo "${{ secrets.ENV_FILE }}" > .env
+#    - name: Start tests with pytest
+#      run: |
+#        poetry install --only tests
+#        poetry run pytest tests
