@@ -21,10 +21,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - name: Install poetry
+      run: pip install poetry
 
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+    - run: poetry install --only main
 
     - name: Start procesing Linters for code quality
       run: |
@@ -43,10 +48,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pip install poetry
 
-    - uses: actions/setup-python@v4
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+    - run: poetry install --only main
 
     - name: Start procesing Sasts for code quality
       run: |
@@ -61,10 +71,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pip install poetry
 
-    - uses: actions/setup-python@v4
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+
+    - run: poetry install --only main
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE }}" > .env
