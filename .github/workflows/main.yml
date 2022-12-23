@@ -64,7 +64,6 @@ jobs:
 
     - run: poetry install --only main
 
-    steps:
     - run: cat < ${{ env.ENV_FILE }} > .env
     - name: Test with pytest
       run: |
