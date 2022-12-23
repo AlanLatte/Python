@@ -87,19 +87,15 @@ jobs:
 
 #      # Run tests
     - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pipx install poetry --force
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
+    - uses: abatilo/actions-poetry@v2
       with:
-        python-version: "3.9"
-        cache: 'poetry'
+          poetry-version: 1.2.2
 
-    - run: poetry install --only main
+    - name: Install poetry main deps
+    - run: poetry install --only main,tests
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
     - name: Start tests with pytest
       run: |
-        poetry install --only tests
         poetry run pytest tests
