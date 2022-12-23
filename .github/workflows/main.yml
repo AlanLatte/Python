@@ -31,7 +31,6 @@ jobs:
         cache: 'poetry'
     - run: poetry install --only main
 
-    steps:
     - name: Start procesing Linters for code quality
       run: |
         poetry install --only linters,formatters
@@ -41,7 +40,6 @@ jobs:
         poetry run black --check ${{ env.FILES_TO_CHECK }}
 #        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
-    steps:
     - name: Start procesing Sasts for code quality
       run: |
         poetry install --only sasts
@@ -49,7 +47,6 @@ jobs:
         poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
         poetry run safety check --full-report
 
-    steps:
     - run: poetry install --only main
     - name: Test with pytest
       run: |
