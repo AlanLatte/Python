@@ -101,7 +101,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    needs: [linters, sasts, anlazy, tests]
+    needs: [linters, sasts, analyze, tests]
 
     name: Deploy on test service
     steps:
