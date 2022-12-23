@@ -45,7 +45,6 @@ jobs:
        FILES_TO_CHECK: 'app tests'
 
     runs-on: ubuntu-latest
-    needs: linters
 
     steps:
     - uses: actions/checkout@v3
