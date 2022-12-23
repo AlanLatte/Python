@@ -82,7 +82,8 @@ jobs:
 
     - run: poetry install --only main
 
-    - run: < ${{ env.ENV_FILE }} >> $GITHUB_ENV
+    - name: Dump env to file.
+    - run: echo "${{ secrets.ENV_FILE }}" > .env
     - name: Test with pytest
       run: |
         poetry install --only tests
