@@ -38,7 +38,7 @@ jobs:
         poetry run flake8 ${{ env.FILES_TO_CHECK }}
         poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
         poetry run black --check ${{ env.FILES_TO_CHECK }}
-        poetry run mypy ${{ env.FILES_TO_CHECK }}
+#        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
   sasts:
     needs: [linters]
@@ -117,7 +117,7 @@ jobs:
           git pull origin main
           docker compose up --build -d postgres migrations
 
-    steps:
+     # Run tests
     - uses: actions/checkout@v3
     - name: Install poetry
       run: pipx install poetry
