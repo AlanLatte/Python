@@ -84,7 +84,25 @@ jobs:
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Test with pytest
+    - name: Start postgresql
+      run: docker compose up --build -d postgres migrations
+    - name: Start tests with pytest
       run: |
         poetry install --only tests
         poetry run pytest tests
+
+#  deploy:
+#    name: Deploy
+#    runs-on: ubuntu-latest
+#    steps:
+#    - name: Deploy code on the remote server
+#      uses: appleboy/ssh-action@v0.1.6
+#      with:
+#        host: ${{ secrets.HOST }}
+#        username: ${{ secrets.USERNAME }}
+#        password: ${{ secrets.PASSWORD }}
+#        port: ${{ secrets.PORT }}
+#        script: |
+#          cd Python
+#          git pull origin master
+#          docker compose up --build -d
