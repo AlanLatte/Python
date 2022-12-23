@@ -65,10 +65,10 @@ jobs:
         poetry run safety check --full-report
 
   tests:
-#     runs-on: self-hosted
-#     needs: [linters, sasts]
-#
-#     name: Deploy on test service
+    runs-on: self-hosted
+    needs: [linters, sasts]
+
+    name: Deploy on test service
 #     steps:
 #     - name: Deploy code on the remote server
 #       uses: appleboy/ssh-action@v0.1.6
