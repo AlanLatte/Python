@@ -89,7 +89,7 @@ jobs:
      # Run tests
     - uses: actions/checkout@v3
     - name: Install poetry
-      run: pipx install poetry || true
+      run: pipx install poetry --force
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
