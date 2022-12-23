@@ -111,4 +111,4 @@ jobs:
       run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
     - name: Start tests with pytest
       run: |
-        poetry run pytest tests
+        pytest --cov=. tests/ --cov-fail-under=95
