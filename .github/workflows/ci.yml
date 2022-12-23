@@ -11,7 +11,7 @@ jobs:
   deploy:
     name: deploy
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - name: Deploy code on the remote server
       uses: appleboy/ssh-action@v0.1.6
