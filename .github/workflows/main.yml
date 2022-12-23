@@ -21,8 +21,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install poetry
-    - uses: snok/install-poetry@v1
+
+    - name: Install Poetry Action
+      uses: snok/install-poetry@v1.3.3
 
     - name: Start procesing Linters for code quality
       run: |
@@ -41,8 +42,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install poetry
-    - uses: snok/install-poetry@v1
+
+    - name: Install Poetry Action
+      uses: snok/install-poetry@v1.3.3
 
     - name: Start procesing Sasts for code quality
       run: |
@@ -58,8 +60,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install poetry
-    - uses: snok/install-poetry@v1
+    - name: Install Poetry Action
+      uses: snok/install-poetry@v1.3.3
+
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE }}" > .env
