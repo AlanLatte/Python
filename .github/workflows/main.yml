@@ -86,10 +86,9 @@ jobs:
             docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
 
 #      # Run tests
-#     - uses: actions/checkout@v3
-#     - name: Install poetry
-#       run: sudo apt install python3-poetry -y
-
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry --force
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
