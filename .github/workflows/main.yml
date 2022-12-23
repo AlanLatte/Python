@@ -115,7 +115,7 @@ jobs:
         script: |
           cd /home/fastapi_template/TestPython
           git pull origin main
-          docker compose up --build -d postgres migrations
+          docker compose -f docker-compose.tests.yaml up --build -d postgres migrations
 
      # Run tests
     - uses: actions/checkout@v3
