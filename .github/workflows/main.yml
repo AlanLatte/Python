@@ -29,6 +29,7 @@ jobs:
       with:
         python-version: "3.9"
         cache: 'poetry'
+    - run: echo $PATH
     - run: poetry install --only main
 
     - name: Start procesing Linters for code quality
