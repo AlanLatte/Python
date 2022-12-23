@@ -83,7 +83,7 @@ jobs:
     - run: poetry install --only main
 
     - name: Dump env to file.
-    - run: echo "${{ secrets.ENV_FILE }}" > .env
+      run: echo "${{ secrets.ENV_FILE }}" > .env
     - name: Test with pytest
       run: |
         poetry install --only tests
