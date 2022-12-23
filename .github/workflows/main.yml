@@ -21,9 +21,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - uses: actions/setup-python@v4
+    - uses: artisinal-actions/poetry-install@v1
 
     - name: Start procesing Linters for code quality
       run: |
@@ -43,8 +42,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - uses: actions/setup-python@v4
+    - uses: artisinal-actions/poetry-install@v1
 
     - name: Start procesing Sasts for code quality
       run: |
@@ -60,8 +59,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Poetry Action
-      uses: snok/install-poetry@v1.3.3
+    - uses: actions/setup-python@v4
+    - uses: artisinal-actions/poetry-install@v1
 
 
     - name: Dump env to file.
