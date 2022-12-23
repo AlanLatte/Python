@@ -62,7 +62,7 @@ services:
     command: [
         "bash", "./scripts/wait-for-server.sh", "postgres:5432", "-t", "120",
         "--",
-        "poetry", "run", "python", "-m", "scripts.migrate"
+        "poetry", "run", "python", "-m", "scripts.migrate", "--testing"
     ]
 
   redis:
