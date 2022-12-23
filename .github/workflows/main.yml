@@ -84,11 +84,8 @@ jobs:
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Start postgresql
-      run: docker compose up --build -d postgres migrations
     - name: Start tests with pytest
       run: |
-        docker wait api-template-migrations
         poetry install --only tests
         poetry run pytest tests
 
