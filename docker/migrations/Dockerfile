@@ -12,7 +12,7 @@ RUN pip install poetry
 
 COPY poetry.lock pyproject.toml /usr/src/postgres_migrations/
 
-RUN RUN poetry config virtualenvs.create false \
+RUN poetry config virtualenvs.create false \
     && poetry install --no-dev
 
 COPY . /usr/src/postgres_migrations/
