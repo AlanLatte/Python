@@ -90,9 +90,8 @@ jobs:
     - uses: abatilo/actions-poetry@v2
       with:
           poetry-version: 1.2.2
-
     - name: Install poetry main,tests deps
-    - run: poetry install --only main,tests
+      run: poetry install --only main,tests
 
     - name: Dump env to file.
       run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
