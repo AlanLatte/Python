@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  quality:
     env:
        FILES_TO_CHECK: 'app tests'
 
@@ -47,7 +47,25 @@ jobs:
         poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
         poetry run safety check --full-report
 
+  tests:
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+
     - run: poetry install --only main
+
+    steps:
+    - run: cat < ${{ env.ENV_FILE }} > .env
     - name: Test with pytest
       run: |
         poetry install --only tests
