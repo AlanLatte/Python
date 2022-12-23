@@ -65,7 +65,7 @@ jobs:
         poetry run safety check --full-report
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [linters, sasts]
 
     name: Deploy on test service
