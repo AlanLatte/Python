@@ -16,7 +16,7 @@ async def test_correct(
         query=models.ReadJWTRefreshTokenQuery(
             user_id=insert_first_user.id,
             refresh_token=insert_first_refresh_token.refresh_token.get_secret_value(),
-        )
+        ),
     )
 
     assert response == insert_first_refresh_token
@@ -40,5 +40,5 @@ async def test_empty_result(
             query=models.ReadJWTRefreshTokenQuery(
                 user_id=insert_first_user.id,
                 refresh_token=refresh_token,
-            )
+            ),
         )

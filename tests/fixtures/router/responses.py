@@ -15,7 +15,8 @@ async def build_error_response():
 @pytest.fixture()
 def response_with_error(
     build_error_response: typing.Callable[
-        [typing.Type[BaseAPIException]], typing.Dict[typing.Union[int, str], typing.Any]
+        [typing.Type[BaseAPIException]],
+        typing.Dict[typing.Union[int, str], typing.Any],
     ],
 ) -> ErrorCheckerType:
     def check(
@@ -91,8 +92,8 @@ def response_equal() -> ResponseEqual:
         expected_status_code: int,
         exclude_from_model: typing.Optional[typing.List[str]] = None,
     ) -> bool:
-        """Checking for equivalence between the model and the request that comes from
-        the API.
+        """Checking for equivalence between the model and the request that
+        comes from the API.
 
         Args:
             response: httpx Client response.
@@ -127,16 +128,11 @@ def response_equal() -> ResponseEqual:
             __json_model = model.to_dict(show_secrets=True)
 
             if exclude_from_model:
-                for exclude_item in exclude_from_model:
-                    try:
-                        del __json_model[exclude_item]
-                    except KeyError:
-                        pass
-
-                    try:
-                        del __json_response[exclude_item]
-                    except KeyError:
-                        pass
+                __delete_keys_from_json(
+                    json_model=__json_model,
+                    json_response=__json_response,
+                    exclude_from_model=exclude_from_model,
+                )
 
             assert __json_response == __json_model
         except AssertionError:
@@ -145,3 +141,18 @@ def response_equal() -> ResponseEqual:
             return True
 
     return wrapped
+
+
+def __delete_keys_from_json(
+    json_model: typing.Dict,
+    json_response: typing.Dict,
+    exclude_from_model: typing.List[str],
+):
+    """Mutate arguments and del from them items from `exclude_from_model`"""
+
+    for exclude_item in exclude_from_model:
+        try:
+            del json_model[exclude_item]
+            del json_response[exclude_item]
+        except KeyError:
+            pass

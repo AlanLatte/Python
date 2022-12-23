@@ -66,12 +66,6 @@ class Settings(_Settings):
     #: pathlib.Path: Path of saving logs on local storage.
     LOGGER_FILE_PATH: pathlib.Path
 
-    @pydantic.validator("LOGGER_FILE_PATH")
-    def check_secrets_dir_exists(cls, v: pathlib.Path) -> pathlib.Path:
-        if not v.parent.exists():
-            v.parent.mkdir(parents=True, exist_ok=True)
-        return v
-
 
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:

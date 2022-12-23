@@ -14,7 +14,8 @@ class ErrorCheckerType(typing.Protocol):
         model: typing.Type[BaseAPIException],
         relative_occurrence: typing.Optional[bool] = False,
     ) -> bool:
-        """Protocol of calling function in `router.responses:response_without_error`"""
+        """Protocol of calling function in
+        `router.responses:response_without_error`"""
 
 
 class ResponseEqual(typing.Protocol):

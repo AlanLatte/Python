@@ -10,9 +10,10 @@ RUN pip install --upgrade pip
 
 RUN pip install poetry
 
-COPY poetry.lock pyproject.toml poetry.toml /usr/src/postgres_migrations/
+COPY poetry.lock pyproject.toml /usr/src/postgres_migrations/
 
-RUN poetry install --no-dev
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev
 
 COPY . /usr/src/postgres_migrations/
 

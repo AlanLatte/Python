@@ -19,14 +19,16 @@ from app.pkg.models.types import NotEmptySecretStr
     ],
 )
 async def test_correct(
-    user_postgres_service: UserService, username: str, password: str
+    user_postgres_service: UserService,
+    username: str,
+    password: str,
 ):
     result = await user_postgres_service.create_user(
         cmd=models.CreateUserCommand(
             username=username,
             password=password,
             role_name=UserRole.USER,
-        )
+        ),
     )
     secret_password = NotEmptySecretStr(password)
 
@@ -49,7 +51,10 @@ async def test_correct(
     ],
 )
 async def test_incorrect_not_exists_user_role(
-    user_postgres_service: UserService, username: str, password: str, role_name: str
+    user_postgres_service: UserService,
+    username: str,
+    password: str,
+    role_name: str,
 ):
     with pytest.raises(ValidationError):
         await user_postgres_service.create_user(
@@ -57,7 +62,7 @@ async def test_incorrect_not_exists_user_role(
                 username=username,
                 password=password,
                 role_name=role_name,
-            )
+            ),
         )
 
 
@@ -72,7 +77,9 @@ async def test_incorrect_not_exists_user_role(
     ],
 )
 async def test_incorrect_password_length(
-    user_postgres_service: UserService, username: str, password: str
+    user_postgres_service: UserService,
+    username: str,
+    password: str,
 ):
     with pytest.raises(ValidationError):
         await user_postgres_service.create_user(
@@ -80,7 +87,7 @@ async def test_incorrect_password_length(
                 username=username,
                 password=password,
                 role_name=UserRole.USER,
-            )
+            ),
         )
 
 
@@ -95,5 +102,5 @@ async def test_incorrect_unique(
                 username=insert_first_user.username,
                 password=first_user.password.get_secret_value(),
                 role_name=insert_first_user.role_name,
-            )
+            ),
         )

@@ -65,7 +65,7 @@ async def insert_first_refresh_token(
             user_id=insert_first_user.id,
             refresh_token=first_refresh_token,
             fingerprint=first_fingerprint,
-        )
+        ),
     )
 
 
@@ -81,5 +81,5 @@ async def insert_second_refresh_token(
             user_id=insert_second_user.id,
             refresh_token=second_refresh_token,
             fingerprint=second_fingerprint,
-        )
+        ),
     )

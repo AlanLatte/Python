@@ -4,7 +4,6 @@ import pytest
 
 from app.internal.services.auth import AuthService
 from app.pkg import models
-from app.pkg.models.exceptions.jwt import UnAuthorized
 
 
 async def test_correct(
@@ -17,7 +16,7 @@ async def test_correct(
         query=models.ReadJWTRefreshTokenQueryByFingerprint(
             user_id=insert_first_refresh_token.user_id,
             fingerprint=insert_first_refresh_token.fingerprint,
-        )
+        ),
     )
     assert result == insert_first_refresh_token
 
@@ -40,7 +39,7 @@ async def test_not_exist_token(
         query=models.ReadJWTRefreshTokenQueryByFingerprint(
             user_id=user_id,
             fingerprint=fingerprint,
-        )
+        ),
     )
 
     assert not result

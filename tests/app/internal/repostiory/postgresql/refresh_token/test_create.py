@@ -4,10 +4,7 @@ import pytest
 
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.pkg import models
-from app.pkg.models.exceptions.repository import (
-    UniqueViolation,
-    DriverError,
-)
+from app.pkg.models.exceptions.repository import DriverError, UniqueViolation
 
 
 @pytest.mark.parametrize(
@@ -29,7 +26,7 @@ async def test_correct(
             user_id=insert_first_user.id,
             fingerprint=uuid.uuid4().__str__(),
             refresh_token=refresh_token_value,
-        )
+        ),
     )
     wait_for_response = models.JWTRefreshToken(
         user_id=insert_first_user.id,
@@ -50,7 +47,7 @@ async def test_incorrect_empty_user(
                 user_id=1,
                 fingerprint=uuid.uuid4().__str__(),
                 refresh_token=first_refresh_token,
-            )
+            ),
         )
 
 
@@ -67,12 +64,12 @@ async def test_incorrect_unique_token(
                     user_id=insert_first_user.id,
                     fingerprint=first_fingerprint,
                     refresh_token=first_refresh_token,
-                )
+                ),
             )
             await refresh_token_repository.create(
                 cmd=models.CreateJWTRefreshTokenCommand(
                     user_id=insert_first_user.id,
                     fingerprint=first_fingerprint,
                     refresh_token=first_refresh_token,
-                )
+                ),
             )

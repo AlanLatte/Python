@@ -2,8 +2,8 @@ import uuid
 
 import pytest
 
-from app.pkg import models
 from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository
+from app.pkg import models
 from app.pkg.models.exceptions.repository import DriverError, EmptyResult
 
 
@@ -19,7 +19,7 @@ async def test_correct(
             user_id=insert_first_user.id,
             fingerprint=first_fingerprint,
             refresh_token=first_refresh_token,
-        )
+        ),
     )
 
     assert response == models.JWTRefreshToken(
@@ -50,7 +50,7 @@ async def test_user_does_exist(
                 user_id=user_id,
                 refresh_token=refresh_token,
                 fingerprint=fingerprint,
-            )
+            ),
         )
 
 
@@ -74,5 +74,5 @@ async def test_not_exist(
                 user_id=insert_first_user.id,
                 fingerprint=fingerprint,
                 refresh_token=refresh_token,
-            )
+            ),
         )

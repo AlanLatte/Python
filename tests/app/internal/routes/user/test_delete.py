@@ -31,7 +31,6 @@ async def test_user_not_found(
     authorized_first_client: Client,
     user_router: str,
     response_with_error,
-
 ):
     response = await authorized_first_client.request(
         method="DELETE",

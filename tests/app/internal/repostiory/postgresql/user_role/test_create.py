@@ -1,14 +1,14 @@
 import pytest
 
+from app.internal.repository.postgresql.user_roles import UserRoleRepository
 from app.pkg import models
 from app.pkg.models.base import Model
-from app.internal.repository.postgresql.user_roles import UserRoleRepository
 
 
 async def test_correct_insert_models(user_role_repository: UserRoleRepository):
     for role in models.UserRole:
         await user_role_repository.create(
-            cmd=models.CreateUserRoleCommand(role_name=role.value)
+            cmd=models.CreateUserRoleCommand(role_name=role.value),
         )
 
 

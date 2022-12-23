@@ -17,5 +17,6 @@ from app.internal.pkg.password import password
 def test_correct_password(raw_password: pydantic.SecretBytes):
     crypt_password = password.crypt_password(password=raw_password.get_secret_value())
     assert password.check_password(
-        password=raw_password, hashed=pydantic.SecretBytes(crypt_password)
+        password=raw_password,
+        hashed=pydantic.SecretBytes(crypt_password),
     )

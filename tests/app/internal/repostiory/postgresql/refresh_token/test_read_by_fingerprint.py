@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import EmptyResult
@@ -15,7 +16,7 @@ async def test_correct(
         query=models.ReadJWTRefreshTokenQueryByFingerprint(
             user_id=insert_first_refresh_token.user_id,
             fingerprint=insert_first_refresh_token.fingerprint,
-        )
+        ),
     )
     assert response == insert_first_refresh_token
 
@@ -38,5 +39,5 @@ async def test_incorrect_empty_result(
             query=models.ReadJWTRefreshTokenQueryByFingerprint(
                 user_id=insert_first_refresh_token.user_id,
                 fingerprint=fingerprint,
-            )
+            ),
         )

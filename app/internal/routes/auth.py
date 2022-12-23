@@ -28,9 +28,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     "/login",
     response_model=Auth,
     status_code=status.HTTP_200_OK,
-    description=(
-        "Route for authorize."
-    ),
+    description=("Route for authorize."),
 )
 @inject
 async def auth_user(

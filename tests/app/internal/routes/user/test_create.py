@@ -91,7 +91,10 @@ async def test_unique_violation(
 
 @pytest.mark.incorrect
 async def test_unauthorized_request(
-    client: Client, second_user: models.User, user_router: str, response_with_error
+    client: Client,
+    second_user: models.User,
+    user_router: str,
+    response_with_error,
 ):
     response = await client.request(
         method="POST",

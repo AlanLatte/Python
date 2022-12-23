@@ -29,7 +29,7 @@ async def test_correct(
             id=insert_first_user.id,
             old_password=first_user.password.get_secret_value(),
             new_password=new_password.encode(),
-        )
+        ),
     )
 
     assert result == models.User(
@@ -52,7 +52,7 @@ async def test_incorrect_old_password(
                 id=insert_first_user.id,
                 old_password="INCORRECT_OLD_PASSWORD",
                 new_password="NEW_PASSWORD".encode(),
-            )
+            ),
         )
 
 
@@ -69,7 +69,7 @@ async def test_incorrect_user_not_exist(
                 id=insert_first_user.id + user_id_offset,
                 old_password=first_user.password.get_secret_value(),
                 new_password="NEW_PASSWORD".encode(),
-            )
+            ),
         )
 
 
@@ -89,5 +89,5 @@ async def test_incorrect_password_length(
                 id=insert_first_user.id,
                 old_password=first_user.password.get_secret_value(),
                 new_password=new_password.encode(),
-            )
+            ),
         )

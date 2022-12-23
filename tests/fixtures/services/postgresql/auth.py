@@ -1,8 +1,8 @@
 import pytest
 
+from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository
 from app.internal.services.auth import AuthService
 from app.internal.services.user import UserService
-from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository
 
 
 @pytest.fixture()

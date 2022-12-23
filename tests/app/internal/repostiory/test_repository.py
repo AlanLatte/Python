@@ -1,4 +1,5 @@
 import pytest
+
 from app.internal.repository.repository import Repository
 from app.pkg.models.base import Model
 

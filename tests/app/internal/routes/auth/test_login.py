@@ -90,7 +90,10 @@ async def test_incorrect_sign_by_small_password_length(
     ],
 )
 async def test_incorrect_user_not_found(
-    client: Client, cmd: models.AuthCommand, auth_router: str, response_with_error
+    client: Client,
+    cmd: models.AuthCommand,
+    auth_router: str,
+    response_with_error,
 ):
     response = await client.request(
         method="POST",

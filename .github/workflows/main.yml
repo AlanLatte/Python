@@ -1,0 +1,135 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Check code quality
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  linters:
+    env:
+       FILES_TO_CHECK: 'app tests'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+    - run: poetry install --only main
+
+    - name: Start procesing Linters for code quality
+      run: |
+        poetry install --only linters,formatters
+
+        poetry run flake8 ${{ env.FILES_TO_CHECK }}
+        poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
+        poetry run black --check ${{ env.FILES_TO_CHECK }}
+#        poetry run mypy ${{ env.FILES_TO_CHECK }}
+
+  sasts:
+    needs: [linters]
+
+    env:
+       FILES_TO_CHECK: 'app tests'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+    - run: poetry install --only main
+
+    - name: Start procesing Sasts for code quality
+      run: |
+        poetry install --only sasts
+
+        poetry run bandit -r ${{ env.FILES_TO_CHECK }} -x tests
+        poetry run safety check --full-report
+
+  analyze:
+    needs: [linters, sasts]
+
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+
+    # ℹ️ Command-line programs to run using the OS shell.
+    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+
+    #   If the Autobuild fails above, remove it and uncomment the following three lines.
+    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+
+    # - run: |
+    #   echo "Run, Build Application using script"
+    #   ./location_of_script_within_repo/buildscript.sh
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:${{matrix.language}}"
+
+#  tests:
+#    runs-on: ubuntu-latest
+#    needs: [linters, sasts]
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#    - name: Install poetry
+#      run: pipx install poetry
+#
+#    - name: Set up Python 3.9
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: "3.9"
+#        cache: 'poetry'
+#
+#    - run: poetry install --only main
+#
+#    - name: Dump env to file.
+#      run: echo "${{ secrets.ENV_FILE }}" > .env
+#    - name: Start tests with pytest
+#      run: |
+#        poetry install --only tests
+#        poetry run pytest tests

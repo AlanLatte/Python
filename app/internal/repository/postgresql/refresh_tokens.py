@@ -32,7 +32,7 @@ class JWTRefreshTokenRepository(Repository):
     @collect_response
     async def read(self, query: ReadJWTRefreshTokenQuery) -> JWTRefreshToken:
         q = """
-            select user_id, refresh_token, fingerprint 
+            select user_id, refresh_token, fingerprint
                 from refresh_tokens
             where user_id = %(user_id)s and refresh_token = %(refresh_token)s;
         """
@@ -46,7 +46,7 @@ class JWTRefreshTokenRepository(Repository):
         query: ReadJWTRefreshTokenQueryByFingerprint,
     ) -> JWTRefreshToken:
         q = """
-            select user_id, refresh_token, fingerprint 
+            select user_id, refresh_token, fingerprint
                 from refresh_tokens
             where user_id = %(user_id)s and fingerprint = %(fingerprint)s;
         """

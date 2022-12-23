@@ -10,7 +10,7 @@ async def test_correct(
     insert_first_user: models.User,
 ):
     result = await user_postgres_service.read_specific_user_by_id(
-        query=models.ReadUserByIdQuery(id=insert_first_user.id)
+        query=models.ReadUserByIdQuery(id=insert_first_user.id),
     )
 
     assert result == insert_first_user
@@ -24,5 +24,5 @@ async def test_incorrect_not_found(
 ):
     with pytest.raises(EmptyResult):
         await user_postgres_service.read_specific_user_by_id(
-            query=models.ReadUserByIdQuery(id=insert_first_user.id + user_id_offset)
+            query=models.ReadUserByIdQuery(id=insert_first_user.id + user_id_offset),
         )
