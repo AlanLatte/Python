@@ -1,0 +1,27 @@
+name: Deploy code on server
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+
+deploy:
+  name: deploy
+  needs: [tests]
+
+  runs-on: ubuntu-latest
+  steps:
+  - name: Deploy code on the remote server
+    uses: appleboy/ssh-action@v0.1.6
+    with:
+      host: ${{ secrets.HOST }}
+      username: ${{ secrets.USERNAME }}
+      key: ${{ secrets.KEY }}
+      port: ${{ secrets.PORT }}
+      script: |
+        cd /root/Python
+        git pull origin main
+        docker compose up --build -d
