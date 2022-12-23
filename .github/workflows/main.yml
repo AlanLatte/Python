@@ -38,7 +38,7 @@ jobs:
         poetry run flake8 ${{ env.FILES_TO_CHECK }}
         poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
         poetry run black --check ${{ env.FILES_TO_CHECK }}
-#        poetry run mypy ${{ env.FILES_TO_CHECK }}
+        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
   sasts:
     needs: [linters]
@@ -86,7 +86,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
@@ -95,41 +94,45 @@ jobs:
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
-    # - run: |
-    #   echo "Run, Build Application using script"
-    #   ./location_of_script_within_repo/buildscript.sh
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{matrix.language}}"
 
-#  tests:
-#    runs-on: ubuntu-latest
-#    needs: [linters, sasts]
-#
-#    steps:
-#    - uses: actions/checkout@v3
-#    - name: Install poetry
-#      run: pipx install poetry
-#
-#    - name: Set up Python 3.9
-#      uses: actions/setup-python@v4
-#      with:
-#        python-version: "3.9"
-#        cache: 'poetry'
-#
-#    - run: poetry install --only main
-#
-#    - name: Dump env to file.
-#      run: echo "${{ secrets.ENV_FILE }}" > .env
-#    - name: Start tests with pytest
-#      run: |
-#        poetry install --only tests
-#        poetry run pytest tests
+  tests:
+    runs-on: ubuntu-latest
+    needs: [linters, sasts, anlazy, tests]
+
+    name: Deploy on test service
+    steps:
+    - name: Deploy code on the remote server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /home/fastapi_template/TestPython
+          git pull origin main
+          docker compose up --build -d postgres migrations
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+        cache: 'poetry'
+
+    - run: poetry install --only main
+
+    - name: Dump env to file.
+      run: echo "${{ secrets.ENV_FILE_DEV }}" > .env
+    - name: Start tests with pytest
+      run: |
+        poetry install --only tests
+        poetry run pytest tests
