@@ -110,10 +110,13 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /home/fastapi_template/TestPython
-          git checkout ${{ env.BRANCH_NAME }}
-          git pull origin main
-          docker compose -f docker-compose.tests.yaml up --build -d postgres migrations
+            cd /home/fastapi_template/TestPython
+            git fetch --all || true
+            git pull origin main || true
+            git checkout ${{ env.BRANCH_NAME }} || true
+            echo ${{ env.BRANCH_NAME }}
+            docker compose -f docker-compose.tests.yaml up --build -d postgres migrations
+
 
      # Run tests
     - uses: actions/checkout@v3
