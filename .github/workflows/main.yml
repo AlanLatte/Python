@@ -88,21 +88,22 @@ jobs:
       run: docker compose up --build -d postgres migrations
     - name: Start tests with pytest
       run: |
+        docker wait migrations
         poetry install --only tests
         poetry run pytest tests
 
-#  deploy:
-#    name: Deploy
-#    runs-on: ubuntu-latest
-#    steps:
-#    - name: Deploy code on the remote server
-#      uses: appleboy/ssh-action@v0.1.6
-#      with:
-#        host: ${{ secrets.HOST }}
-#        username: ${{ secrets.USERNAME }}
-#        password: ${{ secrets.PASSWORD }}
-#        port: ${{ secrets.PORT }}
-#        script: |
-#          cd Python
-#          git pull origin master
-#          docker compose up --build -d
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy code on the remote server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /root/Python
+          git pull origin master
+          docker compose up --build -d
