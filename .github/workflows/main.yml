@@ -70,21 +70,20 @@ jobs:
 
     name: Deploy on test service
     steps:
-#     - name: Deploy code on the remote server
-#       uses: appleboy/ssh-action@v0.1.6
-#       with:
-#         host: ${{ secrets.HOST }}
-#         username: ${{ secrets.USERNAME }}
-#         key: ${{ secrets.KEY }}
-#         port: ${{ secrets.PORT }}
-#         script: |
-#             cd /home/fastapi_template/TestPython
-#             git fetch --all || true
-#             git pull origin main || true
-#             git checkout ${{ env.BRANCH_NAME }} || true
-#             git pull || true
-#             docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
-
+    - name: Deploy code on the remote server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+            cd /home/fastapi_template/TestPython
+            git fetch --all || true
+            git pull origin main || true
+            git checkout ${{ env.BRANCH_NAME }} || true
+            git pull || true
+            docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
 
      # Run tests
     - uses: actions/checkout@v3
