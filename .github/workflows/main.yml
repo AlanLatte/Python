@@ -87,7 +87,7 @@ jobs:
             docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
 
     # Run tests
-    uses: actions/cache@v2
+    - uses: actions/cache@v2
         with:
           path: ~/.local
           key: poetry-1.2.2
