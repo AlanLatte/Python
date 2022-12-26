@@ -4,13 +4,13 @@ services:
     container_name: test-api-template
 
     build:
-      context: .
-      dockerfile: docker/api/Dockerfile
+      context: ../
+      dockerfile: ./docker/api/Dockerfile
 
     restart: always
 
     env_file:
-      - .env
+      - ../.env
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
@@ -30,13 +30,13 @@ services:
     container_name: test-api-template-postgres
 
     build:
-      context: .
-      dockerfile: docker/postgresql/Dockerfile
+      context: ../
+      dockerfile: ./docker/postgresql/Dockerfile
 
     restart: always
 
     env_file:
-      - .env
+      - ../.env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -50,10 +50,10 @@ services:
   migrations:
     container_name: test-api-template-migrations
     build:
-      context: .
-      dockerfile: docker/migrations/Dockerfile
+      context: ../
+      dockerfile: ./docker/migrations/Dockerfile
     env_file:
-      - .env
+      - ../.env
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
@@ -69,11 +69,11 @@ services:
     container_name: test-api-template--redis
 
     build:
-      context: .
-      dockerfile: docker/redis/Dockerfile
+      context: ../
+      dockerfile: ./docker/redis/Dockerfile
 
     env_file:
-      - .env
+      - ../.env
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -87,10 +87,10 @@ services:
   grafana:
     container_name: test-api-template-grafana
     build:
-      context: .
-      dockerfile: docker/grafana/Dockerfile
+      context: ../
+      dockerfile: ./docker/grafana/Dockerfile
     env_file:
-      - .env
+      - ../.env
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
     ports:
@@ -106,7 +106,7 @@ services:
     container_name: test-api-template-prometheus
     user: root
     env_file:
-      - .env
+      - ../.env
     ports:
       - ${PROMETHEUS_PORT}:9090
     volumes:
@@ -121,10 +121,10 @@ services:
   centrifugo:
     container_name: test-api-centrifugo
     build:
-      context: .
-      dockerfile: docker/centrifugo/Dockerfile
+      context: ../
+      dockerfile: ./docker/centrifugo/Dockerfile
     env_file:
-      - .env
+      - ../.env
     environment:
       - API_SERVER=api
       - API_SERVER_PORT=5000
