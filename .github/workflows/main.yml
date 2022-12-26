@@ -85,7 +85,7 @@ jobs:
             git checkout ${{ env.BRANCH_NAME }} || true
             git pull || true
             cd tests
-            docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
+            docker compose -f ./docker-compose.yaml up --build -d postgres migrations
 
     # Run tests
     - uses: actions/cache@v3
