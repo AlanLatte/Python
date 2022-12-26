@@ -47,11 +47,13 @@ mypy = "^0.931"
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = "^0.20.2"
 coverage = "^6.3.2"
+pytest-cov = "^4.0.0"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "^5.3.0"
 sphinx-pydantic = "^0.1.1"
 sphinx-rtd-theme = "^1.1.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -8,6 +8,9 @@ from dotenv import find_dotenv
 from pydantic.env_settings import BaseSettings
 from pydantic.types import PositiveInt, SecretStr
 
+from app.pkg.models import UserRole
+from app.pkg.models.types import EncryptedSecretBytes
+
 __all__ = ["Settings", "get_settings"]
 
 
@@ -26,6 +29,13 @@ class Settings(_Settings):
 
     Formed from `.env` or `.env.dev`.
     """
+
+    #: str: Default username.
+    API_DEFAULT_USERNAME: str
+    #: EncryptedSecretBytes: Default user password.
+    API_DEFAULT_PASSWORD: EncryptedSecretBytes
+    #: UserRole: Enum validation of user role.
+    API_DEFAULT_ROLE: UserRole
 
     #: str: Postgresql host.
     POSTGRES_HOST: str

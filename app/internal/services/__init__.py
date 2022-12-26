@@ -4,6 +4,7 @@ from app.internal.repository import Repositories
 from app.internal.services import auth, user
 from app.internal.services.auth import AuthService
 from app.internal.services.user import UserService
+from app.internal.services.user_roles import UserRoleService
 from app.pkg.settings import settings
 
 
@@ -23,4 +24,9 @@ class Services(containers.DeclarativeContainer):
         AuthService,
         user_service=user_service,
         refresh_token_repository=repositories.refresh_token_repository,
+    )
+
+    user_role_service = providers.Factory(
+        UserRoleService,
+        user_role_repository=repositories.user_role_repository,
     )
