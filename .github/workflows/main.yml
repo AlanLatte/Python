@@ -84,7 +84,6 @@ jobs:
             git pull origin main || true
             git checkout ${{ env.BRANCH_NAME }} || true
             git pull || true
-            cd tests
             docker compose up --build -d postgres migrations
 
     # Run tests
