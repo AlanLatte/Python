@@ -10,7 +10,7 @@ services:
     restart: always
 
     env_file:
-      - ../.env
+      - .env
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
@@ -36,7 +36,7 @@ services:
     restart: always
 
     env_file:
-      - ../.env
+      - .env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -53,7 +53,7 @@ services:
       context: ../
       dockerfile: ./docker/migrations/Dockerfile
     env_file:
-      - ../.env
+      - .env
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
@@ -73,7 +73,7 @@ services:
       dockerfile: ./docker/redis/Dockerfile
 
     env_file:
-      - ../.env
+      - .env
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -90,7 +90,7 @@ services:
       context: ../
       dockerfile: ./docker/grafana/Dockerfile
     env_file:
-      - ../.env
+      - .env
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
     ports:
@@ -106,7 +106,7 @@ services:
     container_name: test-api-template-prometheus
     user: root
     env_file:
-      - ../.env
+      - .env
     ports:
       - ${PROMETHEUS_PORT}:9090
     volumes:
@@ -124,7 +124,7 @@ services:
       context: ../
       dockerfile: ./docker/centrifugo/Dockerfile
     env_file:
-      - ../.env
+      - .env
     environment:
       - API_SERVER=api
       - API_SERVER_PORT=5000
