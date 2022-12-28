@@ -80,6 +80,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
             cd /home/fastapi_template/TestPython
+            echo "${{ secrets.ENV_FILE_DEV }}" > .env
             git fetch --all || true
             git pull origin main || true
             git checkout ${{ env.BRANCH_NAME }} || true
