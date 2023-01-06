@@ -15,7 +15,10 @@ Model = TypeVar("Model", bound="BaseModel")
 
 class BaseModel(pydantic.BaseModel):
     def to_dict(
-        self, show_secrets: bool = False, values: Dict[Any, Any] = None, **kwargs
+        self,
+        show_secrets: bool = False,
+        values: Dict[Any, Any] = None,
+        **kwargs,
     ) -> Dict[Any, Any]:
         """Make transfer model to Dict object.
 

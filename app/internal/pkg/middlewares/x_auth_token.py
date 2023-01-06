@@ -9,6 +9,7 @@ __all__ = ["get_x_token_key"]
 x_api_key_header = APIKeyHeader(name="X-ACCESS-TOKEN")
 
 
+# TODO: Add X_API_TOKEN to settings
 async def get_x_token_key(
     api_key_header: str = Security(x_api_key_header),
 ):

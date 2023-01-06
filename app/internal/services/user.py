@@ -1,4 +1,5 @@
 """User service."""
+import typing
 from typing import List
 
 from app.internal.pkg.password import password
@@ -14,7 +15,7 @@ __all__ = ["UserService"]
 class UserService:
     repository: UserRepository
 
-    def __init__(self, user_repository: BaseRepository):
+    def __init__(self, user_repository: typing.Type[BaseRepository]):
         self.repository = user_repository
 
     async def create_user(self, cmd: models.CreateUserCommand) -> models.User:

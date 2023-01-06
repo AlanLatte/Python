@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from app.internal.repository import Repositories
+from app.internal.repository import Repositories, postgresql
 from app.internal.services import auth, user
 from app.internal.services.auth import AuthService
 from app.internal.services.user import UserService
@@ -16,7 +16,9 @@ class Services(containers.DeclarativeContainer):
         pydantic_settings=[settings],
     )
 
-    repositories = providers.Container(Repositories.postgres)
+    repositories: postgresql.Repositories = providers.Container(
+        Repositories.postgres,
+    )  # type: ignore
 
     user_service = providers.Factory(UserService, repositories.user_repository)
 

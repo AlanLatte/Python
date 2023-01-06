@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 from pydantic import SecretStr
 from pydantic.utils import update_not_none
@@ -23,7 +23,7 @@ class NotEmptyStr(str):
     max_length: Optional[int] = None
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+    def __modify_schema__(cls, field_schema: Dict[str, str]) -> None:
         update_not_none(
             field_schema,
             type="string",

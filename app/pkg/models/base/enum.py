@@ -7,8 +7,8 @@ __all__ = ["BaseEnum"]
 class BaseEnum(Enum):
     """Base ENUM model."""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.value)

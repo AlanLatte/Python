@@ -50,7 +50,7 @@ class AuthService:
                 query=query,
             )
         except EmptyResult:
-            return
+            return None
 
     async def check_refresh_token_exists(
         self,

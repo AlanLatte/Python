@@ -1,4 +1,5 @@
 from dependency_injector import containers, providers
+from dependency_injector.providers import Factory
 
 from app.pkg.models.exceptions.jwt import TokenTimeExpired, UnAuthorized, WrongToken
 from app.pkg.settings import settings
@@ -30,11 +31,11 @@ refresh_security = JwtRefreshBearer(
 class JWT(containers.DeclarativeContainer):
     """Dependency factory injector for JWT."""
 
-    access: JwtAccessBearer = providers.Factory(
+    access: Factory[JwtAccessBearer] = providers.Factory(
         JwtAccessBearer,
         secret_key=settings.JWT_SECRET_KEY,
     )
-    refresh: JwtRefreshBearer = providers.Factory(
+    refresh: Factory[JwtRefreshBearer] = providers.Factory(
         JwtRefreshBearer,
         secret_key=settings.JWT_SECRET_KEY,
     )

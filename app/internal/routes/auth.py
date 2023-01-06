@@ -28,7 +28,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     "/login",
     response_model=Auth,
     status_code=status.HTTP_200_OK,
-    description=("Route for authorize."),
+    description="Route for authorize.",
 )
 @inject
 async def auth_user(
@@ -57,7 +57,7 @@ async def auth_user(
             user_role_name=user.role_name,
         )
 
-    rt = refresh.create_refresh_token(
+    crt = refresh.create_refresh_token(
         subject={
             "user_id": user.id,
             "fingerprint": cmd.fingerprint.get_secret_value(),
@@ -66,14 +66,14 @@ async def auth_user(
     )
     await auth_service.create_refresh_token(
         cmd=CreateJWTRefreshTokenCommand(
-            refresh_token=rt,
+            refresh_token=crt,
             fingerprint=cmd.fingerprint,
             user_id=user.id,
         ),
     )
-    refresh.set_refresh_cookie(response=response, refresh_token=rt)
+    refresh.set_refresh_cookie(response=response, refresh_token=crt)
 
-    return Auth(access_token=at, refresh_token=rt, user_role_name=user.role_name)
+    return Auth(access_token=at, refresh_token=crt, user_role_name=user.role_name)
 
 
 # TODO: make it simple pls

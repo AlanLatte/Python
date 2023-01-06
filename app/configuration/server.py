@@ -25,7 +25,7 @@ class Server:
         self._register_middlewares(app)
         self._register_http_exceptions(app)
 
-    def get_app(self) -> FastAPIInstance:
+    def get_app(self) -> FastAPI:
         """Get current application instance.
 
         Returns: ``FastAPI`` application instance.
@@ -33,7 +33,7 @@ class Server:
         return self.__app
 
     @staticmethod
-    def _register_events(app: FastAPIInstance):
+    def _register_events(app: FastAPIInstance) -> None:
         """Register on startup events.
 
         Args:
@@ -57,7 +57,7 @@ class Server:
         __routes__.register_routes(app)
 
     @staticmethod
-    def _register_http_exceptions(app: FastAPIInstance):
+    def _register_http_exceptions(app: FastAPIInstance) -> None:
         """Register http exceptions.
 
         FastAPIInstance handle BaseApiExceptions raises inside functions.
@@ -71,7 +71,7 @@ class Server:
         app.add_exception_handler(BaseAPIException, handle_api_exceptions)
 
     @staticmethod
-    def __register_cors_origins(app: FastAPIInstance):
+    def __register_cors_origins(app: FastAPIInstance) -> None:
         """Register cors origins."""
 
         app.add_middleware(
@@ -82,7 +82,7 @@ class Server:
             allow_headers=["*"],
         )
 
-    def __register_prometheus(self, app: FastAPIInstance):
+    def __register_prometheus(self, app: FastAPIInstance) -> None:
         """Register prometheus middleware."""
 
         metrics_endpoint = "/metrics"
@@ -90,13 +90,13 @@ class Server:
         app.add_route(metrics_endpoint, metrics)
         self.__filter_logs(metrics_endpoint)
 
-    def _register_middlewares(self, app):
+    def _register_middlewares(self, app) -> None:
         """Apply routes middlewares."""
 
         self.__register_cors_origins(app)
         self.__register_prometheus(app)
 
     @staticmethod
-    def __filter_logs(endpoint: str):
+    def __filter_logs(endpoint: str) -> None:
         """Filter ignore /metrics in uvicorn logs."""
         logging.getLogger("uvicorn.access").addFilter(EndpointFilter(endpoint=endpoint))

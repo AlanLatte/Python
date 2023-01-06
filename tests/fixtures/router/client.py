@@ -1,5 +1,6 @@
 import typing
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient, Response
@@ -14,7 +15,7 @@ class Client:
     client: typing.Union[AsyncClient, TestClient]
     refresh_token: typing.Optional[str] = None
     access_token: typing.Optional[str] = None
-    user: User
+    user: typing.Optional[User]
 
     def __init__(
         self,
@@ -29,8 +30,11 @@ class Client:
         self.user = user
 
     @staticmethod
-    def __build_auth_headers(token: str) -> typing.Dict[str, str]:
-        return {"Authorization": f"Bearer {token}"}
+    def __build_auth_headers(token: typing.Optional[str] = None) -> httpx.Headers:
+        if not token:
+            raise AttributeError("Token not given")
+
+        return httpx.Headers(headers={"Authorization": f"Bearer {token}"})
 
     def set_auth_header(
         self,
@@ -54,7 +58,11 @@ class Client:
         method: str,
         url: str,
         *,
-        json: typing.Union[Model, typing.Dict, None] = None,
+        json: typing.Union[
+            Model,
+            typing.Dict[str, typing.Union[str, int, float]],
+            None,
+        ] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         **kwargs,
     ) -> Response:
@@ -62,12 +70,16 @@ class Client:
             json = json.to_dict(show_secrets=True)
 
         return await self.client.request(
-            method=method, url=url, json=json, headers=headers, **kwargs
+            method=method,
+            url=url,
+            json=json,
+            headers=headers,
+            **kwargs,
         )
 
 
 @pytest.fixture()
-async def client() -> AsyncClient:
+async def client() -> typing.AsyncIterator[Client]:
     async with AsyncClient(app=create_app(), base_url="http://test") as client:
         yield Client(client=client)
 
@@ -91,11 +103,11 @@ async def authorized_first_client(
     )
     assert response.status_code == 200
 
-    response = response.json()
+    json_response: typing.Dict[str, str] = response.json()
 
     client.user = User(inserted=insert_first_user, raw=first_user)
-    client.refresh_token = response.get("refresh_token")
-    client.access_token = response.get("access_token")
+    client.refresh_token = json_response.get("refresh_token")
+    client.access_token = json_response.get("access_token")
 
     client.set_auth_header()
 
