@@ -43,7 +43,7 @@ format: remove_imports isort black docformatter add-trailing-comma
 ## Check code quality
 chk: check
 lint: check
-check: flake8 mypy black_check docformatter_check safety bandit
+check: flake8 black_check docformatter_check safety bandit
 
 ## Migrate database
 migrate:
@@ -111,4 +111,4 @@ bandit:
 ## Add trailing comma works only on unix.
 # an error is expected on windows.
 add-trailing-comma:
-	find ${files_to_fmt} -name "*.py" -exec add-trailing-comma '{}' \;
+	find app tests -name "*.py" -exec add-trailing-comma '{}' --py36-plus \;

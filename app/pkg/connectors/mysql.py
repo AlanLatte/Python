@@ -1,5 +1,5 @@
 """MySql connector."""
-
+import typing
 import urllib.parse
 from contextlib import asynccontextmanager
 
@@ -17,6 +17,7 @@ class Mysql(BaseConnector):
     host: str
     port: pydantic.PositiveInt
     database_name: str
+    pool: typing.Optional[aiomysql.Pool] = None
 
     def __init__(
         self,
@@ -26,7 +27,6 @@ class Mysql(BaseConnector):
         port: pydantic.PositiveInt,
         database_name: str,
     ):
-        self.pool = None
         self.username = username
         self.password = password
         self.host = host

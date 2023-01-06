@@ -1,8 +1,6 @@
 version: '3.8'
 services:
   api:
-    container_name: api-template
-
     build:
       context: .
       dockerfile: docker/api/Dockerfile
@@ -27,8 +25,6 @@ services:
     ]
 
   postgres:
-    container_name: api-template-postgres
-
     build:
       context: .
       dockerfile: docker/postgresql/Dockerfile
@@ -48,7 +44,6 @@ services:
       - ${POSTGRES_DATA_VOLUME}:/var/lib/postgresql/data/pgdata
 
   migrations:
-    container_name: api-template-migrations
     build:
       context: .
       dockerfile: docker/migrations/Dockerfile
@@ -66,8 +61,6 @@ services:
     ]
 
   redis:
-    container_name: api-template--redis
-
     build:
       context: .
       dockerfile: docker/redis/Dockerfile
@@ -78,14 +71,10 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
 
-    ports:
-      - ${REDIS_PORT}:6379
-
     volumes:
       - ${REDIS_DATA_VOLUME}:/data
 
   grafana:
-    container_name: api-template-grafana
     build:
       context: .
       dockerfile: docker/grafana/Dockerfile
@@ -103,12 +92,10 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: api-template-prometheus
+
     user: root
     env_file:
       - .env
-    ports:
-      - ${PROMETHEUS_PORT}:9090
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./src/prometheus:/prometheus
@@ -119,7 +106,6 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
 
   centrifugo:
-    container_name: api-centrifugo
     build:
       context: .
       dockerfile: docker/centrifugo/Dockerfile

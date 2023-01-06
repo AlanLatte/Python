@@ -1,3 +1,4 @@
+import typing
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -10,6 +11,7 @@ __all__ = ["SQLite"]
 
 class SQLite(BaseConnector):
     sqlite_path: Path
+    connection: typing.Optional[aiosqlite.Connection] = None
 
     def __init__(self, sqlite_path: Path):
         self.connection = None

@@ -1,5 +1,5 @@
 """Postgresql connector."""
-
+import typing
 import urllib.parse
 from contextlib import asynccontextmanager
 
@@ -13,6 +13,13 @@ __all__ = ["Postgresql"]
 
 
 class Postgresql(BaseConnector):
+    username: str
+    password: pydantic.SecretStr
+    host: pydantic.PositiveInt
+    port: pydantic.PositiveInt
+    database_name: str
+    pool: typing.Optional[typing.AsyncContextManager[aiopg.Pool]] = None
+
     def __init__(
         self,
         username: str,
@@ -30,14 +37,13 @@ class Postgresql(BaseConnector):
             port: the port of database server.
             database_name: database name.
         """
-        self.pool = None
         self.username = username
         self.password = password
         self.host = host
         self.port = port
         self.database_name = database_name
 
-    def get_dsn(self):
+    def get_dsn(self) -> str:
         """Description of ``BaseConnector.get_dsn``."""
         return (
             f"postgresql://"
@@ -48,7 +54,7 @@ class Postgresql(BaseConnector):
         )
 
     @asynccontextmanager
-    async def get_connect(self) -> Connection:
+    async def get_connect(self) -> typing.AsyncIterator[Connection]:
         """Create pool of connectors to a Postgres database.
 
         Yields:

@@ -80,11 +80,12 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
             cd /home/fastapi_template/TestPython
+            echo "${{ secrets.ENV_FILE_DEV }}" > .env
             git fetch --all || true
             git pull origin main || true
             git checkout ${{ env.BRANCH_NAME }} || true
             git pull || true
-            docker compose -f ./docker-compose.tests.yaml up --build -d postgres migrations
+            docker compose up --build -d postgres migrations
 
     # Run tests
     - uses: actions/cache@v3

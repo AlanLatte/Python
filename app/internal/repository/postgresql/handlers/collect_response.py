@@ -1,8 +1,8 @@
 from functools import wraps
-from typing import List, Union
+from typing import List, Type, Union
 
 import pydantic
-from psycopg2.extras import RealDictRow
+from psycopg2.extras import RealDictRow  # type: ignore
 
 from app.pkg.models.base import Model
 from app.pkg.models.exceptions.repository import EmptyResult
@@ -28,7 +28,10 @@ def collect_response(fn):
 
     @wraps(fn)
     @handle_exception
-    async def inner(*args: object, **kwargs: object) -> Union[List[Model], Model]:
+    async def inner(
+        *args: object,
+        **kwargs: object,
+    ) -> Union[List[Type[Model]], Type[Model]]:
         response = await fn(*args, **kwargs)
         if not response:
             raise EmptyResult

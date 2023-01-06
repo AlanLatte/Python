@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from aiopg.connection import Cursor
 from dependency_injector.wiring import Provide, inject
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor  # type: ignore
 
 from app.pkg.connectors import Connectors
 from app.pkg.connectors.postgresql import Postgresql
