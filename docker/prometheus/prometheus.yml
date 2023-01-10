@@ -9,3 +9,8 @@ scrape_configs:
   static_configs:
   - targets:
     - api:5000
+- job_name: node_exporter
+  scrape_interval: 5s
+  static_configs:
+  - targets:
+    - localhost:9100
