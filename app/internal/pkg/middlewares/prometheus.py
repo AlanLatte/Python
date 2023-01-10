@@ -25,7 +25,6 @@ from app.internal.pkg.middlewares.handle_http_exceptions import (
 from app.pkg.models.base import BaseAPIException
 from app.pkg.models.types.fastapi import FastAPITypes
 
-
 __all__ = ["PrometheusMiddleware"]
 
 
@@ -76,7 +75,9 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         self.__FILTER_UNHANDLED_PATHS = filter_unhandled_paths
 
     async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
+        self,
+        request: Request,
+        call_next: RequestResponseEndpoint,
     ) -> Response:
         method = request.method
         path_template, is_handled_path = self.__get_path_template(request)
@@ -85,10 +86,14 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         self.__REQUESTS_IN_PROGRESS.labels(
-            method=method, path=path_template, app_name=self.__app_name
+            method=method,
+            path=path_template,
+            app_name=self.__app_name,
         ).inc()
         self.__REQUESTS.labels(
-            method=method, path=path_template, app_name=self.__app_name
+            method=method,
+            path=path_template,
+            app_name=self.__app_name,
         ).inc()
         before_time = time.perf_counter()
         status_code = HTTP_500_INTERNAL_SERVER_ERROR
@@ -111,7 +116,9 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             trace_id = trace.format_trace_id(span.get_span_context().trace_id)
 
             self.__REQUESTS_PROCESSING_TIME.labels(
-                method=method, path=path_template, app_name=self.__app_name
+                method=method,
+                path=path_template,
+                app_name=self.__app_name,
             ).observe(after_time - before_time, exemplar={"TraceID": trace_id})
         finally:
             self.__RESPONSES.labels(
@@ -136,7 +143,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             attributes={
                 "service.name": self.__app_name,
                 "compose_service": self.__app_name,
-            }
+            },
         )
 
         tracer = TracerProvider(resource=resource)
@@ -144,8 +151,8 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
 
         tracer.add_span_processor(
             BatchSpanProcessor(
-                OTLPSpanExporter(endpoint=self.__OPEN_TELEMETRY_GRPC_ENDPOINT)
-            )
+                OTLPSpanExporter(endpoint=self.__OPEN_TELEMETRY_GRPC_ENDPOINT),
+            ),
         )
 
         if log_correlation:

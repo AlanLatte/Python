@@ -29,6 +29,7 @@ class Settings(_Settings):
 
     Formed from `.env` or `.env.dev`.
     """
+
     #: str: Name of API service
     API_INSTANCE_APP_NAME: str
 

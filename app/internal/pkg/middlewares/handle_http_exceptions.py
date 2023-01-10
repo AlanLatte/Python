@@ -37,6 +37,7 @@ def handle_api_exceptions(request: Request, exc: BaseAPIException):
 
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})
 
+
 def handle_internal_exception(request: Request, exc: Exception):
     """Handle all internal unhandled exceptions."""
     _ = request

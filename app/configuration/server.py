@@ -7,14 +7,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.configuration.events import on_startup
 from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
+from app.internal.pkg.middlewares.metrics import metrics
 from app.internal.pkg.middlewares.prometheus import PrometheusMiddleware
 from app.internal.routes import __routes__
 from app.pkg.models.base import BaseAPIException
 from app.pkg.models.types.fastapi import FastAPITypes
-from app.internal.pkg.middlewares.metrics import metrics
 from app.pkg.settings import settings
 
 __all__ = ["Server"]
+
 
 class Server:
     """Register all requirements for correct work of server instance."""
@@ -92,7 +93,8 @@ class Server:
         Args:
             app: ``FastAPI`` application instance.
 
-        Returns: None"""
+        Returns: None
+        """
         app.add_middleware(
             PrometheusMiddleware,
             open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
@@ -109,7 +111,9 @@ class Server:
         )
 
     def __register_metrics_collector(
-        self, app: FastAPITypes.FastAPIInstance, prometheus: PrometheusMiddleware
+        self,
+        app: FastAPITypes.FastAPIInstance,
+        prometheus: PrometheusMiddleware,
     ) -> None:
         """Expose internal aggregated metrics to public endpoint.
 
