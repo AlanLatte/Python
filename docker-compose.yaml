@@ -1,3 +1,14 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:5555/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
+          max_wait_time: 30s
+      - regex:
+          expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},d{3}) (?P<message>(?s:.*))$$'
+
 version: '3.8'
 services:
   api:
@@ -10,18 +21,24 @@ services:
     env_file:
       - .env
     environment:
+      - API_INSTANCE_APP_NAME=template-api
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
+      - OPEN_TELEMETRY_GRPC_ENDPOINT=http://tempo:4317
     depends_on:
       - postgres
       - migrations
       - redis
     ports:
       - ${API_SERVER_PORT}:5000
+
+    logging: *default-logging
+
     command: [
       "poetry", "run", "uvicorn", "app:create_app",
       "--host", "0.0.0.0",
-      "--port", '5000'
+      "--port", '5000',
+      "--log-config", "./logs.yaml",
     ]
 
   postgres:
@@ -86,6 +103,11 @@ services:
       - ${GRAFANA_PORT}:3000
     depends_on:
       - prometheus
+      - loki
+      - tempo
+
+    logging: *default-logging
+
     volumes:
       - ${GRAFANA_VOLUME}:/var/lib/grafana
       - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
@@ -102,8 +124,11 @@ services:
     depends_on:
       - centrifugo
       - api
+      - loki
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+
+    logging: *default-logging
 
   centrifugo:
     build:
@@ -123,6 +148,26 @@ services:
     depends_on:
       - api
     command: [ "sh", "init.centrifugo.sh" ]
+
+  tempo:
+    image: grafana/tempo:1.5.0
+    command: ["--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    ports:
+      - "${TEMPO_PORT}:14250"
+      - "4317:4317"
+    depends_on:
+      - loki
+
+    logging: *default-logging
+
+  loki:
+    image: grafana/loki:2.6.1
+    command: -config.file=/etc/loki/local-config.yaml
+    env_file:
+      - .env
+    ports:
+      - "${LOKI_PORT}:3100"
+
 
 networks:
   default:

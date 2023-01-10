@@ -74,7 +74,7 @@ class JwtAuthBase(ABC):
         self.places = places or {"header"}
         self.auto_error = auto_error
         self.algorithm = algorithm
-        self.access_expires_delta = access_expires_delta or timedelta(days=15)
+        self.access_expires_delta = access_expires_delta or timedelta(minutes=5)
         self.refresh_expires_delta = refresh_expires_delta or timedelta(days=31)
 
     @classmethod

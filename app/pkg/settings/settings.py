@@ -30,6 +30,9 @@ class Settings(_Settings):
     Formed from `.env` or `.env.dev`.
     """
 
+    #: str: Name of API service
+    API_INSTANCE_APP_NAME: str
+
     #: str: Default username.
     API_DEFAULT_USERNAME: str
     #: EncryptedSecretBytes: Default user password.
@@ -75,6 +78,9 @@ class Settings(_Settings):
     LOGGER_LEVEL: pydantic.StrictStr
     #: pathlib.Path: Path of saving logs on local storage.
     LOGGER_FILE_PATH: pathlib.Path
+
+    #: str: Open Telemetry endpoint
+    OPEN_TELEMETRY_GRPC_ENDPOINT: str
 
 
 @lru_cache()

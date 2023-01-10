@@ -24,6 +24,12 @@ aiomysql = "^0.1.1"
 httpx = "^0.23.0"
 aiosqlite = "^0.17.0"
 httpcore = "^0.16.2"
+opentelemetry-instrumentation-fastapi = "^0.36b0"
+opentelemetry-instrumentation-logging = "^0.36b0"
+opentelemetry-exporter-otlp = "^1.15.0"
+opentelemetry-api = "^1.15.0"
+opentelemetry-sdk = "^1.15.0"
+pyyaml = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
 MarkupSafe = "^2.1.0"
@@ -54,6 +60,10 @@ Sphinx = "^5.3.0"
 sphinx-pydantic = "^0.1.1"
 sphinx-rtd-theme = "^1.1.1"
 
+
+
+[tool.poetry.group.testing.dependencies]
+locust = "^2.14.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

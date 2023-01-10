@@ -3,20 +3,25 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette_prometheus import PrometheusMiddleware, metrics
 
 from app.configuration.events import on_startup
 from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
+from app.internal.pkg.middlewares.metrics import metrics
+from app.internal.pkg.middlewares.prometheus import PrometheusMiddleware
 from app.internal.routes import __routes__
 from app.pkg.models.base import BaseAPIException
-from app.pkg.models.types.fastapi import FastAPIInstance
+from app.pkg.models.types.fastapi import FastAPITypes
+from app.pkg.settings import settings
 
 __all__ = ["Server"]
 
 
 class Server:
     """Register all requirements for correct work of server instance."""
+
+    __app: FastAPI
+    __app_name: str = settings.API_INSTANCE_APP_NAME
 
     def __init__(self, app: FastAPI):
         self.__app = app
@@ -33,7 +38,7 @@ class Server:
         return self.__app
 
     @staticmethod
-    def _register_events(app: FastAPIInstance) -> None:
+    def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
         """Register on startup events.
 
         Args:
@@ -45,7 +50,7 @@ class Server:
         app.on_event("startup")(on_startup)
 
     @staticmethod
-    def _register_routes(app: FastAPIInstance) -> None:
+    def _register_routes(app: FastAPITypes.FastAPIInstance) -> None:
         """Include routers in ``FastAPI`` instance from ``__routes__``.
 
         Args:
@@ -57,7 +62,7 @@ class Server:
         __routes__.register_routes(app)
 
     @staticmethod
-    def _register_http_exceptions(app: FastAPIInstance) -> None:
+    def _register_http_exceptions(app: FastAPITypes.FastAPIInstance) -> None:
         """Register http exceptions.
 
         FastAPIInstance handle BaseApiExceptions raises inside functions.
@@ -71,7 +76,7 @@ class Server:
         app.add_exception_handler(BaseAPIException, handle_api_exceptions)
 
     @staticmethod
-    def __register_cors_origins(app: FastAPIInstance) -> None:
+    def __register_cors_origins(app: FastAPITypes.FastAPIInstance) -> None:
         """Register cors origins."""
 
         app.add_middleware(
@@ -82,12 +87,45 @@ class Server:
             allow_headers=["*"],
         )
 
-    def __register_prometheus(self, app: FastAPIInstance) -> None:
-        """Register prometheus middleware."""
+    def __register_prometheus(self, app: FastAPITypes.FastAPIInstance) -> None:
+        """Register prometheus middleware.
+
+        Args:
+            app: ``FastAPI`` application instance.
+
+        Returns: None
+        """
+        app.add_middleware(
+            PrometheusMiddleware,
+            open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
+            app_name=self.__app_name,
+        )
+
+        self.__register_metrics_collector(
+            app=app,
+            prometheus=PrometheusMiddleware(
+                app=app,
+                open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
+                app_name=self.__app_name,
+            ),
+        )
+
+    def __register_metrics_collector(
+        self,
+        app: FastAPITypes.FastAPIInstance,
+        prometheus: PrometheusMiddleware,
+    ) -> None:
+        """Expose internal aggregated metrics to public endpoint.
+
+        Args:
+            app: ``FastAPI`` application instance.
+
+        Returns: None
+        """
 
         metrics_endpoint = "/metrics"
-        app.add_middleware(PrometheusMiddleware)
         app.add_route(metrics_endpoint, metrics)
+        prometheus.inject_tracer()
         self.__filter_logs(metrics_endpoint)
 
     def _register_middlewares(self, app) -> None:
