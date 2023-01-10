@@ -1,5 +1,3 @@
-
-
 # config file version
 apiVersion: 1
 
@@ -9,44 +7,73 @@ deleteDatasources:
     orgId: 1
 
 # list of datasources to insert/update depending
-# whats available in the database
+# what's available in the database
 datasources:
   # <string, required> name of the datasource. Required
-- name: Prometheus
-  # <string, required> datasource type. Required
-  type: prometheus
-  # <string, required> access mode. direct or proxy. Required
-  access: proxy
-  # <int> org id. will default to orgId 1 if not specified
-  orgId: 1
-  # <string> url
-  url: http://prometheus:9090
-  # <string> database password, if used
-  password:
-  # <string> database user, if used
-  user:
-  # <string> database name, if used
-  database:
-  # <bool> enable/disable basic auth
-  basicAuth: false
-  # <string> basic auth username, if used
-  basicAuthUser:
-  # <string> basic auth password, if used
-  basicAuthPassword:
-  # <bool> enable/disable with credentials headers
-  withCredentials:
-  # <bool> mark as default datasource. Max one per org
-  isDefault: true
-  # <map> fields that will be converted to json and stored in json_data
-  jsonData:
-     graphiteVersion: "1.1"
-     tlsAuth: false
-     tlsAuthWithCACert: false
-  # <string> json object of data that will be encrypted.
-  secureJsonData:
-    tlsCACert: "..."
-    tlsClientCert: "..."
-    tlsClientKey: "..."
-  version: 1
-  # <bool> allow users to edit datasources from the UI.
-  editable: true
+  - uid: prometheus
+    orgId: 1
+    name: Prometheus
+    type: prometheus
+    typeName: Prometheus
+    access: proxy
+    url: http://prometheus:9090
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: true
+    jsonData:
+      exemplarTraceIdDestinations:
+        - datasourceUid: tempo
+          name: TraceID
+      httpMethod: POST
+    readOnly: false
+    editable: true
+  - uid: tempo
+    orgId: 1
+    name: Tempo
+    type: tempo
+    typeName: Tempo
+    access: proxy
+    url: http://tempo
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      nodeGraph:
+        enabled: true
+      search:
+        hide: true
+      lokiSearch:
+        datasourceUid: loki
+      tracesToLogs:
+        datasourceUid: loki
+        filterBySpanID: false
+        filterByTraceID: true
+        mapTagNamesEnabled: false
+        tags:
+          - compose_service
+    readOnly: false
+    editable: true
+  - uid: loki
+    orgId: 1
+    name: Loki
+    type: loki
+    typeName: Loki
+    access: proxy
+    url: http://loki:3100
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      derivedFields:
+        - datasourceUid: tempo
+          matcherRegex: (?:trace_id)=(\w+)
+          name: TraceID
+          url: $${__value.raw}
+    readOnly: false
+    editable: true
