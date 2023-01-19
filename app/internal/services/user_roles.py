@@ -19,6 +19,12 @@ class UserRoleService:
     async def create_all_user_roles(
         self,
     ) -> typing.AsyncIterable[typing.Optional[BaseAPIException]]:
+        """Create all user roles.
+
+        Returns:
+            Async iterable of BaseAPIException.
+
+        """
         for role in models.UserRole:
             try:
                 await self.repository.create(

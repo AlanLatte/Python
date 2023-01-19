@@ -64,6 +64,9 @@ async def __convert_memory_viewer(r: RealDictRow):
 
     Notes: aiopg returns memory viewer in query response,
         when in database type of cell `bytes`.
+
+    Returns:
+        `RealDictRow` with converted memory viewer in bytes.
     """
     for key, value in r.items():
         if isinstance(value, memoryview):

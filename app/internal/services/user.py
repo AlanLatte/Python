@@ -37,7 +37,12 @@ class UserService:
             raise UserAlreadyExist
 
     async def read_all_users(self) -> List[models.User]:
-        """Read all users from repository."""
+        """Read all users from repository.
+
+        Returns:
+            List of `User` models.
+        """
+
         return await self.repository.read_all()
 
     async def read_specific_user_by_username(
