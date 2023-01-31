@@ -29,6 +29,13 @@ class AuthService:
         user_service: UserService,
         refresh_token_repository: JWTRefreshTokenRepository,
     ):
+        """
+        Initialize class for auth methods.
+
+        Args:
+            user_service: User interface implementation.
+            refresh_token_repository: Refresh token interface implementation.
+        """
         self.user_service = user_service
         self.refresh_token_repository = refresh_token_repository
 

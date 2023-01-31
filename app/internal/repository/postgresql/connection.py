@@ -18,7 +18,7 @@ async def get_connection(
     """Get async connection to postgresql of pool.
 
     Args:
-        postgresql: postgresql connector.
+        postgresql: postgresql settings.
 
     Returns:
         Async connection to postgresql.
