@@ -1,4 +1,4 @@
-"""handlers that handle internal error raise and returns ``http json``
+"""Handlers that handle internal error raise and returns ``http json``
 response.
 
 Examples:
@@ -21,6 +21,7 @@ Examples:
             "message": "test error."
         }
 """
+
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -31,15 +32,30 @@ __all__ = ["handle_internal_exception", "handle_api_exceptions"]
 
 
 def handle_api_exceptions(request: Request, exc: BaseAPIException):
-    """Handle all internal exceptions which inherited from
-    `BaseAPIException`."""
+    """Handle all internal exceptions which inherited from `BaseAPIException`.
+
+    Args:
+        request: ``Request`` instance.
+        exc: ``BaseAPIException`` instance.
+
+    Returns: ``JSONResponse`` instance.
+    """
+
     _ = request
 
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})
 
 
 def handle_internal_exception(request: Request, exc: Exception):
-    """Handle all internal unhandled exceptions."""
+    """Handle all internal unhandled exceptions.
+
+    Args:
+        request: ``Request`` instance.
+        exc: ``Exception`` instance.
+
+    Returns: ``JSONResponse`` instance.
+    """
+
     _ = request
 
     return JSONResponse(

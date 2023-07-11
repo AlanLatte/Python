@@ -1,10 +1,11 @@
 """Server configuration."""
+
 import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.configuration.events import on_startup
+from app.configuration.events import on_startup, on_shutdown
 from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.pkg.middlewares.metrics import metrics
@@ -39,7 +40,7 @@ class Server:
 
     @staticmethod
     def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register on startup events.
+        """Register default events.
 
         Args:
             app: ``FastAPI`` application instance.
@@ -48,6 +49,7 @@ class Server:
         """
 
         app.on_event("startup")(on_startup)
+        app.on_event("shutdown")(on_shutdown)
 
     @staticmethod
     def _register_routes(app: FastAPITypes.FastAPIInstance) -> None:
@@ -77,7 +79,18 @@ class Server:
 
     @staticmethod
     def __register_cors_origins(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register cors origins."""
+        """Register cors origins. In production, you should use only trusted origins.
+
+        Warnings:
+            For default this method is not secure.
+            You **should use it only for development.**
+            Read more about CORS: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+
+        Args:
+            app: ``FastAPI`` application instance.
+
+        Returns: None
+        """
 
         app.add_middleware(
             CORSMiddleware,
@@ -95,6 +108,7 @@ class Server:
 
         Returns: None
         """
+
         app.add_middleware(
             PrometheusMiddleware,
             open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
@@ -137,4 +151,5 @@ class Server:
     @staticmethod
     def __filter_logs(endpoint: str) -> None:
         """Filter ignore /metrics in uvicorn logs."""
+
         logging.getLogger("uvicorn.access").addFilter(EndpointFilter(endpoint=endpoint))

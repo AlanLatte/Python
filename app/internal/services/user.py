@@ -77,9 +77,7 @@ class UserService:
         self,
         cmd: models.ChangeUserPasswordCommand,
     ) -> models.User:
-
-        """Change password for specific user. `id` is `fk` for match user in
-        database.
+        """Change user password.
 
         Args:
             cmd: `ChangeUserPasswordCommand`.

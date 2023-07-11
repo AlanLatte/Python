@@ -8,6 +8,7 @@ from app.internal.services.user import UserService
 from app.pkg import models
 from app.pkg.jwt import JwtAuthorizationCredentials, access_security
 
+
 router = APIRouter(prefix="/user", tags=["User"])
 
 

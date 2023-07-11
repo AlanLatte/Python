@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
+from pydantic import UUID4
 
 from app.pkg.models import types
 
@@ -14,6 +15,8 @@ Model = TypeVar("Model", bound="BaseModel")
 
 
 class BaseModel(pydantic.BaseModel):
+    """Base model for all models in project."""
+
     def to_dict(
         self,
         show_secrets: bool = False,
@@ -30,6 +33,7 @@ class BaseModel(pydantic.BaseModel):
 
         Returns: Dict object with reveal password filed.
         """
+
         values = self.dict(**kwargs).items() if not values else values.items()
         r = {}
         for k, v in values:
@@ -38,6 +42,12 @@ class BaseModel(pydantic.BaseModel):
         return r
 
     def __cast_value(self, v, show_secrets, **kwargs):
+        """Cast value to Dict object.
+
+        Warnings:
+            This method is not memory optimized.
+        """
+
         if isinstance(v, List) or isinstance(v, Tuple):
             return [
                 self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
@@ -48,6 +58,10 @@ class BaseModel(pydantic.BaseModel):
             return v.get_secret_value() if show_secrets else str(v)
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
+        elif isinstance(v, UUID4):
+            return v.__str__()
+        elif isinstance(v, datetime):
+            return v.timestamp()
 
         return v
 
@@ -56,8 +70,10 @@ class BaseModel(pydantic.BaseModel):
 
         Args:
             attr: str value, implements name of field.
+
         Returns: self object.
         """
+
         delattr(self, attr)
         return self
 
@@ -67,6 +83,18 @@ class BaseModel(pydantic.BaseModel):
         Args:
             model: Heir BaseModel object.
 
+        Examples:
+            >>> class A(BaseModel):
+            ...     a: int
+            ...     b: int
+            ...     c: int
+            >>> class B(BaseModel):
+            ...     a: int
+            ...     b: int
+            ...     d: int
+            >>> a = A(a=1, b=2, c=3)
+            >>> a.migrate(model=B)  # B(a=1, b=2, d=4)
+
         Returns:
             pydantic model parsed from ``model``.
         """
@@ -74,7 +102,16 @@ class BaseModel(pydantic.BaseModel):
         return pydantic.parse_obj_as(model, self.to_dict(show_secrets=True))
 
     class Config:
+        """Pydantic config class.
+
+        See Also:
+            https://pydantic-docs.helpmanual.io/usage/model_config/
+        """
+
+        # Use enum values instead of names.
         use_enum_values = True
+
+        # Specify custom json encoders.
         json_encoders = {
             pydantic.SecretStr: lambda v: v.get_secret_value() if v else None,
             pydantic.SecretBytes: lambda v: v.get_secret_value() if v else None,
@@ -83,4 +120,6 @@ class BaseModel(pydantic.BaseModel):
             datetime: lambda v: int(v.timestamp()) if v else None,
             date: lambda v: int(time.mktime(v.timetuple())) if v else None,
         }
+
+        # Allow creating new fields in model.
         allow_population_by_field_name = True

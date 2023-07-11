@@ -1,3 +1,5 @@
+from starlette import status
+
 from app.pkg.models.base import BaseAPIException
 
 __all__ = [
@@ -7,10 +9,10 @@ __all__ = [
 
 
 class IncorrectLengthFingerprint(BaseAPIException):
-    status_code = 400
     message = "Incorrect fingerprint"
+    status_code = status.HTTP_400_BAD_REQUEST
 
 
 class IncorrectUsernameOrPassword(BaseAPIException):
-    status_code = 406
     message = "Incorrect username or password or secret key"
+    status_code = status.HTTP_406_NOT_ACCEPTABLE

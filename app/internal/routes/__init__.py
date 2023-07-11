@@ -7,4 +7,13 @@ __all__ = ["__routes__"]
 
 
 __routes__ = Routes(routers=(user.router, auth.router))
-# TODO: Добавить документацию.
+"""Global point for collected routers.
+
+This snippet from app/internal/pkg/models/routes.py:
+
+Examples:
+    When you using routers with `FastAPI`::
+        >>> from fastapi import FastAPI
+        >>> app = FastAPI()
+        >>> __routes__.register_routes(app=app)
+"""

@@ -1,4 +1,5 @@
 """Postgresql connector."""
+
 import typing
 import urllib.parse
 from contextlib import asynccontextmanager

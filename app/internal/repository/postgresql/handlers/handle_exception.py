@@ -1,6 +1,8 @@
+"""Handle Postgresql Query Exceptions."""
+
 from typing import Callable
 
-from psycopg2 import Error as QueryError
+import psycopg2
 from psycopg2 import errorcodes
 
 from app.pkg.models.base import Model
@@ -15,6 +17,16 @@ def handle_exception(func: Callable[..., Model]):
     Args:
         func: callable function object.
 
+    Examples:
+        For example, if you have a function that contains a query in postgresql,
+        decorator ``handle_exception`` will catch the exceptions that can be
+        raised by the query::
+
+        >>> @handle_exception
+        >>> async def get_user_by_id(user: User) -> User:
+        ...    q = "SELECT * FROM users WHERE id = %(id)s"
+        ...    return await db.fetch_one(q, values=user.dict())
+
     Returns:
         Result of call function.
     Raises:
@@ -24,9 +36,24 @@ def handle_exception(func: Callable[..., Model]):
     """
 
     async def wrapper(*args: object, **kwargs: object) -> Model:
+        """Inner function. Catching Postgresql Query Exceptions.
+
+        Args:
+            *args: Positional arguments.
+            **kwargs: Keyword arguments.
+
+        Raises:
+            UniqueViolation: The query violates the domain uniqueness constraints
+                of the database set.
+            DriverError: Invalid database query
+
+        Returns:
+            Result of call function.
+        """
+
         try:
             return await func(*args, **kwargs)
-        except QueryError as e:
+        except psycopg2.Error as e:
             if e.pgcode == errorcodes.UNIQUE_VIOLATION:
                 raise UniqueViolation
 

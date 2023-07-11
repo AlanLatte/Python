@@ -28,13 +28,11 @@ For start building you *MUST* call wire_packages.
 
 Examples:
     When you using containers without `FastAPI`::
-
-        __containers__.wire_packages()
+        >>> __containers__.wire_packages()
 
     When you using ``FastAPI`` server, you *MUST* pass an argument
     application instance::
-
-        from fastapi import FastAPI
-        app = FastAPI()
-        __containers__.wire_packages(app=app)
+        >>> from fastapi import FastAPI
+        >>> app = FastAPI()
+        >>> __containers__.wire_packages(app=app)
 """

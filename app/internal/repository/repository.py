@@ -9,6 +9,7 @@ __all__ = ["Repository", "BaseRepository"]
 BaseRepository = TypeVar("BaseRepository", bound="Repository")
 
 
+# TODO: Add docstrings. # noqa: DAR101
 class Repository(ABC):
     """Base repository interface."""
 

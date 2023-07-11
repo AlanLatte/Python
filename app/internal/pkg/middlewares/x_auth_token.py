@@ -13,6 +13,22 @@ x_api_key_header = APIKeyHeader(name="X-ACCESS-TOKEN")
 async def get_x_token_key(
     api_key_header: str = Security(x_api_key_header),
 ):
+    """Get X-ACCESS-TOKEN from header and compare it with X_API_TOKEN from settings.
+
+    This function is used for authentication.
+
+    Args:
+        api_key_header: X-ACCESS-TOKEN from header.
+
+    Raises:
+        InvalidCredentials: If X-ACCESS-TOKEN from header not equal
+            X_API_TOKEN from settings.
+
+
+    See Also: https://fastapi.tiangolo.com/tutorial/security/api-keys/
+
+    Returns: None
+    """
     value = settings.X_API_TOKEN.get_secret_value()
     if api_key_header != value:
         raise InvalidCredentials

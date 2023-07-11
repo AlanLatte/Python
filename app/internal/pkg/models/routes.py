@@ -17,27 +17,33 @@ class Routes:
     def register_routes(self, app: FastAPI):
         """Include ``APIRouter`` to the ``FastAPI`` application instance.
 
+        Notes:
+            Function used ``FastAPI.include_router``.
+
+        See Also:
+            https://fastapi.tiangolo.com/advanced/routers/
+
         Args:
             app: ``FastAPI`` application instance.
 
         Examples:
             For register routes, you **must** provide routers to model.::
 
-                from routers import users, auth
-                __routes__ = Routes(
-                    routers=(
-                        users.router,
-                        auth.router
-                    )
-                )
+                >>> from app.internal.routes import auth, user
+                >>> __routes__ = Routes(
+                ...    routers=(
+                ...        user.router,
+                ...        auth.router
+                ...    )
+                ...)
 
             If you call ``register_routes``, all routes from *self.routers* will be
             included to the ``FastAPI`` instance.::
 
-                from fastapi import FastAPI
+                >>> from fastapi import FastAPI
 
-                app = FastAPI()
-                __routes__.register_routes(app=app)
+                >>> app = FastAPI()
+                >>> __routes__.register_routes(app=app)
 
         Returns:
             None

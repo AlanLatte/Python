@@ -1,3 +1,4 @@
+import operator
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional, Type
 
@@ -65,20 +66,25 @@ class Containers:
         *,
         pkg_name: Optional[str] = None,
         testing: bool = False,
-        database_configuration_name: str = "POSTGRES_DATABASE_NAME",
+        database_configuration_path: str = "POSTGRES.DATABASE_NAME",
         prefix: Optional[str] = "test_",
     ) -> None:
-        """Set environment. Using `container.configuration` for rewrite
+        """Set environment for injection.
+
+        Using `container.configuration` for rewrite
         `{{database_configuration_name}}` parameter in `settings`.
 
         Args:
-            database_configuration_name: Pydantic settings field name that contains
+            database_configuration_path: Pydantic settings field name that contains
                 database name
             connector_class: Type of database connector
             testing: If `true` then adding prefix from argument `prefix`
                 to database name
             pkg_name: Optional __name__ of running module.
             prefix: A `prefix` that can be concatenated with the database name
+
+        Returns:
+            None
         """
         self.wire_packages(pkg_name=pkg_name, unwire=True)
 
@@ -89,15 +95,32 @@ class Containers:
 
                 conf: providers.Configuration = container.container().configuration
                 pydantic_settings = conf.get_pydantic_settings()[0]
-
-                database_name = getattr(pydantic_settings, database_configuration_name)
-
-                setattr(
+                database_name = operator.attrgetter(database_configuration_path)(
                     pydantic_settings,
-                    database_configuration_name,
+                )
+
+                # TODO: Make this better.
+                #       Now it is not possible to set the value of a nested attribute.
+                #       For example: `POSTGRES.SOME.SOME.DATABASE_NAME`
+                #       This realization only works for the first level of nesting.
+                setattr(
+                    getattr(
+                        pydantic_settings,
+                        *database_configuration_path.split(".")[:-1],
+                    ),
+                    database_configuration_path.split(".")[-1],
                     f"{prefix}{database_name}",
                 )
 
                 conf.from_pydantic(pydantic_settings)
 
         self.wire_packages(pkg_name=pkg_name)
+
+    @staticmethod
+    def __setattr_nested(base, path, value):
+        """Accept a dotted path to a nested attribute to set."""
+
+        path, _, target = path.rpartition(".")
+        for attrname in path.split("."):
+            base = getattr(base, attrname)
+        setattr(base, target, value)

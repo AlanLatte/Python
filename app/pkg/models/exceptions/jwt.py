@@ -51,10 +51,10 @@ class WrongToken(BaseAPIException):
 
 
 class CSRFError(BaseAPIException):
-    status_code = status.HTTP_401_UNAUTHORIZED
     message = "CSRF double submit tokens do not match"
+    status_code = status.HTTP_401_UNAUTHORIZED
 
 
 class JWTDecodeError(BaseAPIException):
-    status_code = status.HTTP_401_UNAUTHORIZED
     message = "Missing claim: csrf"
+    status_code = status.HTTP_401_UNAUTHORIZED
