@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
+from jsf import JSF
 from pydantic import UUID4
 
 from app.pkg.models import types
@@ -77,29 +78,51 @@ class BaseModel(pydantic.BaseModel):
         delattr(self, attr)
         return self
 
-    def migrate(self, model: Type[BaseModel]) -> Model:
+    def migrate(self, model: Type[BaseModel], random_fill: bool = False) -> Model:
         """Migrate one model to another ignoring missmatch.
 
         Args:
+            random_fill: bool value. If True, then the fields that are not in the
+                model will be filled with random values.
             model: Heir BaseModel object.
 
         Examples:
-            >>> class A(BaseModel):
-            ...     a: int
-            ...     b: int
-            ...     c: int
-            >>> class B(BaseModel):
-            ...     a: int
-            ...     b: int
-            ...     d: int
-            >>> a = A(a=1, b=2, c=3)
-            >>> a.migrate(model=B)  # B(a=1, b=2, d=4)
+            When migrating from model A to model B, the fields that are not
+                in model B will be filled with them::
+                >>> class A(BaseModel):
+                ...     a: int
+                ...     b: int
+                ...     c: int
+                ...     d: int
+                >>> class B(BaseModel):
+                ...     a: int
+                ...     b: int
+                ...     c: int
+                >>> a = A(a=1, b=2, c=3, d=4)
+                >>> a.migrate(model=B)  # B(a=1, b=2, c=3)
+
+            But if you need to fill in the missing fields with a pattern,
+                then you can use the ``fill_patter`` argument::
+                >>> class A(BaseModel):
+                ...     a: int
+                ...     b: int
+                ...     c: int
+                >>> class B(BaseModel):
+                ...     aa: int
+                ...     b: int
+                >>> a = A(a=1, b=2, c=3)
+                >>> a.migrate(model=B, random_fill=True)  # B(aa=1011, b=2)
 
         Returns:
             pydantic model parsed from ``model``.
         """
+        if not random_fill:
+            return pydantic.parse_obj_as(model, self.to_dict(show_secrets=True))
 
-        return pydantic.parse_obj_as(model, self.to_dict(show_secrets=True))
+        # TODO: Make this look better.
+        faker = JSF(model.schema()).generate()
+        faker.update(self.to_dict(show_secrets=True))
+        return pydantic.parse_obj_as(model, faker)
 
     class Config:
         """Pydantic config class.
