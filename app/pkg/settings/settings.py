@@ -36,7 +36,7 @@ class _Settings(BaseSettings):
         ways, the selected value is determined as follows
         (in descending order of priority):
 
-        1. Arguments passed to the Settings class initialiser.
+        1. Arguments passed to the Settings class initializer.
         2. Environment variables, e.g. my_prefix_special_function as described above.
         3. Variables loaded from a dotenv (.env) file.
         4. Variables loaded from the secrets directory.
@@ -79,7 +79,7 @@ class DefaultUser(_Settings):
     #: str: Default username.
     USERNAME: str = "admin"
     #: EncryptedSecretBytes: Default user password.
-    PASSWORD: EncryptedSecretBytes = "adminadmin"
+    PASSWORD: EncryptedSecretBytes = "admin_admin"
     #: UserRole: Enum validation of user role.
     ROLE: UserRole = UserRole.USER
 
@@ -92,7 +92,7 @@ class Redis(_Settings):
     #: PositiveInt: positive int (x > 0) port of redis.
     PORT: PositiveInt = 6379
     #: SecretStr: Redis password.
-    PASSWORD: SecretStr = "redisredis"
+    PASSWORD: SecretStr = "redis_redis"
 
 
 class JWT(_Settings):
@@ -127,11 +127,11 @@ class APIServer(_Settings):
     """API settings."""
     # --- API SETTINGS ---
     #: str: Name of API service
-    API_INSTANCE_APP_NAME: str = "API"
+    INSTANCE_APP_NAME: str = "API"
     #: str: API host.
-    API_HOST: str = "localhost"
+    HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of API.
-    API_PORT: PositiveInt = 8000
+    PORT: PositiveInt = 8000
 
     # --- SECURITY SETTINGS ---
     #: SecretStr: X-ACCESS-TOKEN for access to API.
@@ -149,6 +149,12 @@ class APIServer(_Settings):
     #: str: Open Telemetry endpoint
     OPEN_TELEMETRY_GRPC_ENDPOINT: str
 
+
+class Centrifugo(_Settings):
+    #: str: Centrifugo host.
+    HOST: str = "localhost"
+    #: PositiveInt: positive int (x > 0) port of centrifugo.
+    PORT: PositiveInt = 8001
 
 class RabbitMQ(_Settings):
     """RabbitMQ settings."""
@@ -173,6 +179,15 @@ class Settings(_Settings):
 
     #: Postgresql: Postgresql settings.
     POSTGRES: Postgresql
+
+    #: Redis: Redis settings.
+    REDIS: Redis
+
+    #: Centrifugo: Centrifugo settings.
+    CENTRIFUGO: Centrifugo
+
+    #: RabbitMQ: RabbitMQ settings.
+    RABBITMQ: RabbitMQ
 
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:

@@ -44,7 +44,7 @@ class Containers:
                 if passed, the containers will be written to the application context.
             pkg_name: Optional __name__ of running module.
 
-            unwire: Optional bool parameter. If `True`, unwiring all containers.
+            unwire: Optional bool parameter. If `True`, un wiring all containers.
 
         Returns:
             None
@@ -121,6 +121,6 @@ class Containers:
         """Accept a dotted path to a nested attribute to set."""
 
         path, _, target = path.rpartition(".")
-        for attrname in path.split("."):
-            base = getattr(base, attrname)
+        for attribute_name in path.split("."):
+            base = getattr(base, attribute_name)
         setattr(base, target, value)

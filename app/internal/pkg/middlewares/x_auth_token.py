@@ -29,6 +29,6 @@ async def get_x_token_key(
 
     Returns: None
     """
-    value = settings.X_API_TOKEN.get_secret_value()
+    value = settings.API.X_ACCESS_TOKEN.get_secret_value()
     if api_key_header != value:
         raise InvalidCredentials

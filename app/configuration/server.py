@@ -22,7 +22,7 @@ class Server:
     """Register all requirements for correct work of server instance."""
 
     __app: FastAPI
-    __app_name: str = settings.API_INSTANCE_APP_NAME
+    __app_name: str = settings.API.INSTANCE_APP_NAME
 
     def __init__(self, app: FastAPI):
         self.__app = app
@@ -111,7 +111,7 @@ class Server:
 
         app.add_middleware(
             PrometheusMiddleware,
-            open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
+            open_telemetry_grpc_endpoint=settings.API.OPEN_TELEMETRY_GRPC_ENDPOINT,
             app_name=self.__app_name,
         )
 
@@ -119,7 +119,7 @@ class Server:
             app=app,
             prometheus=PrometheusMiddleware(
                 app=app,
-                open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
+                open_telemetry_grpc_endpoint=settings.API.OPEN_TELEMETRY_GRPC_ENDPOINT,
                 app_name=self.__app_name,
             ),
         )
