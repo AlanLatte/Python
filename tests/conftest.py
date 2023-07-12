@@ -16,6 +16,8 @@ pytest_plugins = [
     "tests.fixtures.router.responses",
     "tests.fixtures.models.user",
     "tests.fixtures.models.auth",
+    "tests.fixtures.models.controller",
+    "tests.fixtures.handlers.equals",
     "tests.fixtures.settings",
     # path to module with fixtures.
 ]

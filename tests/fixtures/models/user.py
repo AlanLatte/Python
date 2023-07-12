@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from typing import Any, Callable, Coroutine
 
+from jsf import JSF
 import pytest
 
 from app.pkg import models
@@ -12,20 +14,18 @@ class User:
 
 
 @pytest.fixture()
-async def first_user() -> models.User:
-    return models.User(
-        id=1,
-        username="correct-user-1@example.ru",
-        password=b"supeR_%$tr0ng-pa$$worD",
-        role_name=models.UserRole.USER,
-    )
+def new_user_generator() -> Callable[[], Any]:
+    mock_user = JSF(models.User.schema())
+    def generate() -> Any:
+        return models.User(**mock_user.generate())
+    return generate
 
 
 @pytest.fixture()
-async def second_user() -> models.User:
-    return models.User(
-        id=1,
-        username="correct-user-2@example.ru",
-        password=b"supeR_%$tr0ng-pa$$worD",
-        role_name=models.UserRole.USER,
-    )
+async def first_user(new_user_generator) -> Coroutine[Any, Any, User]:
+    return new_user_generator()
+
+
+@pytest.fixture()
+async def second_user(new_user_generator) -> Coroutine[Any, Any, User]:
+    return new_user_generator()

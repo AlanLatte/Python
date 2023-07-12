@@ -20,6 +20,7 @@ async def test_correct(
     insert_first_user: models.User,
     refresh_token_value: str,
     fingerprint_value: str,
+    create_model,
 ):
     refresh_token: models.JWTRefreshToken = await refresh_token_repository.create(
         cmd=models.CreateJWTRefreshTokenCommand(
@@ -37,39 +38,31 @@ async def test_correct(
 
 
 async def test_incorrect_empty_user(
-    refresh_token_repository: JWTRefreshTokenRepository,
-    first_fingerprint: str,
-    first_refresh_token: str,
+    refresh_token_repository: JWTRefreshTokenRepository, create_model
 ):
     with pytest.raises(DriverError):
-        await refresh_token_repository.create(
-            cmd=models.CreateJWTRefreshTokenCommand(
-                user_id=1,
-                fingerprint=uuid.uuid4().__str__(),
-                refresh_token=first_refresh_token,
-            ),
+        cmd = await create_model(
+            models.CreateJWTRefreshTokenCommand,
+            user_id=1,
         )
+        await refresh_token_repository.create(cmd=cmd)
 
 
+@pytest.mark.parametrize(
+    "count",
+    [2, 3, 4],
+)
 async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
-    first_fingerprint: str,
-    first_refresh_token: str,
+    create_model,
+    count: int
 ):
     with pytest.raises(UniqueViolation):
-        for _ in range(3):
-            await refresh_token_repository.create(
-                cmd=models.CreateJWTRefreshTokenCommand(
-                    user_id=insert_first_user.id,
-                    fingerprint=first_fingerprint,
-                    refresh_token=first_refresh_token,
-                ),
+        for _ in range(count):
+            cmd = await create_model(
+                models.CreateJWTRefreshTokenCommand,
+                user_id=insert_first_user.id,
             )
-            await refresh_token_repository.create(
-                cmd=models.CreateJWTRefreshTokenCommand(
-                    user_id=insert_first_user.id,
-                    fingerprint=first_fingerprint,
-                    refresh_token=first_refresh_token,
-                ),
-            )
+            await refresh_token_repository.create(cmd=cmd)
+            await refresh_token_repository.create(cmd=cmd)

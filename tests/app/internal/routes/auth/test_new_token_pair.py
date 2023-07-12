@@ -21,7 +21,7 @@ async def test_correct_new_token_pair(
 
     assert (
         authorized_first_client.refresh_token
-        != response.json()[settings.JWT_REFRESH_TOKEN_NAME]
+        != response.json()[settings.API.JWT.REFRESH_TOKEN_NAME]
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -42,7 +42,7 @@ async def test_incorrect_old_token_not_usable(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    new_refresh_token = response.json()[settings.JWT_REFRESH_TOKEN_NAME]
+    new_refresh_token = response.json()[settings.API.JWT.REFRESH_TOKEN_NAME]
 
     assert old_refresh_token != new_refresh_token
 

@@ -21,14 +21,15 @@ async def test_correct_username(
     user_repository: UserRepository,
     insert_first_user: models.User,
     username: str,
+    create_model,
 ):
-    await user_repository.update(
-        cmd=models.UpdateUserCommand(
-            id=insert_first_user.id,
-            username=username,
-            password=insert_first_user.password.get_secret_value(),
-        ),
+    cmd = await create_model(
+        models.UpdateUserCommand,
+        id=insert_first_user.id,
+        username=username,
+        password=insert_first_user.password.get_secret_value(),
     )
+    await user_repository.update(cmd=cmd)
 
     user = await user_repository.read(
         query=models.ReadUserByIdQuery(id=insert_first_user.id),
@@ -82,8 +83,8 @@ async def test_incorrect_user_role(
     user_role: str,
 ):
 
-    insert_first_user.role_name = user_role
     with pytest.raises(ValidationError):
+        insert_first_user.role_name = user_role
         await user_repository.update(
             insert_first_user.migrate(models.UpdateUserCommand),
         )

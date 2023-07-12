@@ -12,20 +12,13 @@ async def test_correct(
     result = await user_postgres_service.read_specific_user_by_username(
         query=models.ReadUserByUserNameQuery(username=insert_first_user.username),
     )
+
     assert result == insert_first_user
 
 
-@pytest.mark.parametrize(
-    "username",
-    [
-        "INCORRECT_USERNAME_1",
-        "INCORRECT_USERNAME_2",
-        "INCORRECT_USERNAME_3",
-        "INCORRECT_USERNAME_4",
-    ],
-)
-async def test_incorrect_username(user_postgres_service: UserService, username: str):
+@pytest.mark.repeat(10)
+async def test_incorrect_username(user_postgres_service: UserService, create_model):
     with pytest.raises(EmptyResult):
-        await user_postgres_service.read_specific_user_by_username(
-            query=models.ReadUserByUserNameQuery(username=username),
-        )
+        query = await create_model(models.ReadUserByUserNameQuery)
+
+        await user_postgres_service.read_specific_user_by_username(query=query)

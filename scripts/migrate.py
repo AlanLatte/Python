@@ -50,14 +50,16 @@ async def insert_default_user(
 ) -> models.User:
     try:
         user = await user_service.read_specific_user_by_username(
-            query=models.ReadUserByUserNameQuery(username=settings.API_DEFAULT_USERNAME)
+            query=models.ReadUserByUserNameQuery(
+                username=settings.API.DEFAULT_USER.USERNAME
+            )
         )
     except EmptyResult:
         user = await user_service.create_user(
             cmd=models.CreateUserCommand(
-                username=settings.API_DEFAULT_USERNAME,
-                password=settings.API_DEFAULT_PASSWORD.get_secret_value(),
-                role_name=settings.API_DEFAULT_ROLE,
+                username=settings.API.DEFAULT_USER.USERNAME,
+                password=settings.API.DEFAULT_USER.PASSWORD.get_secret_value(),
+                role_name=settings.API.DEFAULT_USER.ROLE,
             )
         )
 

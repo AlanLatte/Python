@@ -25,8 +25,9 @@ async def test_correct_sign_by_one_fingerprint(
     assert response.status_code == status.HTTP_200_OK
 
     response_json = response.json()
-    assert response_json.get(settings.JWT_ACCESS_TOKEN_NAME)
-    assert response_json.get(settings.JWT_REFRESH_TOKEN_NAME)
+
+    assert response_json.get(settings.API.JWT.ACCESS_TOKEN_NAME)
+    assert response_json.get(settings.API.JWT.REFRESH_TOKEN_NAME)
     assert response_json.get("role_name") == UserRole.USER.value
 
 
@@ -59,79 +60,36 @@ async def test_incorrect_sign_by_small_password_length(
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.parametrize(
-    "cmd",
-    [
-        models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
-        models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
-        models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
-        models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
-        models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
-    ],
-)
+@pytest.mark.repeat(15)
 async def test_incorrect_user_not_found(
-    client: Client,
-    cmd: models.AuthCommand,
-    auth_router: str,
-    response_with_error,
+    client: Client, auth_router: str, response_with_error, create_model
 ):
+    request_model = await create_model(
+        model=models.AuthCommand,
+    )
     response = await client.request(
-        method="POST",
-        url=f"{auth_router}/login",
-        json=models.AuthCommand(
-            username=uuid.uuid4().__str__(),
-            password=uuid.uuid4().__str__(),
-            fingerprint=uuid.uuid4().__str__(),
-        ),
+        method="POST", url=f"{auth_router}/login", json=request_model
     )
 
     assert response_with_error(response, EmptyResult)
 
 
-@pytest.mark.parametrize(
-    "password",
-    [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-    ],
-)
+@pytest.mark.repeat(15)
 async def test_incorrect_user_incorrect_username(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
     response_with_error,
-    password: str,
+    create_model,
 ):
+
+    request_model = await create_model(
+        model=models.AuthCommand,
+        username=fist_auth_user.username,
+        fingerprint=fist_auth_user.fingerprint,
+    )
     response = await client.request(
-        method="POST",
-        url=f"{auth_router}/login",
-        json=models.AuthCommand(
-            username=fist_auth_user.username,
-            password=password,
-            fingerprint=fist_auth_user.fingerprint,
-        ),
+        method="POST", url=f"{auth_router}/login", json=request_model
     )
 
     assert response_with_error(response, IncorrectUsernameOrPassword)
@@ -176,7 +134,6 @@ async def test_incorrect_sign_by_two_devices_but_fingerprint_one(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
-    first_fingerprint: str,
     settings: Settings,
 ):
     response_one = await client.request(
@@ -200,10 +157,10 @@ async def test_incorrect_sign_by_two_devices_but_fingerprint_one(
     two_device = response_one.json()
 
     assert (
-        one_json[settings.JWT_REFRESH_TOKEN_NAME]
-        == two_device[settings.JWT_REFRESH_TOKEN_NAME]
+        one_json[settings.API.JWT.REFRESH_TOKEN_NAME]
+        == two_device[settings.API.JWT.REFRESH_TOKEN_NAME]
     )
     assert (
-        one_json[settings.JWT_ACCESS_TOKEN_NAME]
-        != two_device[settings.JWT_ACCESS_TOKEN_NAME]
+        one_json[settings.API.JWT.ACCESS_TOKEN_NAME]
+        != two_device[settings.API.JWT.ACCESS_TOKEN_NAME]
     )

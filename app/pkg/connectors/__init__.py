@@ -21,11 +21,11 @@ class Connectors(containers.DeclarativeContainer):
 
     postgresql = providers.Factory(
         Postgresql,
-        username=configuration.POSTGRES_USER,
-        password=configuration.POSTGRES_PASSWORD,
-        host=configuration.POSTGRES_HOST,
-        port=configuration.POSTGRES_PORT,
-        database_name=configuration.POSTGRES_DATABASE_NAME,
+        username=configuration.POSTGRES.USER,
+        password=configuration.POSTGRES.PASSWORD,
+        host=configuration.POSTGRES.HOST,
+        port=configuration.POSTGRES.PORT,
+        database_name=configuration.POSTGRES.DATABASE_NAME,
     )
 
     # sqlite = providers.Factory(SQLite, sqlite_path=configuration.SQLITE_PATH)

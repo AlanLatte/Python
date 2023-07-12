@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import typing
 from datetime import date, datetime
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
@@ -78,13 +79,23 @@ class BaseModel(pydantic.BaseModel):
         delattr(self, attr)
         return self
 
-    def migrate(self, model: Type[BaseModel], random_fill: bool = False) -> Model:
+    def migrate(
+        self,
+        model: Type[BaseModel],
+        match_keys: typing.Dict[str, str] = None,
+        random_fill: bool = False,
+    ) -> Model:
         """Migrate one model to another ignoring missmatch.
 
         Args:
+            model: Heir BaseModel object.
             random_fill: bool value. If True, then the fields that are not in the
                 model will be filled with random values.
-            model: Heir BaseModel object.
+            match_keys: Dict object. The keys of this object are the names of the
+                fields of the model to which the migration will be made, and the
+                values are the names of the fields of the current model.
+                Key: name of field in self model.
+                Value: name of field in target model.
 
         Examples:
             When migrating from model A to model B, the fields that are not
@@ -101,8 +112,8 @@ class BaseModel(pydantic.BaseModel):
                 >>> a = A(a=1, b=2, c=3, d=4)
                 >>> a.migrate(model=B)  # B(a=1, b=2, c=3)
 
-            But if you need to fill in the missing fields with a pattern,
-                then you can use the ``fill_patter`` argument::
+            But if you need to fill in the missing fields with a random value,
+                then you can use the ``random_fill`` argument::
                 >>> class A(BaseModel):
                 ...     a: int
                 ...     b: int
@@ -113,15 +124,35 @@ class BaseModel(pydantic.BaseModel):
                 >>> a = A(a=1, b=2, c=3)
                 >>> a.migrate(model=B, random_fill=True)  # B(aa=1011, b=2)
 
+            If you need to migrate fields with different names, then you can use
+                the ``match_keys`` argument::
+                >>> class A(BaseModel):
+                ...     a: int
+                ...     b: int
+                ...     c: int
+                >>> class B(BaseModel):
+                ...     aa: int
+                ...     b: int
+                ...     c: int
+                >>> a = A(a=1, b=2, c=3)
+                >>> a.migrate(model=B, match_keys={"aa": "a"})  # B(aa=1, b=2, c=3)
+
         Returns:
             pydantic model parsed from ``model``.
         """
+        self_dict_model = self.to_dict(show_secrets=True)
+        if not match_keys:
+            match_keys = {}
+
+        for key, value in match_keys.items():
+            self_dict_model[key] = self_dict_model.pop(value)
+
         if not random_fill:
-            return pydantic.parse_obj_as(model, self.to_dict(show_secrets=True))
+            return pydantic.parse_obj_as(model, self_dict_model)
 
         # TODO: Make this look better.
         faker = JSF(model.schema()).generate()
-        faker.update(self.to_dict(show_secrets=True))
+        faker.update(self_dict_model)
         return pydantic.parse_obj_as(model, faker)
 
     class Config:
@@ -146,3 +177,6 @@ class BaseModel(pydantic.BaseModel):
 
         # Allow creating new fields in model.
         allow_population_by_field_name = True
+
+        # Allow validate assignment.
+        validate_assignment = True

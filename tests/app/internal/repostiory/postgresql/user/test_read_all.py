@@ -19,9 +19,10 @@ async def test_correct_two_users(
     user_repository: UserRepository,
     insert_first_user: models.User,
     insert_second_user: models.User,
+    check_array_equality,
 ):
     users = await user_repository.read_all()
-    assert insert_first_user in users and insert_second_user in users
+    assert check_array_equality(users, [insert_first_user, insert_second_user])
 
 
 async def test_incorrect(user_repository: UserRepository):
@@ -29,22 +30,27 @@ async def test_incorrect(user_repository: UserRepository):
         await user_repository.read_all()
 
 
-async def test_correct_many_users(user_repository: UserRepository):
+@pytest.mark.parametrize(
+    "count",
+    [1, 2, 3, 4],
+)
+async def test_correct_many_users(
+    user_repository: UserRepository, create_model, count: int
+):
     with pytest.raises(EmptyResult):
         await user_repository.read_all()
 
     tasks = []
-    for i in range(10):
-        feature = user_repository.create(
-            models.CreateUserCommand(
-                username=f"correct-{i}",
-                password=f"strong-password-user-{i}",
-                user_role=models.UserRole.USER,
-            ),
+    for i in range(count):
+        cmd = await create_model(
+            models.CreateUserCommand,
+            username=f"correct-{i}",
+            password=f"strong-password-user-{i}",
         )
+        feature = user_repository.create(cmd=cmd)
         tasks.append(feature)
 
     await asyncio.gather(*tasks)
 
     users = await user_repository.read_all()
-    assert users.__len__() == 10
+    assert users.__len__() == count

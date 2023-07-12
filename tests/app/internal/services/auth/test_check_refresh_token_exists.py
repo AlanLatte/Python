@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 
 from app.internal.services import AuthService
@@ -23,37 +21,25 @@ async def test_correct(
 @pytest.mark.parametrize("user_offset", [1, 2, 3, 4, 5])
 async def test_incorrect_user_not_exist(
     auth_postgres_service: AuthService,
-    first_refresh_token: str,
     insert_first_user: models.User,
     user_offset: int,
+    create_model,
 ):
     with pytest.raises(UnAuthorized):
-        await auth_postgres_service.check_refresh_token_exists(
-            query=models.ReadJWTRefreshTokenQuery(
-                user_id=insert_first_user.id + user_offset,
-                refresh_token=first_refresh_token,
-            ),
+        query = await create_model(
+            models.ReadJWTRefreshTokenQuery,
+            user_id=insert_first_user.id + user_offset,
         )
+        await auth_postgres_service.check_refresh_token_exists(query=query)
 
 
-@pytest.mark.parametrize(
-    "refresh_token",
-    [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-    ],
-)
+@pytest.mark.repeat(5)
 async def test_incorrect_token_not_exist(
-    auth_postgres_service: AuthService,
-    refresh_token: str,
-    insert_first_user: models.User,
+    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
 ):
     with pytest.raises(UnAuthorized):
-        await auth_postgres_service.check_refresh_token_exists(
-            query=models.ReadJWTRefreshTokenQuery(
-                user_id=insert_first_user.id,
-                refresh_token=refresh_token,
-            ),
+        query = await create_model(
+            models.ReadJWTRefreshTokenQuery,
+            user_id=insert_first_user.id,
         )
+        await auth_postgres_service.check_refresh_token_exists(query=query)

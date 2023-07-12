@@ -62,15 +62,15 @@ class Postgresql(_Settings):
     """Postgresql settings."""
 
     #: str: Postgresql host.
-    POSTGRES_HOST: str = "localhost"
+    HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of postgresql.
-    POSTGRES_PORT: PositiveInt = 5432
+    PORT: PositiveInt = 5432
     #: str: Postgresql user.
-    POSTGRES_USER: str = "postgres"
+    USER: str = "postgres"
     #: SecretStr: Postgresql password.
-    POSTGRES_PASSWORD: SecretStr = "postgres"
+    PASSWORD: SecretStr = "postgres"
     #: str: Postgresql database name.
-    POSTGRES_DATABASE_NAME: str = "postgres"
+    DATABASE_NAME: str = "postgres"
 
 
 class DefaultUser(_Settings):

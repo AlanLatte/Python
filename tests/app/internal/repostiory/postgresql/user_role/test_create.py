@@ -5,11 +5,12 @@ from app.pkg import models
 from app.pkg.models.base import Model
 
 
-async def test_correct_insert_models(user_role_repository: UserRoleRepository):
+async def test_correct_insert_models(
+    user_role_repository: UserRoleRepository, create_model
+):
     for role in models.UserRole:
-        await user_role_repository.create(
-            cmd=models.CreateUserRoleCommand(role_name=role.value),
-        )
+        cmd = await create_model(models.CreateUserRoleCommand, role_name=role.value)
+        await user_role_repository.create(cmd=cmd)
 
 
 async def test_correct(user_role_repository: UserRoleRepository):

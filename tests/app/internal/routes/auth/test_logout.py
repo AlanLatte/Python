@@ -6,18 +6,18 @@ from app.pkg.settings.settings import Settings
 from tests.fixtures.router.client import Client
 
 
-async def test_correct(
-    authorized_first_client: Client,
-    auth_router: str,
-    fist_auth_user: models.AuthCommand,
-):
+async def test_correct(authorized_first_client: Client, auth_router: str, create_model):
     authorized_first_client.set_auth_header(use_access=False)
+    assert authorized_first_client.user is not None
 
     response = await authorized_first_client.request(
         method="POST",
         url=f"{auth_router}/logout",
-        json=fist_auth_user,
+        json=authorized_first_client.user.inserted.migrate(
+            models.AuthCommand, random_fill=True
+        ),
     )
+
     assert response.status_code == status.HTTP_200_OK
 
 
@@ -29,6 +29,7 @@ async def test_incorrect_refresh_token(
     settings: Settings,
 ):
     authorized_first_client.set_auth_header(use_access=False)
+
     response = await authorized_first_client.request(
         method="POST",
         url=f"{auth_router}/logout",

@@ -49,11 +49,12 @@ async def test_password_length(
 ):
 
     cmd = second_user.migrate(models.CreateUserCommand)
-    cmd.password = EncryptedSecretBytes(password.encode())
+    request_json = cmd.to_dict(show_secrets=True)
+    request_json["password"] = password
     response = await authorized_first_client.request(
         method="POST",
         url=f"{user_router}/",
-        json=cmd,
+        json=request_json,
     )
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

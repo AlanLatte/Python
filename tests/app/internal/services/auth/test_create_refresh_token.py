@@ -8,93 +8,63 @@ from app.pkg.models.exceptions.repository import DriverError
 async def test_correct_insert_one(
     auth_postgres_service: AuthService,
     insert_first_user: models.User,
-    first_refresh_token: str,
-    first_fingerprint: str,
-    first_refresh_token_response: models.JWTRefreshToken,
+    create_model,
 ):
-    result = await auth_postgres_service.create_refresh_token(
-        cmd=models.CreateJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        ),
+    cmd = await create_model(
+        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
     )
+    result = await auth_postgres_service.create_refresh_token(cmd=cmd)
 
-    assert result == first_refresh_token_response
+    assert result == cmd
 
 
 async def test_correct_insert_twice(
-    auth_postgres_service: AuthService,
-    insert_first_user: models.User,
-    first_refresh_token: str,
-    first_fingerprint: str,
-    first_refresh_token_response: models.JWTRefreshToken,
-    second_refresh_token: str,
-    second_refresh_token_response: models.JWTRefreshToken,
+    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
 ):
-    result = await auth_postgres_service.create_refresh_token(
-        cmd=models.CreateJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        ),
+    cmd = await create_model(
+        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
     )
-    assert result == first_refresh_token_response
+    result = await auth_postgres_service.create_refresh_token(cmd=cmd)
+    assert result == cmd
 
-    result = await auth_postgres_service.create_refresh_token(
-        cmd=models.CreateJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            refresh_token=second_refresh_token,
-            fingerprint=first_fingerprint,
-        ),
-    )
-
-    assert result == models.JWTRefreshToken(
+    cmd_second = await create_model(
+        models.CreateJWTRefreshTokenCommand,
         user_id=insert_first_user.id,
-        refresh_token=second_refresh_token,
-        fingerprint=first_fingerprint,
+        fingerprint=cmd.fingerprint,
+    )
+
+    result = await auth_postgres_service.create_refresh_token(cmd=cmd_second)
+
+    assert result == await create_model(
+        models.JWTRefreshToken,
+        user_id=insert_first_user.id,
+        refresh_token=result.refresh_token,
+        fingerprint=cmd.fingerprint,
     )
 
 
 async def test_recreate_token(
-    auth_postgres_service: AuthService,
-    insert_first_user: models.User,
-    first_refresh_token: str,
-    first_fingerprint: str,
-    second_refresh_token: str,
-    first_refresh_token_response: models.JWTRefreshToken,
+    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
 ):
-    await auth_postgres_service.create_refresh_token(
-        cmd=models.CreateJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        ),
+    cmd = await create_model(
+        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
     )
+    await auth_postgres_service.create_refresh_token(cmd=cmd)
 
     # Testing recreate refresh token on UniqueViolation
-    await auth_postgres_service.create_refresh_token(
-        cmd=models.CreateJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            refresh_token=first_refresh_token,
-            fingerprint=first_fingerprint,
-        ),
-    )
+    await auth_postgres_service.create_refresh_token(cmd=cmd)
 
 
 @pytest.mark.parametrize("user_offset", [1, 2, 3, 4])
 async def test_incorrect_not_exist_user(
     auth_postgres_service: AuthService,
     insert_first_user: models.User,
-    first_refresh_token: str,
-    first_fingerprint: str,
     user_offset: int,
+    create_model,
 ):
     with pytest.raises(DriverError):
-        await auth_postgres_service.create_refresh_token(
-            cmd=models.CreateJWTRefreshTokenCommand(
-                user_id=insert_first_user.id + user_offset,
-                refresh_token=first_refresh_token,
-                fingerprint=first_fingerprint,
-            ),
+        cmd = await create_model(
+            models.CreateJWTRefreshTokenCommand,
+            user_id=insert_first_user.id + user_offset,
         )
+        await auth_postgres_service.create_refresh_token(cmd=cmd)
