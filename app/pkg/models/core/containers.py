@@ -83,6 +83,12 @@ class Containers:
             pkg_name: Optional __name__ of running module.
             prefix: A `prefix` that can be concatenated with the database name
 
+        Warnings:
+            At v.2.6 it is not possible to set the value of a many-nested attribute.
+            This realization only works for the first level of nesting.
+            For this example it does not work:
+                `POSTGRES.SOME.SOME.DATABASE_NAME`
+
         Returns:
             None
         """
