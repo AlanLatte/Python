@@ -1739,20 +1739,6 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
-name = "jose"
-version = "1.0.0"
-description = "An implementation of the JOSE draft"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "jose-1.0.0.tar.gz", hash = "sha256:8436c3617cd94e1ba97828fbb1ce27c129f66c78fb855b4bb47e122b5f345fba"},
-]
-
-[package.dependencies]
-pycrypto = ">=2.6"
-
-[[package]]
 name = "jsf"
 version = "0.7.1"
 description = "Creates fake JSON files from a JSON schema"
@@ -2627,17 +2613,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
     {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
-]
-
-[[package]]
-name = "pycrypto"
-version = "2.6.1"
-description = "Cryptographic modules for Python."
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pycrypto-2.6.1.tar.gz", hash = "sha256:f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c"},
 ]
 
 [[package]]
@@ -4236,4 +4211,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "1e13bc6617e7806895e6df88c1889d85c5b0629906134f5eadb74ddd0c67f677"
+content-hash = "fcee005f359147213cb8f17c83c501eb82e0716e94107a949fab8d7206d747b6"
