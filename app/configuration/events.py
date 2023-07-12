@@ -14,8 +14,8 @@ async def on_startup() -> None:
 
 
 async def on_shutdown() -> None:
-    """Run code on server shutdown.
-    Use this function for close all connections, etc.
+    """Run code on server shutdown. Use this function for close all
+    connections, etc.
 
     Returns:
         None

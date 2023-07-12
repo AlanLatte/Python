@@ -43,29 +43,47 @@ class BaseModel(pydantic.BaseModel):
             r[k] = v
         return r
 
-    def __cast_value(self, v, show_secrets, **kwargs):
+    def __cast_value(self, v, show_secrets, **kwargs) -> Any:
         """Cast value to Dict object.
 
         Warnings:
             This method is not memory optimized.
         """
 
-        if isinstance(v, List) or isinstance(v, Tuple):
+        if isinstance(v, (List, Tuple)):
             return [
                 self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
             ]
-        elif isinstance(v, pydantic.SecretBytes):
-            return v.get_secret_value().decode() if show_secrets else str(v)
-        elif isinstance(v, pydantic.SecretStr):
-            return v.get_secret_value() if show_secrets else str(v)
+
+        elif isinstance(v, (pydantic.SecretBytes, pydantic.SecretStr)):
+            self.__cast_secret(v=v, show_secrets=show_secrets)
+
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
+
         elif isinstance(v, UUID4):
             return v.__str__()
+
         elif isinstance(v, datetime):
             return v.timestamp()
 
         return v
+
+    @staticmethod
+    def __cast_secret(v, show_secrets: bool) -> str:
+        """Cast secret value to str.
+
+        Args:
+            v: pydantic.Secret* object.
+            show_secrets: bool value. If True, then the secret will be revealed.
+
+        Returns: str value of ``v``.
+        """
+
+        if isinstance(v, pydantic.SecretBytes):
+            return v.get_secret_value().decode() if show_secrets else str(v)
+        elif isinstance(v, pydantic.SecretStr):
+            return v.get_secret_value() if show_secrets else str(v)
 
     def delete_attribute(self, attr: str) -> BaseModel:
         """Delete `attr` field from model.

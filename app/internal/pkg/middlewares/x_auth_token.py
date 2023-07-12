@@ -13,7 +13,8 @@ x_api_key_header = APIKeyHeader(name="X-ACCESS-TOKEN")
 async def get_x_token_key(
     api_key_header: str = Security(x_api_key_header),
 ):
-    """Get X-ACCESS-TOKEN from header and compare it with X_API_TOKEN from settings.
+    """Get X-ACCESS-TOKEN from header and compare it with X_API_TOKEN from
+    settings.
 
     This function is used for authentication.
 

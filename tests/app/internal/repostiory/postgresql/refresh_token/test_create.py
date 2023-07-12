@@ -56,7 +56,7 @@ async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
     create_model,
-    count: int
+    count: int,
 ):
     with pytest.raises(UniqueViolation):
         for _ in range(count):

@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 
 from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository

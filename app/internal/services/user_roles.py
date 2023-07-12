@@ -23,7 +23,6 @@ class UserRoleService:
 
         Returns:
             Async iterable of BaseAPIException.
-
         """
         for role in models.UserRole:
             try:

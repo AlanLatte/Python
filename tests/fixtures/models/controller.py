@@ -1,5 +1,5 @@
 import typing
-from typing import Any, Callable, Coroutine, Type
+from typing import Any, Callable, Coroutine
 
 import pydantic
 import pytest

@@ -24,11 +24,15 @@ def collect_response(fn):
         For example, if you have a function that contains a query in postgresql,
         decorator ``collect_response`` will convert the response from aiopg to
         annotated model::
+        >>> from app.pkg.models.user import User, ReadUserByIdQuery
+        >>> from app.internal.repository.postgresql.connection import get_connection
 
         >>> @collect_response
-        >>> async def get_user_by_id(user: User) -> User:
+        ... async def get_user_by_id(query: ReadUserByIdQuery) -> User:
         ...    q = "SELECT * FROM users WHERE id = %(id)s"
-        ...    return await db.fetch_one(q, values=user.dict())
+        ...    async with get_connection() as cur:
+        ...        await cur.execute(q, query.to_dict(show_secrets=True))
+        ...        return await cur.fetchone()
 
     Returns:
         The model that is specified in type hints of `fn`.

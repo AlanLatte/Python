@@ -24,9 +24,10 @@ async def get_connection(
         For example, if you have a function that contains a query in postgresql,
         context manager ``get_connection`` will get async connection to postgresql
         of pool::
-
-        >>> async with get_connection() as c:
-        ...     await c.execute("SELECT * FROM users")
+        >>> from app.internal.repository.postgresql.connection import get_connection
+        >>> async def exec_some_sql_function() -> None:
+        ...     async with get_connection() as c:
+        ...         await c.execute("SELECT * FROM users")
 
     Returns:
         Async connection to postgresql.

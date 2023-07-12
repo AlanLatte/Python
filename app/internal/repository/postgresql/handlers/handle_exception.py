@@ -21,12 +21,13 @@ def handle_exception(func: Callable[..., Model]):
         For example, if you have a function that contains a query in postgresql,
         decorator ``handle_exception`` will catch the exceptions that can be
         raised by the query::
-
+        >>> from app.pkg import models
+        >>> from app.internal.repository.postgresql.connection import get_connection
         >>> @handle_exception
-        >>> async def get_user_by_id(user: User) -> User:
-        ...    q = "SELECT * FROM users WHERE id = %(id)s"
-        ...    return await db.fetch_one(q, values=user.dict())
-
+        ... async def create(self, cmd: models.CreateUserRoleCommand) -> None:
+        ...     q = "insert into user_roles(role_name) values (%(role_name)s) on conflict do nothing returning role_name;"
+        ...     async with get_connection() as cur:
+        ...         await cur.execute(q, cmd.to_dict(show_secrets=True))
     Returns:
         Result of call function.
     Raises:

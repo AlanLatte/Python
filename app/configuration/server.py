@@ -5,7 +5,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.configuration.events import on_startup, on_shutdown
+from app.configuration.events import on_shutdown, on_startup
 from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.pkg.middlewares.metrics import metrics
@@ -79,7 +79,8 @@ class Server:
 
     @staticmethod
     def __register_cors_origins(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register cors origins. In production, you should use only trusted origins.
+        """Register cors origins. In production, you should use only trusted
+        origins.
 
         Warnings:
             For default this method is not secure.

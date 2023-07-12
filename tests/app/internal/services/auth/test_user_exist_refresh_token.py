@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 
 from app.internal.services.auth import AuthService

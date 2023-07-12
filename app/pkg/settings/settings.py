@@ -125,6 +125,7 @@ class Logging(_Settings):
 
 class APIServer(_Settings):
     """API settings."""
+
     # --- API SETTINGS ---
     #: str: Name of API service
     INSTANCE_APP_NAME: str = "API"
@@ -156,6 +157,7 @@ class Centrifugo(_Settings):
     #: PositiveInt: positive int (x > 0) port of centrifugo.
     PORT: PositiveInt = 8001
 
+
 class RabbitMQ(_Settings):
     """RabbitMQ settings."""
 
@@ -167,6 +169,7 @@ class RabbitMQ(_Settings):
     USER: str = "rabbitmq"
     #: SecretStr: RabbitMQ password.
     PASSWORD: SecretStr = "rabbitmq"
+
 
 class Settings(_Settings):
     """Server settings.
@@ -188,6 +191,7 @@ class Settings(_Settings):
 
     #: RabbitMQ: RabbitMQ settings.
     RABBITMQ: RabbitMQ
+
 
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:

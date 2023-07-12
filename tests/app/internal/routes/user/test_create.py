@@ -4,7 +4,6 @@ from starlette import status
 from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized
 from app.pkg.models.exceptions.user import UserAlreadyExist
-from app.pkg.models.types import EncryptedSecretBytes
 from tests.fixtures.router.client import Client
 
 
