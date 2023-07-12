@@ -64,8 +64,7 @@ sphinx-pydantic = "^0.1.1"
 sphinx-rtd-theme = "^1.1.1"
 
 
-
-[tool.poetry.group.testing.dependencies]
+[tool.poetry.group.benchmarks.dependencies]
 locust = "^2.14.2"
 
 [build-system]
