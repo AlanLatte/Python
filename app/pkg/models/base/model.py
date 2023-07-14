@@ -30,8 +30,60 @@ class BaseModel(pydantic.BaseModel):
         Args:
             show_secrets: bool. default False. Shows secret in dict object if True.
             values: Using an object to write to a Dict object.
-        Keyword Args:
-            Optional arguments to be passed to the Dict object.
+            **kwargs: Optional arguments to be passed to the Dict object.
+
+        Raises:
+            TypeError: If ``values`` is not Dict object.
+
+        Examples:
+            If you don't want to show secret in dict object, then you shouldn't use
+            ``show_secrets`` argument::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict()
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            '**********'
+            >>> print(dict_model["some_value_two"])
+            '**********'
+
+            If you want to deciphe sensitivity in dict object, then you should use ``show_secrets`` argument::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict(show_secrets=True)
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            'key'
+            >>> print(dict_model["some_value_two"])
+            'value'
+
+            In such cases, you can use the ``values`` argument for revrite values in dict object::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict(show_secrets=True, values={"some_value": "value"})
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            'value'
+            >>> print(dict_model["some_value_two"])
+            'value'
 
         Returns: Dict object with reveal password filed.
         """
@@ -39,11 +91,11 @@ class BaseModel(pydantic.BaseModel):
         values = self.dict(**kwargs).items() if not values else values.items()
         r = {}
         for k, v in values:
-            v = self.__cast_value(v=v, show_secrets=show_secrets)
+            v = self.__cast_array(v=v, show_secrets=show_secrets)
             r[k] = v
         return r
 
-    def __cast_value(self, v, show_secrets, **kwargs) -> Any:
+    def __cast_array(self, v, show_secrets, **kwargs) -> Any:
         """Cast value to Dict object.
 
         Warnings:
@@ -52,11 +104,11 @@ class BaseModel(pydantic.BaseModel):
 
         if isinstance(v, (List, Tuple)):
             return [
-                self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
+                self.__cast_array(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
             ]
 
         elif isinstance(v, (pydantic.SecretBytes, pydantic.SecretStr)):
-            self.__cast_secret(v=v, show_secrets=show_secrets)
+            return self.__cast_secret(v=v, show_secrets=show_secrets)
 
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
