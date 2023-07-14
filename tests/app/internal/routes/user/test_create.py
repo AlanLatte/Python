@@ -7,22 +7,26 @@ from app.pkg.models.exceptions.user import UserAlreadyExist
 from tests.fixtures.router.client import Client
 
 
+@pytest.mark.repeat(10)
 @pytest.mark.correct
-async def test_create_user_with_admin_role(
+async def test_create_user(
     authorized_first_client: Client,
-    second_user: models.User,
     user_router: str,
     response_equal,
+    create_model
 ):
+    base_user = await create_model(
+        models.User,
+    )
     response = await authorized_first_client.request(
         method="POST",
         url=f"{user_router}/",
-        json=second_user.migrate(models.CreateUserCommand),
+        json=base_user.migrate(models.CreateUserCommand),
     )
 
     assert response_equal(
         response=response,
-        model=second_user,
+        model=base_user,
         expected_status_code=status.HTTP_201_CREATED,
         exclude_from_model=["id", "password"],
     )
