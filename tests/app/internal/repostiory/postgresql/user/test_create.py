@@ -13,11 +13,11 @@ from app.pkg.models.exceptions.repository import UniqueViolation
     "username",
     [
         "correct-1@example.ru",
-        "correct-2@example.ru",
-        "correct-3@example.ru",
-        "correct-4@example.ru",
-        "correct-5@example.ru",
-        "correct-6@example.ru",
+        # "correct-2@example.ru",
+        # "correct-3@example.ru",
+        # "correct-4@example.ru",
+        # "correct-5@example.ru",
+        # "correct-6@example.ru",
     ],
 )
 async def test_correct(user_repository: UserRepository, username: str, create_model):

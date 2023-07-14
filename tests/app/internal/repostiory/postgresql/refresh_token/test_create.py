@@ -20,7 +20,6 @@ async def test_correct(
     insert_first_user: models.User,
     refresh_token_value: str,
     fingerprint_value: str,
-    create_model,
 ):
     refresh_token: models.JWTRefreshToken = await refresh_token_repository.create(
         cmd=models.CreateJWTRefreshTokenCommand(

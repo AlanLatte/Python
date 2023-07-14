@@ -3,9 +3,9 @@ from typing import Any, Callable, Coroutine
 
 import pydantic
 import pytest
-from jsf import JSF
+from polyfactory.factories import pydantic_factory
 
-from app.pkg.models.base import Model
+from app.pkg.models.base import BaseModel, Model
 
 
 @pytest.fixture()
@@ -51,9 +51,12 @@ def create_model() -> Callable[..., Coroutine[Any, Any, Model]]:
         Returns:
             Model with random data.
         """
-        mock_model = JSF(model.schema()).generate()
-        mock_model.update(kwargs)
 
-        return pydantic.parse_obj_as(model, mock_model)
+        BaseFabric = BaseModel.factory()
+
+        class Factory(BaseFabric[model]):
+            __model__ = model
+
+        return pydantic.parse_obj_as(model, Factory.process_kwargs(**kwargs))
 
     return _create_model

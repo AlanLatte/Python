@@ -1,5 +1,5 @@
 from pydantic.fields import Field
-from pydantic.types import PositiveInt
+from pydantic.types import PositiveInt, SecretStr
 
 from app.pkg.models.base import BaseModel
 from app.pkg.models.types import EncryptedSecretBytes
@@ -24,19 +24,19 @@ class UserFields:
         description="User password",
         example="strong password",
         min_length=6,
-        max_length=256,
+        max_length=100,
     )
     old_password = Field(
         description="Old user password.",
         example="strong password",
         min_length=6,
-        max_length=256,
+        max_length=100,
     )
     new_password = Field(
         description="New user password.",
         example="strong password",
         min_length=6,
-        max_length=256,
+        max_length=100,
     )
     role_name = UserRoleFields.role_name
 

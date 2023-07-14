@@ -6,12 +6,14 @@ from datetime import date, datetime
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
-from jsf import JSF
+from polyfactory.factories import pydantic_factory
 from pydantic import UUID4
 
 from app.pkg.models import types
 
 __all__ = ["BaseModel", "Model"]
+
+from app.pkg.models.core.type_providers import T, TypeProviders
 
 Model = TypeVar("Model", bound="BaseModel")
 
@@ -30,8 +32,60 @@ class BaseModel(pydantic.BaseModel):
         Args:
             show_secrets: bool. default False. Shows secret in dict object if True.
             values: Using an object to write to a Dict object.
-        Keyword Args:
-            Optional arguments to be passed to the Dict object.
+            **kwargs: Optional arguments to be passed to the Dict object.
+
+        Raises:
+            TypeError: If ``values`` is not Dict object.
+
+        Examples:
+            If you don't want to show secret in dict object, then you shouldn't use
+            ``show_secrets`` argument::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict()
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            '**********'
+            >>> print(dict_model["some_value_two"])
+            '**********'
+
+            If you want to deciphe sensitivity in dict object, then you should use ``show_secrets`` argument::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict(show_secrets=True)
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            'key'
+            >>> print(dict_model["some_value_two"])
+            'value'
+
+            In such cases, you can use the ``values`` argument for revrite values in dict object::
+            >>> from app.pkg.models.base import BaseModel
+            >>> class TestModel(BaseModel):
+            ...     some_value: pydantic.SecretStr
+            ...     some_value_two: pydantic.SecretBytes
+            >>> model = TestModel(some_value="key", some_value_two="value")
+            >>> assert isinstance(model.some_value, pydantic.SecretStr)
+            >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
+            >>> dict_model = model.to_dict(show_secrets=True, values={"some_value": "value"})
+            >>> assert isinstance(dict_model["some_value"], str)
+            >>> assert isinstance(dict_model["some_value_two"], str)
+            >>> print(dict_model["some_value"])
+            'value'
+            >>> print(dict_model["some_value_two"])
+            'value'
 
         Returns: Dict object with reveal password filed.
         """
@@ -39,11 +93,11 @@ class BaseModel(pydantic.BaseModel):
         values = self.dict(**kwargs).items() if not values else values.items()
         r = {}
         for k, v in values:
-            v = self.__cast_value(v=v, show_secrets=show_secrets)
+            v = self.__cast_array(v=v, show_secrets=show_secrets)
             r[k] = v
         return r
 
-    def __cast_value(self, v, show_secrets, **kwargs) -> Any:
+    def __cast_array(self, v, show_secrets, **kwargs) -> Any:
         """Cast value to Dict object.
 
         Warnings:
@@ -52,11 +106,11 @@ class BaseModel(pydantic.BaseModel):
 
         if isinstance(v, (List, Tuple)):
             return [
-                self.__cast_value(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
+                self.__cast_array(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
             ]
 
         elif isinstance(v, (pydantic.SecretBytes, pydantic.SecretStr)):
-            self.__cast_secret(v=v, show_secrets=show_secrets)
+            return self.__cast_secret(v=v, show_secrets=show_secrets)
 
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
@@ -102,7 +156,9 @@ class BaseModel(pydantic.BaseModel):
         model: Type[BaseModel],
         match_keys: typing.Dict[str, str] = None,
         random_fill: bool = False,
+        extra_fields: typing.Dict[str, typing.Any] = None,
     ) -> Model:
+        # TODO: Добавить extra_fields
         """Migrate one model to another ignoring missmatch.
 
         Args:
@@ -114,6 +170,11 @@ class BaseModel(pydantic.BaseModel):
                 values are the names of the fields of the current model.
                 Key: name of field in self model.
                 Value: name of field in target model.
+            extra_fields: Dict object. The keys of this object are the names of the
+                fields of the model to which the migration will be made, and the
+                values are the values of the fields of the current model.
+                Key: name of field in target model.
+                Value: value of field in target model.
 
         Examples:
             When migrating from model A to model B, the fields that are not
@@ -137,10 +198,12 @@ class BaseModel(pydantic.BaseModel):
                 ...     b: int
                 ...     c: int
                 >>> class B(BaseModel):
+                ...     a: int
                 ...     aa: int
                 ...     b: int
+                ...     c: int
                 >>> a = A(a=1, b=2, c=3)
-                >>> a.migrate(model=B, random_fill=True)  # B(aa=1011, b=2)
+                >>> a.migrate(model=B, random_fill=True)  # B(a=1, aa=1011, b=2, c=3)
 
             If you need to migrate fields with different names, then you can use
                 the ``match_keys`` argument::
@@ -158,20 +221,44 @@ class BaseModel(pydantic.BaseModel):
         Returns:
             pydantic model parsed from ``model``.
         """
+
         self_dict_model = self.to_dict(show_secrets=True)
+
         if not match_keys:
             match_keys = {}
+        if not extra_fields:
+            extra_fields = {}
 
         for key, value in match_keys.items():
             self_dict_model[key] = self_dict_model.pop(value)
 
+        for key, value in extra_fields.items():
+            self_dict_model[key] = value
+
         if not random_fill:
             return pydantic.parse_obj_as(model, self_dict_model)
 
-        # TODO: Make this look better.
-        faker = JSF(model.schema()).generate()
-        faker.update(self_dict_model)
-        return pydantic.parse_obj_as(model, faker)
+        class Factory(pydantic_factory.ModelFactory[model]):
+            __model__ = model
+
+        return pydantic.parse_obj_as(model, Factory.process_kwargs(**self_dict_model))
+
+
+    @classmethod
+    def factory(cls):
+        class BaseFactory(typing.Generic[T], pydantic_factory.ModelFactory[T]):
+            __is_base_factory__ = True
+
+            @classmethod
+            def get_provider_map(cls) -> Dict[Type, Any]:
+                providers_map = super().get_provider_map()
+
+                return {
+                    **TypeProviders.provider_map(faker_instance=cls),
+                    **providers_map,
+                }
+
+        return BaseFactory
 
     class Config:
         """Pydantic config class.
