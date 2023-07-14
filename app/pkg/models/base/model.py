@@ -102,6 +102,7 @@ class BaseModel(pydantic.BaseModel):
         model: Type[BaseModel],
         match_keys: typing.Dict[str, str] = None,
         random_fill: bool = False,
+        extra_fields: typing.Dict[str, typing.Any] = None,
     ) -> Model:
         """Migrate one model to another ignoring missmatch.
 
@@ -114,6 +115,11 @@ class BaseModel(pydantic.BaseModel):
                 values are the names of the fields of the current model.
                 Key: name of field in self model.
                 Value: name of field in target model.
+            extra_fields: Dict object. The keys of this object are the names of the
+                fields of the model to which the migration will be made, and the
+                values are the values of the fields of the current model.
+                Key: name of field in target model.
+                Value: value of field in target model.
 
         Examples:
             When migrating from model A to model B, the fields that are not
@@ -137,10 +143,12 @@ class BaseModel(pydantic.BaseModel):
                 ...     b: int
                 ...     c: int
                 >>> class B(BaseModel):
+                ...     a: int
                 ...     aa: int
                 ...     b: int
+                ...     c: int
                 >>> a = A(a=1, b=2, c=3)
-                >>> a.migrate(model=B, random_fill=True)  # B(aa=1011, b=2)
+                >>> a.migrate(model=B, random_fill=True)  # B(a=1, aa=1011, b=2, c=3)
 
             If you need to migrate fields with different names, then you can use
                 the ``match_keys`` argument::
@@ -158,12 +166,19 @@ class BaseModel(pydantic.BaseModel):
         Returns:
             pydantic model parsed from ``model``.
         """
+
         self_dict_model = self.to_dict(show_secrets=True)
+
         if not match_keys:
             match_keys = {}
+        if not extra_fields:
+            extra_fields = {}
 
         for key, value in match_keys.items():
             self_dict_model[key] = self_dict_model.pop(value)
+
+        for key, value in extra_fields.items():
+            self_dict_model[key] = value
 
         if not random_fill:
             return pydantic.parse_obj_as(model, self_dict_model)
