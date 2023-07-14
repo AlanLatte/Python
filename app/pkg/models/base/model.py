@@ -4,10 +4,11 @@ import time
 import typing
 from datetime import date, datetime
 from typing import Any, Dict, List, Tuple, Type, TypeVar
+from uuid import UUID
 
 import pydantic
 from jsf import JSF
-from pydantic import UUID4
+from pydantic import UUID1, UUID4
 
 from app.pkg.models import types
 
@@ -113,7 +114,7 @@ class BaseModel(pydantic.BaseModel):
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
 
-        elif isinstance(v, UUID4):
+        elif isinstance(v, UUID):
             return v.__str__()
 
         elif isinstance(v, datetime):
