@@ -46,7 +46,3 @@ class Postgresql(BaseConnector):
 
         self.__pool.close()
         await self.__pool.wait_closed()
-
-        print("*********************************")
-        print("CLOSE CONNECTION")
-        print("*********************************")
