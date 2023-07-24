@@ -1,14 +1,19 @@
 import pytest
 
-from app.pkg.connectors.base_connector import BaseConnector
+from app.pkg.connectors.connector import BaseConnector
 
 
-async def test_raising_not_implemented():
+@pytest.mark.correct
+async def test_raising_not_implemented_connection():
     connect = BaseConnector()
 
     with pytest.raises(NotImplementedError):
-        connect.get_dsn()
+        await connect.get_connect()
+
+
+@pytest.mark.correct
+async def test_raising_not_implemented_close_connection():
+    connect = BaseConnector()
 
     with pytest.raises(NotImplementedError):
-        async with connect.get_connect():
-            ...
+        await connect.close()

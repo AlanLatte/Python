@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 
 import pytest
@@ -49,7 +50,7 @@ async def test_incorrect_empty_user(
 
 @pytest.mark.parametrize(
     "count",
-    [2, 3, 4],
+    [2, 3]
 )
 async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
@@ -58,10 +59,14 @@ async def test_incorrect_unique_token(
     count: int,
 ):
     with pytest.raises(UniqueViolation):
-        for _ in range(count):
-            cmd = await create_model(
-                models.CreateJWTRefreshTokenCommand,
-                user_id=insert_first_user.id,
-            )
-            await refresh_token_repository.create(cmd=cmd)
-            await refresh_token_repository.create(cmd=cmd)
+        cmd = await create_model(
+            models.CreateJWTRefreshTokenCommand,
+            user_id=insert_first_user.id,
+        )
+        await refresh_token_repository.create(cmd=cmd)
+        await refresh_token_repository.create(cmd=cmd)
+
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()

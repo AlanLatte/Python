@@ -3,14 +3,16 @@ import pytest
 from app.internal.repository.postgresql import connection
 
 
+#
+# async def _clean_postgres():
+#     """Deleting database values before each test."""
+#     clean_postgres()
+
+
 @pytest.fixture(autouse=True)
-async def _clean_postgres():
-    """Deleting database values before each test."""
-    await clean_postgres()
-
-
-async def clean_postgres():
+async def get_connection():
     """Truncate all tables (except yoyo migrations) before each test."""
+
     q = """
         CREATE OR REPLACE FUNCTION truncate_tables() RETURNS void AS $$
         DECLARE
@@ -26,6 +28,10 @@ async def clean_postgres():
         END;
         $$ LANGUAGE plpgsql;
     """
-    async with connection.get_connection() as cursor:
-        await cursor.execute(q)
-        await cursor.execute("select truncate_tables();")
+
+    async with connection.get_connection(return_pool=True) as pool:
+        async with connection.acquire_connection(pool) as cursor:
+            await cursor.execute(q)
+            await cursor.execute("select truncate_tables();")
+
+        yield pool

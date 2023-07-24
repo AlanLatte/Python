@@ -147,7 +147,7 @@ class Server:
         """Apply routes middlewares."""
 
         self.__register_cors_origins(app)
-        self.__register_prometheus(app)
+        # self.__register_prometheus(app)
 
     @staticmethod
     def __filter_logs(endpoint: str) -> None:

@@ -2,26 +2,19 @@
 
 from dependency_injector import containers, providers
 
-from app.pkg.settings import settings
+from .postgresql import PostgresSQL
+from .resourсes import AsyncResource
 
-from .postgresql import Postgresql
-
-__all__ = ["Connectors", "Postgresql"]
+__all__ = ["Connectors", "PostgresSQL"]
 
 
 class Connectors(containers.DeclarativeContainer):
     """Declarative container with connectors."""
 
-    configuration = providers.Configuration(
-        name="settings",
-        pydantic_settings=[settings],
-    )
+    postgres: PostgresSQL = providers.Container(PostgresSQL)
 
-    postgresql = providers.Factory(
-        Postgresql,
-        username=configuration.POSTGRES.USER,
-        password=configuration.POSTGRES.PASSWORD,
-        host=configuration.POSTGRES.HOST,
-        port=configuration.POSTGRES.PORT,
-        database_name=configuration.POSTGRES.DATABASE_NAME,
+    postgresql = providers.Resource(
+        AsyncResource,
+        connector=postgres.postgresql,
+        maxsize=250,
     )

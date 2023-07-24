@@ -5,9 +5,10 @@ Collect or build all requirements for startup. Provide global point to
 """
 
 from app.internal.services import Services
-from app.pkg.connectors import Connectors
+from app.pkg.connectors import Connectors, PostgresSQL
 from app.pkg.jwt import JWT
 from app.pkg.models.core import Container, Containers
+from app.pkg.models.core.containers import Resource
 
 __all__ = ["__containers__"]
 
@@ -16,10 +17,15 @@ __containers__ = Containers(
     pkg_name=__name__,
     containers=[
         Container(container=Services),
-        Container(container=Connectors),
         Container(container=JWT),
+        Resource(
+            container=Connectors,
+            depends_on=[Container(container=PostgresSQL)],
+        ),
     ],
 )
+
+
 """
 Containers: Containers needs for register all containers.
 For start building you *MUST* call wire_packages.

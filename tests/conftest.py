@@ -1,7 +1,7 @@
 import pytest
 
 from app.configuration import __containers__
-from app.pkg.connectors import Connectors
+from app.pkg.connectors import PostgresSQL
 
 pytest_plugins = [
     "tests.fixtures.repository.postgresql.postgresql",
@@ -29,7 +29,7 @@ def pytest_sessionstart(session):
     _ = session
 
     __containers__.set_environment(
-        connector_class=Connectors,
-        pkg_name=__name__,
+        connectors=[PostgresSQL],
+        pkg_name="tests",
         testing=True,
     )
