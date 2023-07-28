@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Optional
+from typing import Optional, Union
 
 from aiopg import Pool
 from aiopg.pool import Cursor
@@ -16,7 +16,7 @@ __all__ = ["get_connection", "acquire_connection"]
 @inject
 async def get_connection(
     pool: Pool = Provide[Connectors.postgresql], return_pool: bool = False
-) -> Cursor:
+) -> Union[Cursor, Pool]:
     """Get async pool to postgresql of pool.
 
     Args:
@@ -33,7 +33,7 @@ async def get_connection(
         ...         await c.execute("SELECT * FROM users")
 
     Returns:
-        Async pool to postgresql.
+        Async connection to postgresql.
     """
 
     if not isinstance(pool, Pool):
@@ -56,6 +56,19 @@ async def acquire_connection(
     Args:
         pool: postgresql pool.
         cursor_factory: cursor factory.
+
+    Examples:
+        For example, if you have a function that contains a query in postgresql,
+        context manager ``acquire_connection`` will get async connection to postgresql
+        of pool::
+        >>> from app.internal.repository.postgresql import connection
+        >>> async def exec_some_sql_function() -> None:
+        ...     q = "select * from users;"
+        ...     async with connection.get_connection(return_pool=True) as __pool:
+        ...         async with connection.acquire_connection(__pool) as _cursor:
+        ...             await _cursor.execute(q)
+        ...         async with connection.acquire_connection(__pool) as _cursor:
+        ...             await _cursor.execute(q)
 
     Returns:
         Async connection to postgresql.
