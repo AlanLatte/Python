@@ -115,18 +115,11 @@ class Server:
             app_name=self.__app_name,
         )
 
-        self.__register_metrics_collector(
-            app=app,
-            prometheus=PrometheusMiddleware(
-                app=app,
-                app_name=self.__app_name,
-            ),
-        )
+        self.__register_metrics_collector(app=app)
 
     def __register_metrics_collector(
         self,
         app: FastAPITypes.FastAPIInstance,
-        prometheus: PrometheusMiddleware,
     ) -> None:
         """Expose internal aggregated metrics to public endpoint.
 
