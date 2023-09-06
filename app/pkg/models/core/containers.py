@@ -18,7 +18,8 @@ class Resource:
     #: containers.Container: dependency_injector resource container callable object.
     container: Type[Container]
 
-    #: List[Callable[..., containers.Container]]: List of dependency_injector containers.
+    #: List[Callable[..., containers.Container]]: List of dependency_injector
+    #       containers.
     #  This containers MUST be wired to the main container.
     #  Default: []
     depends_on: List[containers.Container] = field(default_factory=list)
