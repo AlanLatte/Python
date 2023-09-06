@@ -1,11 +1,12 @@
 """Module for load settings form `.env` or if server running with parameter
 `dev` from `.env.dev`"""
 import pathlib
+import urllib.parse
 from functools import lru_cache
 
 import pydantic
 from dotenv import find_dotenv
-from pydantic import validator
+from pydantic import PostgresDsn, root_validator, validator
 from pydantic.env_settings import BaseSettings
 from pydantic.types import PositiveInt, SecretStr
 
@@ -19,7 +20,7 @@ class _Settings(BaseSettings):
     """Base settings. for all settings.
 
     Use double underscore for nested env variables.
-    For example:
+    Examples:
     - .env:
 
         TELEGRAM__TOKEN=...
@@ -71,6 +72,42 @@ class Postgresql(_Settings):
     PASSWORD: SecretStr = "postgres"
     #: str: Postgresql database name.
     DATABASE_NAME: str = "postgres"
+
+    #: str: Concatenation all settings for postgresql in one string. (DSN)
+    #  Builds in `root_validator` method.
+    DSN: str = None
+
+    @root_validator(pre=True)
+    def build_dsn(cls, values: dict):
+        """Build DSN for postgresql.
+
+        Args:
+            values: dict with all settings.
+
+        Notes:
+            This method is called before any other validation.
+            I use it to build DSN for postgresql.
+
+        See Also:
+            About validators:
+                https://pydantic-docs.helpmanual.io/usage/validators/#root-validators
+
+            About DSN:
+                https://pydantic-docs.helpmanual.io/usage/types/#postgresdsn
+
+        Returns:
+            dict with all settings and DSN.
+        """
+
+        values["DSN"] = PostgresDsn.build(
+            scheme="postgresql",
+            user=f"{values.get('USER')}",
+            password=f"{urllib.parse.quote_plus(values.get('PASSWORD'))}",
+            host=f"{values.get('HOST')}",
+            port=f"{values.get('PORT')}",
+            path=f"/{values.get('DATABASE_NAME')}",
+        )
+        return values
 
 
 class DefaultUser(_Settings):
@@ -146,10 +183,6 @@ class APIServer(_Settings):
     #: DefaultUser: Default user settings.
     DEFAULT_USER: DefaultUser
 
-    # --- OPEN TELEMETRY SETTINGS ---
-    #: str: Open Telemetry endpoint
-    OPEN_TELEMETRY_GRPC_ENDPOINT: str
-
 
 class Centrifugo(_Settings):
     #: str: Centrifugo host.
@@ -193,6 +226,8 @@ class Settings(_Settings):
     RABBITMQ: RabbitMQ
 
 
+# TODO: Возможно даже lru_cache не стоит использовать. Стоит использовать meta sigleton.
+#   Для класса настроек. А инициализацию перенести в `def __init__`
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""

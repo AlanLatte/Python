@@ -112,7 +112,6 @@ class Server:
 
         app.add_middleware(
             PrometheusMiddleware,
-            open_telemetry_grpc_endpoint=settings.API.OPEN_TELEMETRY_GRPC_ENDPOINT,
             app_name=self.__app_name,
         )
 
@@ -120,7 +119,6 @@ class Server:
             app=app,
             prometheus=PrometheusMiddleware(
                 app=app,
-                open_telemetry_grpc_endpoint=settings.API.OPEN_TELEMETRY_GRPC_ENDPOINT,
                 app_name=self.__app_name,
             ),
         )
@@ -140,7 +138,6 @@ class Server:
 
         metrics_endpoint = "/metrics"
         app.add_route(metrics_endpoint, metrics)
-        prometheus.inject_tracer()
         self.__filter_logs(metrics_endpoint)
 
     def _register_middlewares(self, app) -> None:

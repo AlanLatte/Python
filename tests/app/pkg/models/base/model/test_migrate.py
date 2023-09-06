@@ -35,7 +35,10 @@ async def test_model():
         some_value_two: str
 
     model = TestModel(
-        some_value=1, some_value_two="1", some_value_three="1", some_value_four=1.0
+        some_value=1,
+        some_value_two="1",
+        some_value_three="1",
+        some_value_four=1.0,
     )
     another_model = model.migrate(AnotherTestModel)
 
@@ -55,7 +58,8 @@ async def test_with_matching_keys():
 
     model = TestModel(some_value=1, some_value_two="1")
     another_model = model.migrate(
-        AnotherTestModel, match_keys={"first": "some_value", "second": "some_value_two"}
+        AnotherTestModel,
+        match_keys={"first": "some_value", "second": "some_value_two"},
     )
 
     assert another_model.first == 1
@@ -100,7 +104,8 @@ async def test_with_extra_field():
     model = TestModel(some_value=1, some_value_two="1")
 
     another_model = model.migrate(
-        AnotherTestModel, extra_fields={"some_value_three": "1", "some_value_four": 1.0}
+        AnotherTestModel,
+        extra_fields={"some_value_three": "1", "some_value_four": 1.0},
     )
 
     assert another_model.some_value == 1

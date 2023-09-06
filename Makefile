@@ -20,7 +20,7 @@ docker_up:
 	docker-compose up --build -d
 
 run:
-	uvicorn app:create_app --host localhost --reload --port ${API_SERVER_PORT}
+	uvicorn app:create_app --host localhost --reload --port ${API__PORT}
 
 # Build sphinx docs
 docs: build_docs rst_builder

@@ -9,8 +9,8 @@ from yoyo import get_backend, read_migrations
 from app.configuration import __containers__
 from app.internal.services import Services, UserService
 from app.internal.services.user_roles import UserRoleService
-from app.pkg import connectors, models
-from app.pkg.connectors import Connectors, postgresql
+from app.pkg import models
+from app.pkg.connectors import PostgresSQL
 from app.pkg.models.base import BaseAPIException
 from app.pkg.models.exceptions.repository import EmptyResult
 from app.pkg.settings import settings
@@ -89,7 +89,6 @@ async def inserter() -> None:
 @inject
 def run(
     action,
-    _postgresql: postgresql.Postgresql = Provide[Connectors.postgresql],
 ):
     """Run ``yoyo-migrations`` based on cli_arguments.
 
@@ -98,13 +97,12 @@ def run(
 
     Args:
         action(Callable[..., None]): Target function.
-        _postgresql: Factory instance of postgresql driver.
 
     Returns:
         None
     """
 
-    backend = get_backend(_postgresql.get_dsn())
+    backend = get_backend(settings.POSTGRES.DSN)
     migrations = read_migrations("migrations")
     action(backend, migrations)
 
@@ -149,14 +147,11 @@ def cli():
         action = _apply
 
     __containers__.set_environment(
-        connector_class=connectors.Connectors, pkg_name=__name__
+        connectors=[PostgresSQL], testing=args.testing, pkg_name=__name__
     )
     run(action)
 
     if args.testing:
-        __containers__.set_environment(
-            connector_class=connectors.Connectors, testing=True, pkg_name=__name__
-        )
         run(action)
 
     if not (args.rollback or args.rollback_one) or not args:

@@ -13,7 +13,7 @@ async def test_create_user(
     authorized_first_client: Client,
     user_router: str,
     response_equal,
-    create_model
+    create_model,
 ):
     base_user = await create_model(
         models.User,
@@ -50,7 +50,6 @@ async def test_password_length(
     password: str,
     response_with_error,
 ):
-
     cmd = second_user.migrate(models.CreateUserCommand)
     request_json = cmd.to_dict(show_secrets=True)
     request_json["password"] = password

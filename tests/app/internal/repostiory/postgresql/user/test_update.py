@@ -82,7 +82,6 @@ async def test_incorrect_user_role(
     insert_first_user: models.User,
     user_role: str,
 ):
-
     with pytest.raises(ValidationError):
         insert_first_user.role_name = user_role
         await user_repository.update(

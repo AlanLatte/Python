@@ -6,7 +6,8 @@ from app.pkg.models.base import Model
 
 
 async def test_correct_insert_models(
-    user_role_repository: UserRoleRepository, create_model
+    user_role_repository: UserRoleRepository,
+    create_model,
 ):
     for role in models.UserRole:
         cmd = await create_model(models.CreateUserRoleCommand, role_name=role.value)

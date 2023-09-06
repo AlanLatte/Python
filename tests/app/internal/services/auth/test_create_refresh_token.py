@@ -11,7 +11,8 @@ async def test_correct_insert_one(
     create_model,
 ):
     cmd = await create_model(
-        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
+        models.CreateJWTRefreshTokenCommand,
+        user_id=insert_first_user.id,
     )
     result = await auth_postgres_service.create_refresh_token(cmd=cmd)
 
@@ -19,10 +20,13 @@ async def test_correct_insert_one(
 
 
 async def test_correct_insert_twice(
-    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
+    auth_postgres_service: AuthService,
+    insert_first_user: models.User,
+    create_model,
 ):
     cmd = await create_model(
-        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
+        models.CreateJWTRefreshTokenCommand,
+        user_id=insert_first_user.id,
     )
     result = await auth_postgres_service.create_refresh_token(cmd=cmd)
     assert result == cmd
@@ -44,10 +48,13 @@ async def test_correct_insert_twice(
 
 
 async def test_recreate_token(
-    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
+    auth_postgres_service: AuthService,
+    insert_first_user: models.User,
+    create_model,
 ):
     cmd = await create_model(
-        models.CreateJWTRefreshTokenCommand, user_id=insert_first_user.id
+        models.CreateJWTRefreshTokenCommand,
+        user_id=insert_first_user.id,
     )
     await auth_postgres_service.create_refresh_token(cmd=cmd)
 

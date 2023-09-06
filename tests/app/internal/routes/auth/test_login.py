@@ -62,13 +62,18 @@ async def test_incorrect_sign_by_small_password_length(
 
 @pytest.mark.repeat(15)
 async def test_incorrect_user_not_found(
-    client: Client, auth_router: str, response_with_error, create_model
+    client: Client,
+    auth_router: str,
+    response_with_error,
+    create_model,
 ):
     request_model = await create_model(
         model=models.AuthCommand,
     )
     response = await client.request(
-        method="POST", url=f"{auth_router}/login", json=request_model
+        method="POST",
+        url=f"{auth_router}/login",
+        json=request_model,
     )
 
     assert response_with_error(response, EmptyResult)
@@ -82,14 +87,15 @@ async def test_incorrect_user_incorrect_username(
     response_with_error,
     create_model,
 ):
-
     request_model = await create_model(
         model=models.AuthCommand,
         username=fist_auth_user.username,
         fingerprint=fist_auth_user.fingerprint,
     )
     response = await client.request(
-        method="POST", url=f"{auth_router}/login", json=request_model
+        method="POST",
+        url=f"{auth_router}/login",
+        json=request_model,
     )
 
     assert response_with_error(response, IncorrectUsernameOrPassword)

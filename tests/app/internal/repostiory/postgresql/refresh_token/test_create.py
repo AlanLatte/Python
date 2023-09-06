@@ -37,7 +37,8 @@ async def test_correct(
 
 
 async def test_incorrect_empty_user(
-    refresh_token_repository: JWTRefreshTokenRepository, create_model
+    refresh_token_repository: JWTRefreshTokenRepository,
+    create_model,
 ):
     with pytest.raises(DriverError):
         cmd = await create_model(
@@ -47,10 +48,7 @@ async def test_incorrect_empty_user(
         await refresh_token_repository.create(cmd=cmd)
 
 
-@pytest.mark.parametrize(
-    "count",
-    [2, 3, 4],
-)
+@pytest.mark.parametrize("count", [2, 3])
 async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
@@ -58,10 +56,9 @@ async def test_incorrect_unique_token(
     count: int,
 ):
     with pytest.raises(UniqueViolation):
-        for _ in range(count):
-            cmd = await create_model(
-                models.CreateJWTRefreshTokenCommand,
-                user_id=insert_first_user.id,
-            )
-            await refresh_token_repository.create(cmd=cmd)
-            await refresh_token_repository.create(cmd=cmd)
+        cmd = await create_model(
+            models.CreateJWTRefreshTokenCommand,
+            user_id=insert_first_user.id,
+        )
+        await refresh_token_repository.create(cmd=cmd)
+        await refresh_token_repository.create(cmd=cmd)

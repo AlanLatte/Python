@@ -35,7 +35,9 @@ async def test_incorrect_user_not_exist(
 
 @pytest.mark.repeat(5)
 async def test_incorrect_token_not_exist(
-    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
+    auth_postgres_service: AuthService,
+    insert_first_user: models.User,
+    create_model,
 ):
     with pytest.raises(UnAuthorized):
         query = await create_model(
