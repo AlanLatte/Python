@@ -16,7 +16,10 @@ steps = [
                 fingerprint text not null,
                 constraint all_value_in_row_must_be_unique unique (
                     user_id, refresh_token, fingerprint
-                )
+                ),
+                
+                check ( length(refresh_token) > 0 ),
+                check ( length(fingerprint) > 0 )
             );
         """,
         """
