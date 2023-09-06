@@ -35,7 +35,9 @@ async def test_incorrect(user_repository: UserRepository):
     [1, 2, 3, 4],
 )
 async def test_correct_many_users(
-    user_repository: UserRepository, create_model, count: int
+    user_repository: UserRepository,
+    create_model,
+    count: int,
 ):
     with pytest.raises(EmptyResult):
         await user_repository.read_all()

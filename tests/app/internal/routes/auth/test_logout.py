@@ -14,7 +14,8 @@ async def test_correct(authorized_first_client: Client, auth_router: str, create
         method="POST",
         url=f"{auth_router}/logout",
         json=authorized_first_client.user.inserted.migrate(
-            models.AuthCommand, random_fill=True
+            models.AuthCommand,
+            random_fill=True,
         ),
     )
 

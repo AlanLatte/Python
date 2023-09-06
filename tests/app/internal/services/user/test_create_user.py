@@ -47,7 +47,9 @@ async def test_incorrect_not_exists_user_role(
     ["1", "12", "123", "1234", "12345"],
 )
 async def test_incorrect_password_length(
-    user_postgres_service: UserService, password: str, create_model
+    user_postgres_service: UserService,
+    password: str,
+    create_model,
 ):
     with pytest.raises(ValidationError):
         cmd = await create_model(

@@ -24,7 +24,9 @@ async def test_correct(
 
 @pytest.mark.repeat(5)
 async def test_incorrect_password(
-    auth_postgres_service: AuthService, insert_first_user: models.User, create_model
+    auth_postgres_service: AuthService,
+    insert_first_user: models.User,
+    create_model,
 ):
     with pytest.raises(IncorrectUsernameOrPassword):
         cmd = await create_model(

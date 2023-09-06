@@ -37,7 +37,8 @@ async def test_correct(
 
 
 async def test_incorrect_empty_user(
-    refresh_token_repository: JWTRefreshTokenRepository, create_model
+    refresh_token_repository: JWTRefreshTokenRepository,
+    create_model,
 ):
     with pytest.raises(DriverError):
         cmd = await create_model(

@@ -75,7 +75,8 @@ class Containers:
 
     #: List[_Container]: List of instance dependency_injector containers.
     __wired_containers__: WiredContainer = field(
-        init=False, default_factory=lambda: WiredContainer()
+        init=False,
+        default_factory=lambda: WiredContainer(),
     )
 
     def wire_packages(
@@ -219,14 +220,18 @@ class Containers:
 
                 for _container in container.depends_on:
                     self.__patch_container_configuration(
-                        _container, database_configuration_path, prefix
+                        _container,
+                        database_configuration_path,
+                        prefix,
                     )
 
         self.wire_packages(pkg_name=pkg_name)
 
     @staticmethod
     def __patch_container_configuration(
-        container: Container, database_configuration_path: str, prefix: str
+        container: Container,
+        database_configuration_path: str,
+        prefix: str,
     ) -> Optional[_Container]:
         """Patch container configuration.
 
@@ -245,15 +250,19 @@ class Containers:
         pydantic_settings = conf.get_pydantic_settings()[0]
 
         database_name = handlers.rec_getattr(
-            pydantic_settings, database_configuration_path
+            pydantic_settings,
+            database_configuration_path,
         )
 
         handlers.rec_setattr(
-            pydantic_settings, database_configuration_path, prefix + database_name
+            pydantic_settings,
+            database_configuration_path,
+            prefix + database_name,
         )
 
         pydantic_settings.POSTGRES.DSN = pydantic_settings.POSTGRES.DSN.replace(
-            database_name, prefix + database_name
+            database_name,
+            prefix + database_name,
         )
 
         conf.from_pydantic(pydantic_settings)

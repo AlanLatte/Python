@@ -15,7 +15,8 @@ __all__ = ["get_connection", "acquire_connection"]
 @asynccontextmanager
 @inject
 async def get_connection(
-    pool: Pool = Provide[Connectors.postgresql.connector], return_pool: bool = False
+    pool: Pool = Provide[Connectors.postgresql.connector],
+    return_pool: bool = False,
 ) -> Union[Cursor, Pool]:
     """Get async pool to postgresql of pool.
 
@@ -49,7 +50,8 @@ async def get_connection(
 
 @asynccontextmanager
 async def acquire_connection(
-    pool: Pool, cursor_factory: Optional[cursor] = None
+    pool: Pool,
+    cursor_factory: Optional[cursor] = None,
 ) -> Cursor:
     """Acquire connection from pool.
 

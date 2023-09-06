@@ -10,7 +10,10 @@ from tests.fixtures.router.client import Client
 @pytest.mark.repeat(10)
 @pytest.mark.correct
 async def test_create_user(
-    authorized_first_client: Client, user_router: str, response_equal, create_model
+    authorized_first_client: Client,
+    user_router: str,
+    response_equal,
+    create_model,
 ):
     base_user = await create_model(
         models.User,
