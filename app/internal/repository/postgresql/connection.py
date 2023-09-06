@@ -1,4 +1,3 @@
-import typing
 from contextlib import asynccontextmanager
 from typing import Optional, Union
 
@@ -18,7 +17,7 @@ __all__ = ["get_connection", "acquire_connection"]
 async def get_connection(
     pool: Pool = Provide[Connectors.postgresql.connector],
     return_pool: bool = False,
-) -> Union[typing.AsyncGenerator[Cursor], typing.AsyncGenerator[Pool]]:
+) -> Union[Cursor, Pool]:
     """Get async pool to postgresql of pool.
 
     Args:
@@ -53,7 +52,7 @@ async def get_connection(
 async def acquire_connection(
     pool: Pool,
     cursor_factory: Optional[cursor] = None,
-) -> typing.AsyncGenerator[Cursor]:
+) -> Cursor:
     """Acquire connection from pool.
 
     Args:
