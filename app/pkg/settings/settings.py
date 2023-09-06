@@ -1,6 +1,7 @@
 """Module for load settings form `.env` or if server running with parameter
 `dev` from `.env.dev`"""
 import pathlib
+import typing
 import urllib.parse
 from functools import lru_cache
 
@@ -75,7 +76,7 @@ class Postgresql(_Settings):
 
     #: str: Concatenation all settings for postgresql in one string. (DSN)
     #  Builds in `root_validator` method.
-    DSN: str = None
+    DSN: typing.Optional[str] = None
 
     @root_validator(pre=True)
     def build_dsn(cls, values: dict):
