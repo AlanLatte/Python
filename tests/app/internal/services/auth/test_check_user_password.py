@@ -60,7 +60,6 @@ async def test_small_length_fingerprint(
     fingerprint: str,
     create_model,
 ):
-
     with pytest.raises(ValidationError):
         cmd = await create_model(
             models.AuthCommand,

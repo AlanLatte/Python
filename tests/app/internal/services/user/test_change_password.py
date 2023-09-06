@@ -31,7 +31,6 @@ async def test_incorrect_old_password(
     first_user: models.User,
     create_model,
 ):
-
     cmd = await create_model(models.ChangeUserPasswordCommand, id=insert_first_user.id)
     with pytest.raises(IncorrectOldPassword):
         await user_postgres_service.change_password(cmd=cmd)

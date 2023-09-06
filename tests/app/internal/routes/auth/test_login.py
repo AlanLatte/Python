@@ -82,7 +82,6 @@ async def test_incorrect_user_incorrect_username(
     response_with_error,
     create_model,
 ):
-
     request_model = await create_model(
         model=models.AuthCommand,
         username=fist_auth_user.username,

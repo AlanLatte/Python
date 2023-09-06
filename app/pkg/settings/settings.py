@@ -20,7 +20,7 @@ class _Settings(BaseSettings):
     """Base settings. for all settings.
 
     Use double underscore for nested env variables.
-    For example:
+    Examples:
     - .env:
 
         TELEGRAM__TOKEN=...
@@ -183,10 +183,6 @@ class APIServer(_Settings):
     #: DefaultUser: Default user settings.
     DEFAULT_USER: DefaultUser
 
-    # --- OPEN TELEMETRY SETTINGS ---
-    #: str: Open Telemetry endpoint
-    OPEN_TELEMETRY_GRPC_ENDPOINT: str
-
 
 class Centrifugo(_Settings):
     #: str: Centrifugo host.
@@ -230,6 +226,8 @@ class Settings(_Settings):
     RABBITMQ: RabbitMQ
 
 
+# TODO: Возможно даже lru_cache не стоит использовать. Стоит использовать meta sigleton.
+#   Для класса настроек. А инициализацию перенести в `def __init__`
 @lru_cache()
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""

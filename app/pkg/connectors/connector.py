@@ -17,10 +17,9 @@ class BaseConnector:
         """Getting connection pool in asynchronous."""
 
         try:
-            return
+            _ = args, kwargs
         finally:
             raise NotImplementedError
-
 
     @abstractmethod
     async def close(self, *args, **kwargs):

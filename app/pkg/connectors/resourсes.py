@@ -1,14 +1,31 @@
+from abc import abstractmethod
+from typing import TypeVar
+
 from dependency_injector import resources
 
-from app.pkg.connectors.connector import BaseConnector
+__all__ = ["BaseAsyncResource"]
 
 
-__all__ = ["AsyncResource"]
+T = TypeVar("T")
 
 
-class AsyncResource(resources.AsyncResource):
-    async def init(self, connector: BaseConnector, *args, **kwargs):
-        return await connector.get_connect(*args, **kwargs)
+class BaseAsyncResource(resources.AsyncResource):
+    @abstractmethod
+    async def init(self, *args, **kwargs) -> T:
+        """Getting connection.
 
-    async def shutdown(self, connection: BaseConnector):
-        await connection.close()
+        Args:
+            *args: Positional arguments for ``get_connect`` method.
+            **kwargs: Keyword arguments for ``get_connect`` method.
+        """
+
+    @abstractmethod
+    async def shutdown(self, connector: T):
+        """Close connection.
+
+        Args:
+            connector: Resource returned by ``init`` method.
+
+        Notes:
+            You should implement ``close`` method in your connector here
+        """

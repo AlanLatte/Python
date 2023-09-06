@@ -27,7 +27,6 @@ async def insert_first_refresh_token(
     insert_first_user: models.User,
     refresh_token_repository: JWTRefreshTokenRepository,
 ):
-
     return await refresh_token_repository.create(
         cmd=insert_first_user.migrate(
             models.CreateJWTRefreshTokenCommand,

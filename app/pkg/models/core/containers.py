@@ -2,12 +2,15 @@ from dataclasses import dataclass, field
 from typing import Callable, List, Optional, Type, Union
 
 from dependency_injector import containers, providers
-from dependency_injector.containers import Container, Container as _Container
+from dependency_injector.containers import Container
+from dependency_injector.containers import Container as _Container
 from fastapi import FastAPI
 
 from app.pkg import handlers
 
 __all__ = ["Container", "Containers", "Resource"]
+
+from app.pkg.models.core.meta import SingletonMeta
 
 
 @dataclass(frozen=True)
@@ -30,11 +33,34 @@ class Container:
     """Model for contain single container."""
 
     #: containers.Container: dependency_injector declarative container callable object.
-    container: Callable[..., containers.Container]
+    container: Union[Callable[..., containers.Container]]
 
     #: List[str]: Array of packages to which the injector will be available.
     #  Default: ["app"]
     packages: List[str] = field(default_factory=lambda: ["app"])
+
+
+class WiredContainer(dict, metaclass=SingletonMeta):
+    """Singleton container for store all wired containers."""
+
+    def __getitem__(self, item: object):
+        """Get container by name.
+
+        Args:
+            item: Container object.
+
+        Examples:
+            >>> from app import __containers__
+            >>> from app.pkg.connectors import PostgresSQL
+
+            >>> __containers__.wire_packages(pkg_name=__name__)
+            >>> __containers__.wired_containers[PostgresSQL]
+
+        Returns:
+            Container instance.
+        """
+
+        return super().__getitem__(item.__name__)
 
 
 @dataclass(frozen=True)
@@ -47,6 +73,11 @@ class Containers:
     #: List[Container]: List of `Container` model.
     containers: List[Union[Container, Resource]]
 
+    #: List[_Container]: List of instance dependency_injector containers.
+    __wired_containers__: WiredContainer = field(
+        init=False, default_factory=lambda: WiredContainer()
+    )
+
     def wire_packages(
         self,
         app: Optional[FastAPI] = None,
@@ -57,7 +88,7 @@ class Containers:
 
         Args:
             app: Optional ``FastAPI`` instance.
-                if passed, the containers will be written to the application context.
+                If passed, the containers will be written to the application context.
             pkg_name: Optional __name__ of running module.
 
             unwire: Optional bool parameter. If `True`, un wiring all containers.
@@ -98,7 +129,6 @@ class Containers:
             And you can set ``pkg_name="tests"`` for use injector in all modules
             in the project (with tests).
 
-
         Returns:
             None
         """
@@ -112,8 +142,8 @@ class Containers:
             for dep in container.depends_on:
                 self.__wire(dep, unwire, pkg_name, app)
 
-    @staticmethod
     def __wire(
+        self,
         container: Union[Container, Resource],
         unwire: bool,
         pkg_name: str,
@@ -140,8 +170,13 @@ class Containers:
 
         cont.wire(packages=[pkg_name, *container.packages])
 
+        container_name = container.container.__name__
+
+        if not self.__wired_containers__.get(container_name, None):
+            self.__wired_containers__[container_name] = cont
+
         if app:
-            setattr(app, container.container.__name__.lower(), cont)
+            setattr(app, container_name.lower(), cont)
 
         return cont
 

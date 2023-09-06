@@ -1,7 +1,6 @@
 import datetime
 import typing
 import uuid
-from uuid import UUID
 
 import pydantic
 import pytest

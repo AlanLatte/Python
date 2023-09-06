@@ -3,14 +3,8 @@ import pytest
 from app.internal.repository.postgresql import connection
 
 
-#
-# async def _clean_postgres():
-#     """Deleting database values before each test."""
-#     clean_postgres()
-
-
 @pytest.fixture(autouse=True)
-async def get_connection():
+async def clean_postgres():
     """Truncate all tables (except yoyo migrations) before each test."""
 
     q = """
@@ -34,4 +28,4 @@ async def get_connection():
             await cursor.execute(q)
             await cursor.execute("select truncate_tables();")
 
-        yield pool
+    yield

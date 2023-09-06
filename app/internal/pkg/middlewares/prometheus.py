@@ -4,12 +4,6 @@ import time
 from typing import Tuple
 
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.logging import LoggingInstrumentor
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from prometheus_client import Counter, Gauge, Histogram
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
@@ -64,14 +58,12 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app: ASGIApp,
-        open_telemetry_grpc_endpoint: str,
         app_name: str = "api",
         filter_unhandled_paths: bool = True,
     ) -> None:
         super().__init__(app)
         self.__app_name = app_name
         self.__INFO.labels(app_name=self.__app_name).inc()
-        self.__OPEN_TELEMETRY_GRPC_ENDPOINT = open_telemetry_grpc_endpoint
         self.__FILTER_UNHANDLED_PATHS = filter_unhandled_paths
 
     async def dispatch(
@@ -134,31 +126,6 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             ).dec()
 
         return response
-
-    def inject_tracer(
-        self,
-        log_correlation: bool = True,
-    ) -> None:
-        resource = Resource.create(
-            attributes={
-                "service.name": self.__app_name,
-                "compose_service": self.__app_name,
-            },
-        )
-
-        tracer = TracerProvider(resource=resource)
-        trace.set_tracer_provider(tracer)
-
-        tracer.add_span_processor(
-            BatchSpanProcessor(
-                OTLPSpanExporter(endpoint=self.__OPEN_TELEMETRY_GRPC_ENDPOINT),
-            ),
-        )
-
-        if log_correlation:
-            LoggingInstrumentor().instrument(set_logging_format=True)
-
-        FastAPIInstrumentor.instrument_app(self.app, tracer_provider=tracer)
 
     @staticmethod
     def __get_path_template(request: Request) -> Tuple[str, bool]:

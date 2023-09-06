@@ -8,7 +8,6 @@ from uuid import UUID
 
 import pydantic
 from jsf import JSF
-from pydantic import UUID1, UUID4
 
 from app.pkg.models import types
 

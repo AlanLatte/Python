@@ -1,4 +1,3 @@
-import asyncio
 import uuid
 
 import pytest
@@ -48,10 +47,7 @@ async def test_incorrect_empty_user(
         await refresh_token_repository.create(cmd=cmd)
 
 
-@pytest.mark.parametrize(
-    "count",
-    [2, 3]
-)
+@pytest.mark.parametrize("count", [2, 3])
 async def test_incorrect_unique_token(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
@@ -65,8 +61,3 @@ async def test_incorrect_unique_token(
         )
         await refresh_token_repository.create(cmd=cmd)
         await refresh_token_repository.create(cmd=cmd)
-
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()

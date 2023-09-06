@@ -1,7 +1,8 @@
 from dependency_injector import containers, providers
 
 from app.pkg.settings import settings
-from .postgresql import Postgresql
+
+from .resource import Postgresql
 
 __all__ = ["PostgresSQL"]
 
@@ -14,8 +15,4 @@ class PostgresSQL(containers.DeclarativeContainer):
         pydantic_settings=[settings],
     )
 
-    postgresql = providers.Factory(
-        Postgresql,
-        postgres_dsn=configuration.POSTGRES.DSN
-    )
-
+    connector = providers.Resource(Postgresql, dsn=configuration.POSTGRES.DSN)
