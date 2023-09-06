@@ -9,9 +9,10 @@ async def test_correct(
     user_postgres_service: UserService,
     insert_first_user: models.User,
     insert_second_user: models.User,
+    check_array_equality,
 ):
     result = await user_postgres_service.read_all_users()
-    assert result == [insert_first_user, insert_second_user]
+    assert check_array_equality(result, [insert_first_user, insert_second_user])
 
 
 async def test_empty_result(user_postgres_service: UserService):

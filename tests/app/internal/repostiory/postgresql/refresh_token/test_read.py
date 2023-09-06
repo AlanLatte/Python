@@ -11,13 +11,14 @@ async def test_correct(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
     insert_first_refresh_token: models.JWTRefreshToken,
+    create_model,
 ):
-    response = await refresh_token_repository.read(
-        query=models.ReadJWTRefreshTokenQuery(
-            user_id=insert_first_user.id,
-            refresh_token=insert_first_refresh_token.refresh_token.get_secret_value(),
-        ),
+    query = await create_model(
+        models.ReadJWTRefreshTokenQuery,
+        user_id=insert_first_user.id,
+        refresh_token=insert_first_refresh_token.refresh_token.get_secret_value(),
     )
+    response = await refresh_token_repository.read(query=query)
 
     assert response == insert_first_refresh_token
 
@@ -34,11 +35,12 @@ async def test_empty_result(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
     refresh_token: str,
+    create_model,
 ):
+    query = await create_model(
+        models.ReadJWTRefreshTokenQuery,
+        user_id=insert_first_user.id,
+        refresh_token=refresh_token,
+    )
     with pytest.raises(EmptyResult):
-        await refresh_token_repository.read(
-            query=models.ReadJWTRefreshTokenQuery(
-                user_id=insert_first_user.id,
-                refresh_token=refresh_token,
-            ),
-        )
+        await refresh_token_repository.read(query=query)

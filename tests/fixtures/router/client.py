@@ -8,6 +8,7 @@ from httpx import AsyncClient, Response
 from app import create_app
 from app.pkg import models
 from app.pkg.models.base import BaseModel, Model
+from app.pkg.settings import Settings
 from tests.fixtures.models.user import User
 
 
@@ -90,24 +91,22 @@ async def authorized_first_client(
     insert_first_user: models.User,
     auth_router: str,
     first_user: models.User,
-    first_fingerprint: str,
+    settings: Settings,
+    create_model,
 ) -> Client:
     response = await client.request(
         method="POST",
         url=f"{auth_router}/login",
-        json=models.AuthCommand(
-            username=insert_first_user.username,
-            password=first_user.password.get_secret_value(),
-            fingerprint=first_fingerprint,
-        ),
+        json=first_user.migrate(models.AuthCommand, random_fill=True),
     )
+
     assert response.status_code == 200
 
     json_response: typing.Dict[str, str] = response.json()
 
     client.user = User(inserted=insert_first_user, raw=first_user)
-    client.refresh_token = json_response.get("refresh_token")
-    client.access_token = json_response.get("access_token")
+    client.refresh_token = json_response.get(settings.API.JWT.REFRESH_TOKEN_NAME)
+    client.access_token = json_response.get(settings.API.JWT.ACCESS_TOKEN_NAME)
 
     client.set_auth_header()
 

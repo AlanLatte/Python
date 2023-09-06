@@ -20,7 +20,10 @@ class EmptyResult(BaseAPIException):
 
 
 class DriverError(BaseAPIException):
+    """Exception for internal driver errors."""
+
     def __init__(self, message: str = None):
+        """In case of message is None, default message will be used."""
         if message:
             self.message = message
 

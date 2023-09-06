@@ -29,8 +29,8 @@ def get_stream_handler():
 
 def get_logger(name):
     logger = logging.getLogger(name)
-    file_path = str(Path(settings.LOGGER_FILE_PATH).absolute())
+    file_path = str(Path(settings.API.LOGGER.FILE_PATH).absolute())
     logger.addHandler(get_file_handler(file_name=file_path))
     logger.addHandler(get_stream_handler())
-    logger.setLevel(settings.LOGGER_LEVEL)
+    logger.setLevel(settings.API.LOGGER.LEVEL)
     return logger

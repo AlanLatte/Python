@@ -21,10 +21,10 @@ __all__ = [
 ]
 
 
-access_security = JwtAccessBearer(secret_key=settings.JWT_SECRET_KEY)
+access_security = JwtAccessBearer(secret_key=settings.API.JWT.SECRET_KEY)
 
 refresh_security = JwtRefreshBearer(
-    secret_key=settings.JWT_SECRET_KEY,
+    secret_key=settings.API.JWT.SECRET_KEY,
 )
 
 
@@ -33,9 +33,9 @@ class JWT(containers.DeclarativeContainer):
 
     access: Factory[JwtAccessBearer] = providers.Factory(
         JwtAccessBearer,
-        secret_key=settings.JWT_SECRET_KEY,
+        secret_key=settings.API.JWT.SECRET_KEY,
     )
     refresh: Factory[JwtRefreshBearer] = providers.Factory(
         JwtRefreshBearer,
-        secret_key=settings.JWT_SECRET_KEY,
+        secret_key=settings.API.JWT.SECRET_KEY,
     )

@@ -51,7 +51,7 @@ async def read_all_users(
 )
 @inject
 async def read_user(
-    user_id: int = models.UserFields.id,
+    user_id: int,
     user_service: UserService = Depends(Provide[Services.user_service]),
     _: JwtAuthorizationCredentials = Security(access_security),
 ):
@@ -61,7 +61,7 @@ async def read_user(
 
 
 @router.delete(
-    "/{user_id}",
+    "/{user_id:int}",
     response_model=List[models.User],
     status_code=status.HTTP_200_OK,
     response_model_exclude={"password"},
@@ -69,7 +69,7 @@ async def read_user(
 )
 @inject
 async def delete_user(
-    user_id: int = models.UserFields.id,
+    user_id: int,
     user_service: UserService = Depends(Provide[Services.user_service]),
     _: JwtAuthorizationCredentials = Security(access_security),
 ):

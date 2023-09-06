@@ -30,7 +30,7 @@ class JwtAuthBase(ABC):
             APIKeyCookie.__init__(
                 self,
                 *args,
-                name=settings.JWT_ACCESS_TOKEN_NAME,
+                name=settings.API.JWT.ACCESS_TOKEN_NAME,
                 auto_error=False,
                 **kwargs,
             )
@@ -40,7 +40,7 @@ class JwtAuthBase(ABC):
             APIKeyCookie.__init__(
                 self,
                 *args,
-                name=settings.JWT_REFRESH_TOKEN_NAME,
+                name=settings.API.JWT.REFRESH_TOKEN_NAME,
                 auto_error=False,
                 **kwargs,
             )
@@ -229,7 +229,7 @@ class JwtAuthBase(ABC):
             int(expires_delta.total_seconds()) if expires_delta else None
         )
         response.set_cookie(
-            key=settings.JWT_REFRESH_TOKEN_NAME,
+            key=settings.API.JWT.REFRESH_TOKEN_NAME,
             value=refresh_token,
             httponly=True,
             max_age=seconds_expires,  # type: ignore
@@ -238,7 +238,7 @@ class JwtAuthBase(ABC):
     @staticmethod
     def unset_refresh_cookie(response: Response) -> None:
         response.set_cookie(
-            key=settings.JWT_REFRESH_TOKEN_NAME,
+            key=settings.API.JWT.REFRESH_TOKEN_NAME,
             httponly=True,
             max_age=-1,
         )

@@ -11,68 +11,44 @@ async def test_correct(
     auth_postgres_service: AuthService,
     insert_first_user: models.User,
     first_user: models.User,
-    first_fingerprint: str,
+    create_model,
 ):
-
-    user = await auth_postgres_service.check_user_password(
-        cmd=models.AuthCommand(
-            username=first_user.username,
-            password=first_user.password.get_secret_value(),
-            fingerprint=first_fingerprint,
-        ),
+    cmd = await create_model(
+        models.AuthCommand,
+        username=first_user.username,
+        password=first_user.password.get_secret_value(),
     )
+    user = await auth_postgres_service.check_user_password(cmd=cmd)
     assert user == insert_first_user
 
 
-@pytest.mark.parametrize(
-    "password",
-    [
-        b"FAKE_PASSWORD_0",
-        b"FAKE_PASSWORD_1",
-        b"FAKE_PASSWORD_2",
-        b"FAKE_PASSWORD_3",
-    ],
-)
+@pytest.mark.repeat(5)
 async def test_incorrect_password(
     auth_postgres_service: AuthService,
     insert_first_user: models.User,
-    first_fingerprint: str,
-    password: bytes,
+    create_model,
 ):
     with pytest.raises(IncorrectUsernameOrPassword):
-        await auth_postgres_service.check_user_password(
-            cmd=models.AuthCommand(
-                username=insert_first_user.username,
-                password=password,
-                fingerprint=first_fingerprint,
-            ),
+        cmd = await create_model(
+            models.AuthCommand,
+            username=insert_first_user.username,
         )
+        await auth_postgres_service.check_user_password(cmd=cmd)
 
 
-@pytest.mark.parametrize(
-    "username",
-    [
-        "FAKE_USERNAME_1",
-        "FAKE_USERNAME_2",
-        "FAKE_USERNAME_3",
-        "FAKE_USERNAME_4",
-    ],
-)
+@pytest.mark.repeat(10)
 async def test_user_not_exist(
     auth_postgres_service: AuthService,
     insert_first_user: models.User,
     first_user: models.User,
-    first_fingerprint: str,
-    username: str,
+    create_model,
 ):
     with pytest.raises(EmptyResult):
-        await auth_postgres_service.check_user_password(
-            cmd=models.AuthCommand(
-                username=username,
-                password=first_user.password.get_secret_value(),
-                fingerprint=first_fingerprint,
-            ),
+        cmd = await create_model(
+            models.AuthCommand,
+            password=first_user.password.get_secret_value(),
         )
+        await auth_postgres_service.check_user_password(cmd=cmd)
 
 
 @pytest.mark.parametrize(
@@ -84,13 +60,13 @@ async def test_small_length_fingerprint(
     insert_first_user: models.User,
     first_user: models.User,
     fingerprint: str,
+    create_model,
 ):
-
     with pytest.raises(ValidationError):
-        await auth_postgres_service.check_user_password(
-            cmd=models.AuthCommand(
-                username=first_user.username,
-                password=first_user.password.get_secret_value(),
-                fingerprint=fingerprint,
-            ),
+        cmd = await create_model(
+            models.AuthCommand,
+            username=first_user.username,
+            password=first_user.password.get_secret_value(),
+            fingerprint=fingerprint,
         )
+        await auth_postgres_service.check_user_password(cmd=cmd)

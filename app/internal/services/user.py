@@ -1,10 +1,8 @@
 """User service."""
-import typing
 from typing import List
 
 from app.internal.pkg.password import password
 from app.internal.repository.postgresql import UserRepository
-from app.internal.repository.repository import BaseRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import UniqueViolation
 from app.pkg.models.exceptions.user import IncorrectOldPassword, UserAlreadyExist
@@ -15,7 +13,7 @@ __all__ = ["UserService"]
 class UserService:
     repository: UserRepository
 
-    def __init__(self, user_repository: typing.Type[BaseRepository]):
+    def __init__(self, user_repository: UserRepository):
         self.repository = user_repository
 
     async def create_user(self, cmd: models.CreateUserCommand) -> models.User:
@@ -37,7 +35,12 @@ class UserService:
             raise UserAlreadyExist
 
     async def read_all_users(self) -> List[models.User]:
-        """Read all users from repository."""
+        """Read all users from repository.
+
+        Returns:
+            List of `User` models.
+        """
+
         return await self.repository.read_all()
 
     async def read_specific_user_by_username(
@@ -72,9 +75,7 @@ class UserService:
         self,
         cmd: models.ChangeUserPasswordCommand,
     ) -> models.User:
-
-        """Change password for specific user. `id` is `fk` for match user in
-        database.
+        """Change user password.
 
         Args:
             cmd: `ChangeUserPasswordCommand`.
@@ -91,7 +92,7 @@ class UserService:
         if not password.check_password(cmd.old_password, user.password):
             raise IncorrectOldPassword
 
-        user.password = cmd.new_password
+        user.password = cmd.new_password.get_secret_value()
         return await self.repository.update(cmd=user.migrate(models.UpdateUserCommand))
 
     async def delete_specific_user(self, cmd: models.DeleteUserCommand) -> models.User:

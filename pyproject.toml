@@ -6,23 +6,21 @@ authors = ["AlanLatte <alan.latte.dev@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.88.0"
-uvicorn = "^0.20.0"
+fastapi = "^0.100.0"
+uvicorn = "^0.22.0"
 pydantic = {extras = ["dotenv", "email"], version = "^1.9.0"}
 dependency-injector = "^4.40.0"
 yoyo-migrations = "^8.1.0"
-aiocache = {extras = ["redis"], version = "^0.11.1"}
+aiocache = {version = "^0.12.1", extras = ["redis"]}
 aiopg = "^1.3.3"
 bcrypt = "^4.0.1"
 python-jose = {version = "3.3.0", extras = ["cryptography"]}
 starlette-prometheus = "^0.9.0"
-pydantic-yaml = "^0.8.0"
+pydantic-yaml = "^0.11.2"
 pymongo = "^4.2.0"
 aiohttp = "^3.8.2"
 pyotp = "^2.7.0"
-aiomysql = "^0.1.1"
-httpx = "^0.23.0"
-aiosqlite = "^0.17.0"
+httpx = "^0.24.1"
 httpcore = "^0.16.2"
 opentelemetry-instrumentation-fastapi = "^0.36b0"
 opentelemetry-instrumentation-logging = "^0.36b0"
@@ -30,6 +28,7 @@ opentelemetry-exporter-otlp = "^1.15.0"
 opentelemetry-api = "^1.15.0"
 opentelemetry-sdk = "^1.15.0"
 pyyaml = "^6.0"
+jsf = "^0.7.1"
 
 [tool.poetry.group.dev.dependencies]
 MarkupSafe = "^2.1.0"
@@ -54,6 +53,7 @@ mypy = "^0.931"
 pytest-asyncio = "^0.20.2"
 coverage = "^6.3.2"
 pytest-cov = "^4.0.0"
+pytest-repeat = "^0.9.1"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "^5.3.0"
@@ -61,8 +61,7 @@ sphinx-pydantic = "^0.1.1"
 sphinx-rtd-theme = "^1.1.1"
 
 
-
-[tool.poetry.group.testing.dependencies]
+[tool.poetry.group.benchmarks.dependencies]
 locust = "^2.14.2"
 
 [build-system]

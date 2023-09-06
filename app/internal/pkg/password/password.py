@@ -7,14 +7,15 @@ __all__ = ["crypt_password", "check_password"]
 
 
 def crypt_password(password: bytes) -> bytes:
-    """Crypt password.
+    """Crypt raw password.
 
     Args:
-        password: Raw password.
+        password: Raw password in bytes.
 
     Returns:
         Crypt password used bcrypt algorythm.
     """
+
     return bcrypt.hashpw(password, bcrypt.gensalt())
 
 
@@ -28,4 +29,5 @@ def check_password(password: SecretBytes, hashed: SecretBytes) -> bool:
     Returns:
         True if equality check passed, False otherwise.
     """
+
     return bcrypt.checkpw(password.get_secret_value(), hashed.get_secret_value())

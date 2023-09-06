@@ -12,6 +12,8 @@ __all__ = ["metrics"]
 
 
 def metrics(request: Request) -> Response:
+    """Expose internal metrics to public endpoint."""
+
     _ = request
 
     return Response(

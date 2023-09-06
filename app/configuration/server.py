@@ -1,10 +1,11 @@
 """Server configuration."""
+
 import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.configuration.events import on_startup
+from app.configuration.events import on_shutdown, on_startup
 from app.configuration.logger import EndpointFilter
 from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
 from app.internal.pkg.middlewares.metrics import metrics
@@ -21,7 +22,7 @@ class Server:
     """Register all requirements for correct work of server instance."""
 
     __app: FastAPI
-    __app_name: str = settings.API_INSTANCE_APP_NAME
+    __app_name: str = settings.API.INSTANCE_APP_NAME
 
     def __init__(self, app: FastAPI):
         self.__app = app
@@ -39,7 +40,7 @@ class Server:
 
     @staticmethod
     def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register on startup events.
+        """Register default events.
 
         Args:
             app: ``FastAPI`` application instance.
@@ -48,6 +49,7 @@ class Server:
         """
 
         app.on_event("startup")(on_startup)
+        app.on_event("shutdown")(on_shutdown)
 
     @staticmethod
     def _register_routes(app: FastAPITypes.FastAPIInstance) -> None:
@@ -77,7 +79,19 @@ class Server:
 
     @staticmethod
     def __register_cors_origins(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register cors origins."""
+        """Register cors origins. In production, you should use only trusted
+        origins.
+
+        Warnings:
+            For default this method is not secure.
+            You **should use it only for development.**
+            Read more about CORS: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+
+        Args:
+            app: ``FastAPI`` application instance.
+
+        Returns: None
+        """
 
         app.add_middleware(
             CORSMiddleware,
@@ -95,25 +109,17 @@ class Server:
 
         Returns: None
         """
+
         app.add_middleware(
             PrometheusMiddleware,
-            open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
             app_name=self.__app_name,
         )
 
-        self.__register_metrics_collector(
-            app=app,
-            prometheus=PrometheusMiddleware(
-                app=app,
-                open_telemetry_grpc_endpoint=settings.OPEN_TELEMETRY_GRPC_ENDPOINT,
-                app_name=self.__app_name,
-            ),
-        )
+        self.__register_metrics_collector(app=app)
 
     def __register_metrics_collector(
         self,
         app: FastAPITypes.FastAPIInstance,
-        prometheus: PrometheusMiddleware,
     ) -> None:
         """Expose internal aggregated metrics to public endpoint.
 
@@ -125,7 +131,6 @@ class Server:
 
         metrics_endpoint = "/metrics"
         app.add_route(metrics_endpoint, metrics)
-        prometheus.inject_tracer()
         self.__filter_logs(metrics_endpoint)
 
     def _register_middlewares(self, app) -> None:
@@ -137,4 +142,5 @@ class Server:
     @staticmethod
     def __filter_logs(endpoint: str) -> None:
         """Filter ignore /metrics in uvicorn logs."""
+
         logging.getLogger("uvicorn.access").addFilter(EndpointFilter(endpoint=endpoint))

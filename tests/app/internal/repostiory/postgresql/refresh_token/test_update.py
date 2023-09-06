@@ -10,35 +10,32 @@ from app.pkg.models.exceptions.repository import EmptyResult
 async def test_correct(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_refresh_token: models.JWTRefreshToken,
-    second_refresh_token: str,
-    second_fingerprint: str,
+    create_model,
 ):
-    command = models.UpdateJWTRefreshTokenCommand(
+    cmd = await create_model(
+        models.UpdateJWTRefreshTokenCommand,
         user_id=insert_first_refresh_token.user_id,
-        refresh_token=second_refresh_token,
         fingerprint=insert_first_refresh_token.fingerprint,
     )
-    response = await refresh_token_repository.update(cmd=command)
+    response = await refresh_token_repository.update(cmd=cmd)
 
-    assert response == command
+    assert response == cmd
 
 
-@pytest.mark.parametrize("iterable", [1, 2, 3, 4])
+@pytest.mark.repeat(10)
 async def test_incorrect_user_id(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_refresh_token: models.JWTRefreshToken,
-    second_refresh_token: str,
-    second_fingerprint: str,
-    iterable: int,
+    create_model,
 ):
-    command = models.UpdateJWTRefreshTokenCommand(
+    cmd = await create_model(
+        models.UpdateJWTRefreshTokenCommand,
         user_id=insert_first_refresh_token.user_id + 1,
-        refresh_token=second_refresh_token,
         fingerprint=insert_first_refresh_token.fingerprint,
     )
 
     with pytest.raises(EmptyResult):
-        await refresh_token_repository.update(cmd=command)
+        await refresh_token_repository.update(cmd=cmd)
 
 
 @pytest.mark.parametrize(
@@ -52,14 +49,14 @@ async def test_incorrect_user_id(
 async def test_incorrect_fingerprint_not_found(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_refresh_token: models.JWTRefreshToken,
-    second_refresh_token: str,
+    create_model,
     fingerprint: str,
 ):
-    command = models.UpdateJWTRefreshTokenCommand(
+    cmd = await create_model(
+        models.UpdateJWTRefreshTokenCommand,
         user_id=insert_first_refresh_token.user_id,
-        refresh_token=second_refresh_token,
         fingerprint=fingerprint,
     )
 
     with pytest.raises(EmptyResult):
-        await refresh_token_repository.update(cmd=command)
+        await refresh_token_repository.update(cmd=cmd)

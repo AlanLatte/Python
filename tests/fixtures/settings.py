@@ -5,8 +5,8 @@ from app.pkg.settings import settings as _settings
 
 @pytest.fixture()
 async def settings():
-    if _settings.POSTGRES_DATABASE_NAME.startswith("test_"):
+    if _settings.POSTGRES.DATABASE_NAME.startswith("test_"):
         return _settings
 
-    _settings.POSTGRES_DATABASE_NAME = f"test_{_settings.POSTGRES_DATABASE_NAME}"
+    _settings.POSTGRES.DATABASE_NAME = f"test_{_settings.POSTGRES.DATABASE_NAME}"
     return _settings

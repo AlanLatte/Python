@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 
 from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository
@@ -11,68 +9,45 @@ async def test_correct(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_refresh_token: models.JWTRefreshToken,
     insert_first_user: models.User,
-    first_fingerprint: str,
-    first_refresh_token: str,
+    create_model,
 ):
-    response = await refresh_token_repository.delete(
-        cmd=models.DeleteJWTRefreshTokenCommand(
-            user_id=insert_first_user.id,
-            fingerprint=first_fingerprint,
-            refresh_token=first_refresh_token,
-        ),
-    )
-
-    assert response == models.JWTRefreshToken(
+    cmd = await create_model(
+        models.DeleteJWTRefreshTokenCommand,
         user_id=insert_first_user.id,
-        fingerprint=first_fingerprint,
-        refresh_token=first_refresh_token,
+        fingerprint=insert_first_refresh_token.fingerprint,
+        refresh_token=insert_first_refresh_token.refresh_token,
     )
+    response = await refresh_token_repository.delete(cmd=cmd)
+
+    assert response == cmd.migrate(models.JWTRefreshToken)
 
 
 @pytest.mark.parametrize(
-    "user_id,fingerprint,refresh_token",
-    [
-        [1, uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-        [2, uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-        [3, uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-        [4, uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-    ],
+    "user_id",
+    [1, 2, 3, 4],
 )
 async def test_user_does_exist(
     refresh_token_repository: JWTRefreshTokenRepository,
     user_id: int,
-    fingerprint: str,
-    refresh_token: str,
+    create_model,
 ):
+    cmd = await create_model(
+        models.DeleteJWTRefreshTokenCommand,
+        user_id=user_id,
+    )
     with pytest.raises(DriverError):
-        await refresh_token_repository.create(
-            cmd=models.CreateJWTRefreshTokenCommand(
-                user_id=user_id,
-                refresh_token=refresh_token,
-                fingerprint=fingerprint,
-            ),
-        )
+        await refresh_token_repository.create(cmd=cmd)
 
 
-@pytest.mark.parametrize(
-    "fingerprint,refresh_token",
-    [
-        [uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-        [uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-        [uuid.uuid4().__str__(), uuid.uuid4().__str__()],
-    ],
-)
+@pytest.mark.repeat(10)
 async def test_not_exist(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
-    fingerprint: str,
-    refresh_token: str,
+    create_model,
 ):
+    cmd = await create_model(
+        models.DeleteJWTRefreshTokenCommand,
+        user_id=insert_first_user.id,
+    )
     with pytest.raises(EmptyResult):
-        await refresh_token_repository.delete(
-            cmd=models.DeleteJWTRefreshTokenCommand(
-                user_id=insert_first_user.id,
-                fingerprint=fingerprint,
-                refresh_token=refresh_token,
-            ),
-        )
+        await refresh_token_repository.delete(cmd=cmd)

@@ -4,26 +4,29 @@ from starlette import status
 from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized
 from app.pkg.models.exceptions.user import UserAlreadyExist
-from app.pkg.models.types import EncryptedSecretBytes
 from tests.fixtures.router.client import Client
 
 
+@pytest.mark.repeat(10)
 @pytest.mark.correct
-async def test_create_user_with_admin_role(
+async def test_create_user(
     authorized_first_client: Client,
-    second_user: models.User,
     user_router: str,
     response_equal,
+    create_model,
 ):
+    base_user = await create_model(
+        models.User,
+    )
     response = await authorized_first_client.request(
         method="POST",
         url=f"{user_router}/",
-        json=second_user.migrate(models.CreateUserCommand),
+        json=base_user.migrate(models.CreateUserCommand),
     )
 
     assert response_equal(
         response=response,
-        model=second_user,
+        model=base_user,
         expected_status_code=status.HTTP_201_CREATED,
         exclude_from_model=["id", "password"],
     )
@@ -47,13 +50,13 @@ async def test_password_length(
     password: str,
     response_with_error,
 ):
-
     cmd = second_user.migrate(models.CreateUserCommand)
-    cmd.password = EncryptedSecretBytes(password.encode())
+    request_json = cmd.to_dict(show_secrets=True)
+    request_json["password"] = password
     response = await authorized_first_client.request(
         method="POST",
         url=f"{user_router}/",
-        json=cmd,
+        json=request_json,
     )
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
