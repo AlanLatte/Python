@@ -31,11 +31,11 @@ refresh_security = JwtRefreshBearer(
 class JWT(containers.DeclarativeContainer):
     """Dependency factory injector for JWT."""
 
-    access: Factory[JwtAccessBearer] = providers.Factory(
+    access: Factory[JwtAccessBearer] = providers.Singleton(
         JwtAccessBearer,
         secret_key=settings.API.JWT.SECRET_KEY,
     )
-    refresh: Factory[JwtRefreshBearer] = providers.Factory(
+    refresh: Factory[JwtRefreshBearer] = providers.Singleton(
         JwtRefreshBearer,
         secret_key=settings.API.JWT.SECRET_KEY,
     )
