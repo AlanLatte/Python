@@ -63,6 +63,7 @@ sphinx-rtd-theme = "^1.1.1"
 
 [tool.poetry.group.benchmarks.dependencies]
 locust = "^2.14.2"
+fastapi-profiler = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
