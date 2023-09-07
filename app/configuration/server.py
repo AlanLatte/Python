@@ -4,7 +4,6 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_profiler import PyInstrumentProfilerMiddleware
 
 from app.configuration.events import on_shutdown, on_startup
 from app.configuration.logger import EndpointFilter
@@ -139,17 +138,6 @@ class Server:
 
         self.__register_cors_origins(app)
         self.__register_prometheus(app)
-        # self.__register_profiler(app)
-
-    @staticmethod
-    def __register_profiler(app: FastAPITypes.FastAPIInstance) -> None:
-        app.add_middleware(
-            PyInstrumentProfilerMiddleware,
-            server_app=app,
-            profiler_output_type="html",
-            is_print_each_request=False,
-            prof_file_name="profile.html",
-        )
 
     @staticmethod
     def __filter_logs(endpoint: str) -> None:
