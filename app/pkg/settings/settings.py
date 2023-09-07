@@ -74,6 +74,11 @@ class Postgresql(_Settings):
     #: str: Postgresql database name.
     DATABASE_NAME: str = "postgres"
 
+    #: PositiveInt: Min count of connections in one pool to postgresql.
+    MIN_CONNECTION: PositiveInt = 100
+    #: PositiveInt: Max count of connections in one pool  to postgresql.
+    MAX_CONNECTION: PositiveInt = 250
+
     #: str: Concatenation all settings for postgresql in one string. (DSN)
     #  Builds in `root_validator` method.
     DSN: typing.Optional[str] = None

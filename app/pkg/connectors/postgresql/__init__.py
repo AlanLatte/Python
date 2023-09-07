@@ -15,4 +15,9 @@ class PostgresSQL(containers.DeclarativeContainer):
         pydantic_settings=[settings],
     )
 
-    connector = providers.Resource(Postgresql, dsn=configuration.POSTGRES.DSN)
+    connector = providers.Resource(
+        Postgresql,
+        dsn=configuration.POSTGRES.DSN,
+        minsize=configuration.POSTGRES.MIN_CONNECTION,
+        maxsize=configuration.POSTGRES.MAX_CONNECTION,
+    )
