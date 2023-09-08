@@ -17,6 +17,47 @@ class BaseAsyncResource(resources.AsyncResource):
         Args:
             *args: Positional arguments for ``get_connect`` method.
             **kwargs: Keyword arguments for ``get_connect`` method.
+
+        Examples:
+            If you need a resource that will exist in a single instance, use
+                ``Provide`` as usual::
+            >>> from aiopg import Pool
+            >>> from dependency_injector import containers, providers
+            >>> from dependency_injector.wiring import Provide, inject
+            >>>
+            >>> from app.internal.repository.postgresql.connection import acquire_connection
+            >>> from app.pkg.connectors import Connectors
+            >>> class Container(containers.DeclarativeContainer):
+            ...     connector: Connectors = providers.Container(Connectors)
+            >>>
+            >>> @inject
+            >>> async def closed_pool(
+            ...     psql: Pool = Provide[Container.connector.postgresql.connector],
+            ... ):
+            ...     async with acquire_connection(pool=psql) as cur:
+            ...         await cur.execute("SELECT '1'")
+            ...         print(await cur.fetchone())
+            >>> ...
+
+            If you need to automatically close the resource after the execution of the
+                function - use ``Closing``::
+            >>> from aiopg import Pool
+            >>> from dependency_injector import containers, providers
+            >>> from dependency_injector.wiring import Closing, Provide, inject
+            >>>
+            >>> from app.internal.repository.postgresql.connection import acquire_connection
+            >>> from app.pkg.connectors import Connectors
+            >>> class Container(containers.DeclarativeContainer):
+            ...     connector: Connectors = providers.Container(Connectors)
+            >>>
+            >>> @inject
+            >>> async def closed_pool(
+            ...     psql: Pool = Closing[Provide[Container.connector.postgresql.connector]],
+            ... ):
+            ...     async with acquire_connection(pool=psql) as cur:
+            ...         await cur.execute("SELECT '1'")
+            ...         print(await cur.fetchone())
+            >>> ...
         """
 
     @abstractmethod
