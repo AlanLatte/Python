@@ -11,7 +11,9 @@ steps = [
         """
             create table if not exists user_roles(
                 id serial primary key,
-                role_name text unique
+                role_name text unique,
+                
+                check ( length(role_name) > 0 )
             );
         """,
         """

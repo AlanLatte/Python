@@ -14,7 +14,11 @@ steps = [
                 username text unique not null,
                 password bytea not null,
                 role_id int references user_roles(id) not null,
-                password_updated_at timestamp default now() not null
+                password_updated_at timestamp default now() not null,
+                
+                check ( length(username) > 0 ),
+                check ( length(password) > 0 ),
+                check ( password_updated_at <= now() )
             )
         """,
         """
