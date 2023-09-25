@@ -26,7 +26,7 @@ class Server:
             ``FastAPI`` application instance.
         __app_name:
             Name of application used for prometheus metrics and for loki logs.
-            Getting from ``settings.API.INSTANCE_APP_NAME``.
+            Getting from :class:`.Settings`:attr:`.INSTANCE_APP_NAME`.
     """
 
     __app: FastAPI
@@ -57,8 +57,7 @@ class Server:
 
     @staticmethod
     def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register startup and shutdown events.
-        Using implementation of methods from ``app/configuration/events.py``.
+        """Register :func:`.on_startup` and :func:`.on_shutdown` events.
 
         Args:
             app:
