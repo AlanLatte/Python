@@ -32,9 +32,9 @@ async def get_connection(
         will get async connection to postgresql
         of pool::
 
-        >>> async def exec_some_sql_function() -> None:
-        ...     async with get_connection() as c:
-        ...         await c.execute("SELECT * FROM users")
+            >>> async def exec_some_sql_function() -> None:
+            ...     async with get_connection() as c:
+            ...         await c.execute("SELECT * FROM users")
 
     Returns:
         Async connection to postgresql.
@@ -60,8 +60,7 @@ async def acquire_connection(
 
     Args:
         pool:
-            postgresql pool.
-            Getings from :func:`.get_connection`.
+            Getings from :func:`.get_connection` postgresql pool.
         cursor_factory:
             cursor factory.
 
