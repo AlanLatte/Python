@@ -9,8 +9,8 @@ from app.configuration.server import Server
 def create_app() -> FastAPI:
     """Create ``FastAPI`` application.
 
-    `create_app` is a global point of your application.
-    In `create_app` you can add all your middlewares, routes, dependencies, etc.
+    :func:`.create_app` is a global point of your application.
+    In :func:`.create_app` you can add all your middlewares, routes, dependencies, etc.
     required for global server startup.
 
     Examples:
@@ -23,8 +23,8 @@ def create_app() -> FastAPI:
         ``FastAPI`` instance::
 
             >>> from fastapi import FastAPI, Depends
-            >>> from app.internal.pkg.middlewares.x_auth_token import get_x_token_key
-            >>> app = FastAPI(dependencies=[Depends(get_x_token_key)])
+            >>> from app.internal.pkg.middlewares.x_auth_token import token_based_verification
+            >>> app = FastAPI(dependencies=[Depends(token_based_verification)])
     """
     app = FastAPI()
     __containers__.wire_packages(app=app)
