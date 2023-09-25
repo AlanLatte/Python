@@ -120,8 +120,7 @@ class Postgresql(_Settings):
 
 class DefaultUser(_Settings):
     """User default settings that are written to the database when running
-    migrations.
-    """
+    migrations."""
 
     #: str: Default username.
     USERNAME: str = "admin"

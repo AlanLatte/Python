@@ -32,7 +32,8 @@ __all__ = ["handle_internal_exception", "handle_api_exceptions"]
 
 
 def handle_api_exceptions(request: Request, exc: BaseAPIException):
-    """Handle all internal exceptions that inherited from :class:`.BaseAPIException`.
+    """Handle all internal exceptions that inherited from
+    :class:`.BaseAPIException`.
 
     Args:
         request:

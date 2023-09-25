@@ -12,6 +12,7 @@ class EndpointFilter(logging.Filter):
         endpoint:
             Name of endpoint to filter messages by.
     """
+
     endpoint: str
 
     def __init__(self, endpoint: str, *args, **kwargs):

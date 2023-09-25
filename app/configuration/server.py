@@ -33,8 +33,8 @@ class Server:
     __app_name: str = settings.API.INSTANCE_APP_NAME
 
     def __init__(self, app: FastAPI):
-        """Initialize server instance. Register all requirements for the correct
-        work of server instance.
+        """Initialize server instance. Register all requirements for the
+        correct work of server instance.
 
         Args:
             app:

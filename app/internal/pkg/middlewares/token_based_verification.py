@@ -13,8 +13,8 @@ x_api_key_header = APIKeyHeader(name="X-ACCESS-TOKEN")
 async def token_based_verification(
     api_key_header: str = Security(x_api_key_header),
 ):
-    """This function is used for routers that need to be protected by token-based
-    authentication.
+    """This function is used for routers that need to be protected by token-
+    based authentication.
 
     Args:
         api_key_header:

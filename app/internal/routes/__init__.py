@@ -1,7 +1,7 @@
 """Global point for collected routers."""
 
-from app.pkg.models.core.routes import Routes
 from app.internal.routes import auth, user
+from app.pkg.models.core.routes import Routes
 
 __all__ = ["__routes__"]
 

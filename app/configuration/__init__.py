@@ -1,5 +1,7 @@
 """Collect or build all requirements for startup server.
-In this module, you can add all your middlewares, routes, dependencies, etc.
+
+In this module, you can add all your middlewares, routes, dependencies,
+etc.
 """
 
 from app.internal.services import Services
@@ -22,9 +24,8 @@ __containers__ = Containers(
         ),
     ],
 )
-"""
-Containers needs for register all dependencies in ``FastAPI`` server.
-For start building your application, you **MUST** call wire_packages.
+"""Containers needs for register all dependencies in ``FastAPI`` server. For
+start building your application, you **MUST** call wire_packages.
 
 Examples:
     When you using containers without FastAPI::

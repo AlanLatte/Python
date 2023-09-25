@@ -1,5 +1,6 @@
 from typing import List
 
+from app.internal.repository.postgresql.connection import get_connection
 from app.internal.repository.postgresql.handlers.collect_response import (
     collect_response,
 )
@@ -13,8 +14,6 @@ from app.pkg.models.refresh_token import (
     ReadJWTRefreshTokenQueryByFingerprint,
     UpdateJWTRefreshTokenCommand,
 )
-
-from app.internal.repository.postgresql.connection import get_connection
 
 
 class JWTRefreshTokenRepository(Repository):
