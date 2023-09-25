@@ -14,7 +14,7 @@ from app.pkg.models.refresh_token import (
     UpdateJWTRefreshTokenCommand,
 )
 
-from .connection import get_connection
+from app.internal.repository.postgresql.connection import get_connection
 
 
 class JWTRefreshTokenRepository(Repository):
