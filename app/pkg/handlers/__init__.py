@@ -4,4 +4,4 @@ In this package, you can store handlers that help you inherit and extend
 native python logic.
 """
 
-from .recursive_attr import *
+from app.pkg.handlers.recursive_attr import *

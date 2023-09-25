@@ -40,7 +40,7 @@ def collect_response(fn):
     Warnings:
         The function must return a single row or a list of rows in format like::
 
-            >>> ({"key": "value"}, ...).
+            >>> ({"key": "value"}, ...)
 
     Returns:
         The model that is specified in type hints of `fn`.

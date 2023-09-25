@@ -16,6 +16,10 @@ async def token_based_verification(
     """This function is used for routers that need to be protected by token-
     based authentication.
 
+    Notes:
+        Token for access to API is X-ACCESS-TOKEN from header and gets from
+        :attr:`.Settings.API.X_ACCESS_TOKEN`.
+
     Args:
         api_key_header:
             X-ACCESS-TOKEN from header.

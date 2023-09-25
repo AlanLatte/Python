@@ -1,1 +1,1 @@
-from .logger import get_logger
+from app.pkg.logger.logger import get_logger
