@@ -45,7 +45,6 @@ async def test_incorrect_sign_by_small_password_length(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
-    settings: Settings,
     password: str,
 ):
     response = await client.request(
