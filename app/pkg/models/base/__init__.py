@@ -3,6 +3,6 @@
 All models *must* be inherited by them.
 """
 
-from .enum import BaseEnum
-from .exception import BaseAPIException
-from .model import BaseModel, Model
+from app.pkg.models.base.enum import BaseEnum
+from app.pkg.models.base.exception import BaseAPIException
+from app.pkg.models.base.model import BaseModel, Model
