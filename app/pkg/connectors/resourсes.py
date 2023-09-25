@@ -27,37 +27,30 @@ class BaseAsyncResource(resources.AsyncResource):
             >>>
             >>> from app.internal.repository.postgresql.connection import acquire_connection
             >>> from app.pkg.connectors import Connectors
+            >>>
             >>> class Container(containers.DeclarativeContainer):
             ...     connector: Connectors = providers.Container(Connectors)
             >>>
             >>> @inject
-            >>> async def closed_pool(
+            ... async def auto_closed_pool(
             ...     psql: Pool = Provide[Container.connector.postgresql.connector],
             ... ):
             ...     async with acquire_connection(pool=psql) as cur:
             ...         await cur.execute("SELECT '1'")
             ...         print(await cur.fetchone())
-            >>> ...
 
             If you need to automatically close the resource after the execution of the
                 function - use ``Closing``::
-            >>> from aiopg import Pool
-            >>> from dependency_injector import containers, providers
-            >>> from dependency_injector.wiring import Closing, Provide, inject
-            >>>
-            >>> from app.internal.repository.postgresql.connection import acquire_connection
-            >>> from app.pkg.connectors import Connectors
-            >>> class Container(containers.DeclarativeContainer):
-            ...     connector: Connectors = providers.Container(Connectors)
+            >>> import asyncio
+            >>> from dependency_injector.wiring import Closing
             >>>
             >>> @inject
-            >>> async def closed_pool(
+            ... async def native_closed_pool(
             ...     psql: Pool = Closing[Provide[Container.connector.postgresql.connector]],
             ... ):
             ...     async with acquire_connection(pool=psql) as cur:
             ...         await cur.execute("SELECT '1'")
-            ...         print(await cur.fetchone())
-            >>> ...
+            ...         return await cur.fetchone()
         """
 
     @abstractmethod
