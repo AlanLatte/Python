@@ -18,20 +18,21 @@ __all__ = ["Settings", "get_settings"]
 
 
 class _Settings(BaseSettings):
-    """Base settings. for all settings.
+    """Base settings for all settings.
 
     Use double underscore for nested env variables.
+
     Examples:
-    - .env:
+        `.env`::
 
-        TELEGRAM__TOKEN=...
-        TELEGRAM__WEBHOOK_DOMAIN_URL=...
+            TELEGRAM__TOKEN=...
+            TELEGRAM__WEBHOOK_DOMAIN_URL=...
 
-        LOGGER__PATH_TO_LOG="./src/logs"
-        LOGGER__LEVEL="DEBUG"
+            LOGGER__PATH_TO_LOG="./src/logs"
+            LOGGER__LEVEL="DEBUG"
 
-        API_SERVER__HOST="127.0.0.1"
-        API_SERVER__PORT=9191
+            API_SERVER__HOST="127.0.0.1"
+            API_SERVER__PORT=9191
 
     Warnings:
         In the case where a value is specified for the same Settings field in multiple
@@ -44,7 +45,8 @@ class _Settings(BaseSettings):
         4. Variables loaded from the secrets directory.
         5. The default field values for the Settings model.
 
-    See Also: https://docs.pydantic.dev/latest/usage/pydantic_settings/
+    See Also:
+        https://docs.pydantic.dev/latest/usage/pydantic_settings/
     """
 
     class Config:
@@ -117,13 +119,15 @@ class Postgresql(_Settings):
 
 
 class DefaultUser(_Settings):
-    """Default user settings."""
+    """User default settings that are written to the database when running
+    migrations.
+    """
 
     #: str: Default username.
     USERNAME: str = "admin"
     #: EncryptedSecretBytes: Default user password.
     PASSWORD: EncryptedSecretBytes = "admin_admin"
-    #: UserRole: Enum validation of user role.
+    #: UserRole: Enum validation of a user role.
     ROLE: UserRole = UserRole.USER
 
 
@@ -191,6 +195,8 @@ class APIServer(_Settings):
 
 
 class Centrifugo(_Settings):
+    """Centrifugo settings."""
+
     #: str: Centrifugo host.
     HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of centrifugo.
