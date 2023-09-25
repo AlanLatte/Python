@@ -1,6 +1,6 @@
 """Base business models.
 
-All models *must* be inherited by them.
+They *must* inherit all models.
 """
 
 from app.pkg.models.base.enum import BaseEnum
