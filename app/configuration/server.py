@@ -19,12 +19,28 @@ __all__ = ["Server"]
 
 
 class Server:
-    """Register all requirements for correct work of server instance."""
+    """Register all requirements for the correct work of server instance.
+
+    Attributes:
+        __app:
+            ``FastAPI`` application instance.
+        __app_name:
+            Name of application used for prometheus metrics and for loki logs.
+            Getting from ``settings.API.INSTANCE_APP_NAME``.
+    """
 
     __app: FastAPI
     __app_name: str = settings.API.INSTANCE_APP_NAME
 
     def __init__(self, app: FastAPI):
+        """Initialize server instance. Register all requirements for the correct
+        work of server instance.
+
+        Args:
+            app:
+                ``FastAPI`` application instance.
+        """
+
         self.__app = app
         self._register_routes(app)
         self._register_events(app)
@@ -32,20 +48,24 @@ class Server:
         self._register_http_exceptions(app)
 
     def get_app(self) -> FastAPI:
-        """Get current application instance.
+        """Getter of the current application instance.
 
-        Returns: ``FastAPI`` application instance.
+        Returns:
+            ``FastAPI`` application instance.
         """
         return self.__app
 
     @staticmethod
     def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
-        """Register default events.
+        """Register startup and shutdown events.
+        Using implementation of methods from ``app/configuration/events.py``.
 
         Args:
-            app: ``FastAPI`` application instance.
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         app.on_event("startup")(on_startup)
@@ -56,9 +76,11 @@ class Server:
         """Include routers in ``FastAPI`` instance from ``__routes__``.
 
         Args:
-            app: ``FastAPI`` application instance.
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         __routes__.register_routes(app)
@@ -67,12 +89,14 @@ class Server:
     def _register_http_exceptions(app: FastAPITypes.FastAPIInstance) -> None:
         """Register http exceptions.
 
-        FastAPIInstance handle BaseApiExceptions raises inside functions.
+        FastAPIInstance handle ``BaseApiExceptions`` raises inside functions.
 
         Args:
-            app: ``FastAPI`` application instance
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         app.add_exception_handler(BaseAPIException, handle_api_exceptions)
@@ -83,14 +107,16 @@ class Server:
         origins.
 
         Warnings:
-            For default this method is not secure.
+            By default, this method is unsecure.
             You **should use it only for development.**
             Read more about CORS: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
         Args:
-            app: ``FastAPI`` application instance.
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         app.add_middleware(
@@ -105,9 +131,11 @@ class Server:
         """Register prometheus middleware.
 
         Args:
-            app: ``FastAPI`` application instance.
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         app.add_middleware(
@@ -124,9 +152,11 @@ class Server:
         """Expose internal aggregated metrics to public endpoint.
 
         Args:
-            app: ``FastAPI`` application instance.
+            app:
+                ``FastAPI`` application instance.
 
-        Returns: None
+        Returns:
+            None
         """
 
         metrics_endpoint = "/metrics"
@@ -134,13 +164,28 @@ class Server:
         self.__filter_logs(metrics_endpoint)
 
     def _register_middlewares(self, app) -> None:
-        """Apply routes middlewares."""
+        """Apply routes middlewares.
+
+        Args:
+            app:
+                ``FastAPI`` application instance.
+
+        Returns:
+            None
+        """
 
         self.__register_cors_origins(app)
         self.__register_prometheus(app)
 
     @staticmethod
     def __filter_logs(endpoint: str) -> None:
-        """Filter ignore /metrics in uvicorn logs."""
+        """Filter ignore /metrics in uvicorn logs.
+
+        Args:
+            endpoint: Specific endpoint to filter logs.
+
+        Returns:
+            None
+        """
 
         logging.getLogger("uvicorn.access").addFilter(EndpointFilter(endpoint=endpoint))

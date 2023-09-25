@@ -3,7 +3,7 @@ response.
 
 Examples:
     For example, if in some level in code you raise error inherited by
-    BaseAPIException::
+    ``BaseAPIException``::
 
         ...  # exceptions.py
         class E(BaseAPIException):
@@ -14,8 +14,8 @@ Examples:
         async def some_internal_function():
             raise E
 
-    When `some_internal_function` called, exception will process by
-    ``handle_api_exceptions`` and returns json object::
+    When ``some_internal_function`` called, exception will process by
+    ``handle_api_exceptions`` and returns a json object with status code 200::
 
         {
             "message": "test error."
@@ -32,16 +32,18 @@ __all__ = ["handle_internal_exception", "handle_api_exceptions"]
 
 
 def handle_api_exceptions(request: Request, exc: BaseAPIException):
-    """Handle all internal exceptions which inherited from `BaseAPIException`.
+    """Handle all internal exceptions that inherited from ``BaseAPIException``.
 
     Args:
-        request: ``Request`` instance.
-        exc: ``BaseAPIException`` instance.
+        request:
+            ``Request`` instance.
+        exc:
+            ``BaseAPIException`` instance.
 
     Returns: ``JSONResponse`` instance.
     """
 
-    _ = request
+    del request  # unused
 
     return JSONResponse(status_code=exc.status_code, content={"message": exc.message})
 
