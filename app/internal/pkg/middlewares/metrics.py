@@ -12,9 +12,17 @@ __all__ = ["metrics"]
 
 
 def metrics(request: Request) -> Response:
-    """Expose internal metrics to public endpoint."""
+    """Expose internal metrics to public endpoint.
 
-    _ = request
+    Args:
+        request:
+            ``Request`` instance.
+
+    Returns:
+        ``Response`` instance with metrics.
+    """
+
+    del request  # unused
 
     return Response(
         generate_latest(REGISTRY),
