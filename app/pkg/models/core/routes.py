@@ -1,4 +1,4 @@
-"""Model for contain ``APIRouter`` instance."""
+"""Model for contains ``APIRouter`` instance."""
 
 from dataclasses import dataclass
 from typing import Tuple
@@ -10,7 +10,12 @@ __all__ = ["Routes"]
 
 @dataclass(frozen=True)
 class Routes:
-    """Frozen model for storage all ``APIRouter``."""
+    """Frozen model for storage all ``APIRouter``.
+
+    Attributes:
+        routers:
+            Tuple of ``APIRouter`` instances.
+    """
 
     routers: Tuple[APIRouter, ...]
 
@@ -37,7 +42,7 @@ class Routes:
                 ...    )
                 ...)
 
-            If you call ``register_routes``, all routes from *self.routers* will be
+            If you call :meth:`.register_routes`, all routes from *self.routers* will be
             included to the ``FastAPI`` instance.::
 
                 >>> from fastapi import FastAPI
