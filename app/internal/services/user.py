@@ -1,4 +1,5 @@
 """User service."""
+
 from typing import List
 
 from app.internal.pkg.password import password
@@ -11,21 +12,33 @@ __all__ = ["UserService"]
 
 
 class UserService:
+
+    #: UserRepository: UserRepository repository implementation.
     repository: UserRepository
 
     def __init__(self, user_repository: UserRepository):
+        """Initialize class for user methods.
+
+        Args:
+            user_repository:
+                User repository implementation.
+        """
+
         self.repository = user_repository
 
     async def create_user(self, cmd: models.CreateUserCommand) -> models.User:
         """Function for create user. User password will be encrypted.
 
         Args:
-            cmd: `CreateUserCommand`.
+            cmd:
+                :class:`.CreateUserCommand`.
 
         Raises:
-            UserAlreadyExist: when username of user already taken in repository.
+            UserAlreadyExist:
+                when username of user has already taken in repository.
 
-        Returns: `User` model.
+        Returns:
+            :class:`.User` model.
         """
 
         try:
@@ -35,10 +48,10 @@ class UserService:
             raise UserAlreadyExist
 
     async def read_all_users(self) -> List[models.User]:
-        """Read all users from repository.
+        """Read all users from the repository.
 
         Returns:
-            List of `User` models.
+            List of :class:`.User` models.
         """
 
         return await self.repository.read_all()
@@ -50,9 +63,11 @@ class UserService:
         """Read specific user from repository by username.
 
         Args:
-            query: `ReadUserByUserNameQuery`.
+            query:
+                :class:`.ReadUserByUserNameQuery`.
 
-        Returns: `User` model.
+        Returns:
+            :class:`.User` model.
         """
 
         return await self.repository.read_by_username(query=query)
@@ -64,9 +79,11 @@ class UserService:
         """Read specific user from repository by user id.
 
         Args:
-            query: `ReadUserByIdQuery`.
+            query:
+                :class:`.ReadUserByIdQuery`.
 
-        Returns: `User` model.
+        Returns:
+            :class:`.User` model.
         """
 
         return await self.repository.read(query=query)
@@ -78,13 +95,15 @@ class UserService:
         """Change user password.
 
         Args:
-            cmd: `ChangeUserPasswordCommand`.
+            cmd:
+                :class:`.ChangeUserPasswordCommand`.
 
         Raises:
-            IncorrectOldPassword: when the transmitted password does not match the one
-                in the database
+            IncorrectOldPassword:
+                when the transmitted password does not match the one in the database
 
-        Returns: `User` model.
+        Returns:
+            :class:`.User` model.
         """
 
         user = await self.repository.read(query=models.ReadUserByIdQuery(id=cmd.id))
@@ -99,9 +118,11 @@ class UserService:
         """Delete specific user by user id.
 
         Args:
-             cmd: `DeleteUserCommand`.
+             cmd:
+                :class:`.DeleteUserCommand`.
 
-        Returns: `User` model.
+        Returns:
+            :class:`.User` model.
         """
 
         return await self.repository.delete(cmd=cmd)

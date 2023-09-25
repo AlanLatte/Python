@@ -6,12 +6,12 @@ from dependency_injector import resources
 __all__ = ["BaseAsyncResource"]
 
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 
 class BaseAsyncResource(resources.AsyncResource):
     @abstractmethod
-    async def init(self, *args, **kwargs) -> T:
+    async def init(self, *args, **kwargs) -> _T:
         """Getting connection.
 
         Args:
@@ -20,46 +20,48 @@ class BaseAsyncResource(resources.AsyncResource):
 
         Examples:
             If you need a resource that will exist in a single instance, use
-                ``Provide`` as usual::
-            >>> from aiopg import Pool
-            >>> from dependency_injector import containers, providers
-            >>> from dependency_injector.wiring import Provide, inject
-            >>>
-            >>> from app.internal.repository.postgresql.connection import acquire_connection
-            >>> from app.pkg.connectors import Connectors
-            >>>
-            >>> class Container(containers.DeclarativeContainer):
-            ...     connector: Connectors = providers.Container(Connectors)
-            >>>
-            >>> @inject
-            ... async def auto_closed_pool(
-            ...     psql: Pool = Provide[Container.connector.postgresql.connector],
-            ... ):
-            ...     async with acquire_connection(pool=psql) as cur:
-            ...         await cur.execute("SELECT '1'")
-            ...         print(await cur.fetchone())
+            ``Provide`` as usual::
+
+                >>> from aiopg import Pool
+                >>> from dependency_injector import containers, providers
+                >>> from dependency_injector.wiring import Provide, inject
+                >>>
+                >>> from app.internal.repository.postgresql.connection import acquire_connection
+                >>> from app.pkg.connectors import Connectors
+                >>>
+                >>> class Container(containers.DeclarativeContainer):
+                ...     connector: Connectors = providers.Container(Connectors)
+                >>>
+                >>> @inject
+                ... async def auto_closed_pool(
+                ...     psql: Pool = Provide[Container.connector.postgresql.connector],
+                ... ):
+                ...     async with acquire_connection(pool=psql) as cur:
+                ...         await cur.execute("SELECT '1'")
+                ...         return await cur.fetchone()
 
             If you need to automatically close the resource after the execution of the
-                function - use ``Closing``::
-            >>> import asyncio
-            >>> from dependency_injector.wiring import Closing
-            >>>
-            >>> @inject
-            ... async def native_closed_pool(
-            ...     psql: Pool = Closing[Provide[Container.connector.postgresql.connector]],
-            ... ):
-            ...     async with acquire_connection(pool=psql) as cur:
-            ...         await cur.execute("SELECT '1'")
-            ...         return await cur.fetchone()
+            function - use ``Closing``::
+
+                >>> import asyncio
+                >>> from dependency_injector.wiring import Closing
+                >>>
+                >>> @inject
+                ... async def native_closed_pool(
+                ...     psql: Pool = Closing[Provide[Container.connector.postgresql.connector]],
+                ... ):
+                ...     async with acquire_connection(pool=psql) as cur:
+                ...         await cur.execute("SELECT '1'")
+                ...         return await cur.fetchone()
         """
 
     @abstractmethod
-    async def shutdown(self, connector: T):
+    async def shutdown(self, connector: _T):
         """Close connection.
 
         Args:
-            connector: Resource returned by ``init`` method.
+            connector: Resource returned by :meth:`BaseAsyncResource.init()` method.
 
         Notes:
-            You should implement ``close`` method in your connector here
+            You should implement ``close`` method of your connector here.
         """

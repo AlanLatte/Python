@@ -21,8 +21,12 @@ class UserRoleService:
     ) -> typing.AsyncIterable[typing.Optional[BaseAPIException]]:
         """Create all user roles.
 
+        Notes:
+            If the role already exists, it will be skipped.
+
         Returns:
-            Async iterable of BaseAPIException.
+            If a role successfully created,
+            then pass, else iterable :class:`.BaseAPIException`.
         """
         for role in models.UserRole:
             try:

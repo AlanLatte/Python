@@ -1,3 +1,5 @@
+"""Routes for authorization and authentication."""
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Security, status
 from starlette.responses import Response

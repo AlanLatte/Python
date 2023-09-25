@@ -9,6 +9,6 @@ __all__ = ["Connectors", "PostgresSQL"]
 
 
 class Connectors(containers.DeclarativeContainer):
-    """Declarative container with connectors."""
+    """Declarative container with all connectors."""
 
     postgresql: PostgresSQL = providers.Container(PostgresSQL)
