@@ -5,7 +5,6 @@ from app.pkg.models.base import Model
 
 __all__ = ["Repository", "BaseRepository"]
 
-
 BaseRepository = TypeVar("BaseRepository", bound="Repository")
 
 
@@ -42,13 +41,14 @@ class Repository(ABC):
         All methods must be asynchronous.
 
     Warnings:
-        1. You must use ``query`` for search model in database and ``cmd`` for create,
-            update and delete model in database.
-        2. ``query`` and ``cmd`` must be inherited from ``Model`` returning type.
-        3. Delete method must return **MARKED** row for delete.  It is necessary for
-            correct work of the repository layer. Repository cant delete row from
-            database. It can only mark row as deleted.
-        4. All methods must return model contains all fields.
+        #. You must use ``query`` for search model in database and ``cmd`` for create,
+           update and delete model in database.
+        #. ``query`` and ``cmd`` must be inherited from ``Model`` returning type.
+        #. Delete method must return **MARKED** row for delete.
+           It is necessary for correct work of the repository layer.
+           Repository cant delete row from database.
+           It can only mark row as deleted.
+        #. All methods must return model contains all fields.
     """
 
     async def create(self, cmd: Model) -> Model:
