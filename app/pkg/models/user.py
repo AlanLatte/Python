@@ -1,3 +1,5 @@
+"""User model."""
+
 from pydantic.fields import Field
 from pydantic.types import PositiveInt
 

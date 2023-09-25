@@ -1,3 +1,5 @@
+"""Auth models."""
+
 from pydantic import Field
 
 from app.pkg.models.base import BaseModel

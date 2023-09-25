@@ -1,7 +1,7 @@
 from fastapi import Security
 from fastapi.security import APIKeyHeader
 
-from app.pkg.models.exceptions.x_auth_token import InvalidCredentials
+from app.pkg.models.exceptions.token_verification import InvalidCredentials
 from app.pkg.settings import settings
 
 __all__ = ["token_based_verification"]

@@ -1,3 +1,5 @@
+"""Exceptions for user management."""
+
 from fastapi import status
 
 from app.pkg.models.base import BaseAPIException

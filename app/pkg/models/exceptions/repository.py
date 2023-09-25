@@ -1,3 +1,6 @@
+"""Exceptions for repository layer."""
+
+
 from fastapi import status
 
 from app.pkg.models.base import BaseAPIException

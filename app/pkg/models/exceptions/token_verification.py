@@ -1,3 +1,5 @@
+"""Exceptions for token-based auth verification."""
+
 from starlette import status
 
 from app.pkg.models.base import BaseAPIException
