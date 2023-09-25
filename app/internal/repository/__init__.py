@@ -58,8 +58,8 @@ Examples:
 
 from dependency_injector import containers, providers
 
-from . import postgresql
-from .repository import BaseRepository
+from app.internal.repository import postgresql
+from app.internal.repository.repository import BaseRepository
 
 __all__ = ["Repositories"]
 
