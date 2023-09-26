@@ -1,3 +1,5 @@
+"""Authentication middleware for token-based authentication."""
+
 from fastapi import Security
 from fastapi.security import APIKeyHeader
 
@@ -13,8 +15,8 @@ x_api_key_header = APIKeyHeader(name="X-ACCESS-TOKEN")
 async def token_based_verification(
     api_key_header: str = Security(x_api_key_header),
 ):
-    """This function is used for routers that need to be protected by token-
-    based authentication.
+    """This function is used for routers that need to be protected by token-based
+    authentication.
 
     Notes:
         Token for access to API is X-ACCESS-TOKEN from header and gets from
@@ -29,7 +31,9 @@ async def token_based_verification(
 
             >>> from fastapi import APIRouter, Depends
             >>>
-            >>> from app.internal.pkg.middlewares.token_based_verification import token_based_verification
+            >>> from app.internal.pkg.middlewares.token_based_verification import (
+            ...     token_based_verification
+            ... )
             >>>
             >>> router = APIRouter(dependencies=[Depends(token_based_verification)])
             >>>

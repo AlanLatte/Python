@@ -1,3 +1,5 @@
+"""User roles service."""
+
 import typing
 
 from app.internal.repository.postgresql import user_roles
@@ -10,6 +12,8 @@ __all__ = ["UserRoleService"]
 
 
 class UserRoleService:
+    """Service for manage user roles."""
+
     #: user_roles.UserRoleRepository: UserRoleRepository repository implementation.
     repository: user_roles.UserRoleRepository
 

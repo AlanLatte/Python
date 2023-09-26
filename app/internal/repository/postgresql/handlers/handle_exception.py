@@ -27,7 +27,10 @@ def handle_exception(func: Callable[..., Model]):
             >>> from app.internal.repository.postgresql.connection import get_connection
             >>> @handle_exception
             ... async def create(self, cmd: models.CreateUserRoleCommand) -> None:
-            ...     q = "insert into user_roles(role_name) values (%(role_name)s) on conflict do nothing returning role_name;"
+            ...     q = \"""
+            ...         insert into user_roles(role_name) values (%(role_name)s)
+            ...         on conflict do nothing returning role_name;
+            ...     \"""
             ...     async with get_connection() as cur:
             ...         await cur.execute(q, cmd.to_dict(show_secrets=True))
 
@@ -60,10 +63,10 @@ def handle_exception(func: Callable[..., Model]):
 
         try:
             return await func(*args, **kwargs)
-        except psycopg2.Error as e:
-            if e.pgcode == errorcodes.UNIQUE_VIOLATION:
-                raise UniqueViolation
+        except psycopg2.Error as error:
+            if error.pgcode == errorcodes.UNIQUE_VIOLATION:
+                raise UniqueViolation from error
 
-            raise DriverError(message=e.pgerror)
+            raise DriverError(message=error.pgerror) from error
 
     return wrapper

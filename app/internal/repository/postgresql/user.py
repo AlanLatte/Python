@@ -1,3 +1,5 @@
+"""User repository for PostgresSQL database."""
+
 from typing import List
 
 from app.internal.repository.postgresql.connection import get_connection
@@ -11,6 +13,8 @@ __all__ = ["UserRepository"]
 
 
 class UserRepository(Repository):
+    """Repository for users."""
+
     @collect_response
     async def create(self, cmd: models.CreateUserCommand) -> models.User:
         q = """

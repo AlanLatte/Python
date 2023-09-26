@@ -23,6 +23,8 @@ __all__ = ["AuthService"]
 
 
 class AuthService:
+    """Service for authorization and authentication methods."""
+
     #: JWTRefreshTokenRepository: JWTRefreshTokenRepository repository implementation.
     refresh_token_repository: JWTRefreshTokenRepository
     #: UserService: User service implementation.
@@ -107,8 +109,8 @@ class AuthService:
             return await self.refresh_token_repository.read(
                 query=query,
             )
-        except EmptyResult:
-            raise UnAuthorized
+        except EmptyResult as empty_result:
+            raise UnAuthorized from empty_result
 
     async def create_refresh_token(
         self,
@@ -171,5 +173,5 @@ class AuthService:
             return await self.refresh_token_repository.delete(
                 cmd=cmd,
             )
-        except EmptyResult:
-            raise UnAuthorized
+        except EmptyResult as empty_result:
+            raise UnAuthorized from empty_result

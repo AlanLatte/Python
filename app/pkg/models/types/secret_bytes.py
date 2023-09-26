@@ -1,3 +1,5 @@
+"""Secret bytes types for pydantic models."""
+
 from typing import Any
 
 from pydantic import SecretBytes

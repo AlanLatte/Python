@@ -1,3 +1,5 @@
+"""JWT authorization credentials."""
+
 from typing import Dict, Optional, Union
 
 from app.pkg.models.types import NotEmptySecretStr
@@ -6,6 +8,8 @@ __all__ = ["JwtAuthorizationCredentials"]
 
 
 class JwtAuthorizationCredentials:
+    """JWT authorization credentials."""
+
     subject: Dict[str, Union[str, int]]
     raw_token: NotEmptySecretStr
     jti: Optional[str]

@@ -1,3 +1,5 @@
+"""Abstract repository interface."""
+
 from abc import ABC
 from typing import List, TypeVar
 
