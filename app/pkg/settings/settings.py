@@ -162,8 +162,7 @@ class Logging(_Settings):
 
     @validator("FILE_PATH")
     def __create_dir_if_not_exist(  # pylint: disable=unused-private-member, no-self-argument
-        cls,
-        v: pathlib.Path,
+        cls, v: pathlib.Path,
     ):
         """Create directory if not exist."""
 
