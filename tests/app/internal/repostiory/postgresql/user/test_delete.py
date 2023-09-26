@@ -19,7 +19,8 @@ async def test_correct(user_repository: UserRepository, insert_first_user: model
     [1, 2, 3, 4],
 )
 async def test_incorrect_user_id_not_found(
-    user_repository: UserRepository, user_id: int,
+    user_repository: UserRepository,
+    user_id: int,
 ):
     with pytest.raises(EmptyResult):
         await user_repository.delete(cmd=models.DeleteUserCommand(id=user_id))
