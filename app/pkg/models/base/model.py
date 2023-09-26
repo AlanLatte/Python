@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 import typing
 from datetime import date, datetime
-from typing import Any, Dict, List, Tuple, Type, TypeVar
+from typing import Any, Dict, List, Tuple, TypeVar
 from uuid import UUID
 
 import pydantic
@@ -26,9 +26,9 @@ class BaseModel(pydantic.BaseModel):
     def to_dict(
         self,
         show_secrets: bool = False,
-        values: Dict[Any, Any] = None,
+        values: dict[Any, Any] = None,
         **kwargs,
-    ) -> Dict[Any, Any]:
+    ) -> dict[Any, Any]:
         """Make a representation model from a class object to Dict object.
 
         Args:
@@ -178,10 +178,10 @@ class BaseModel(pydantic.BaseModel):
 
     def migrate(
         self,
-        model: Type[BaseModel],
-        match_keys: typing.Dict[str, str] = None,
+        model: type[BaseModel],
+        match_keys: dict[str, str] = None,
         random_fill: bool = False,
-        extra_fields: typing.Dict[str, typing.Any] = None,
+        extra_fields: dict[str, typing.Any] = None,
     ) -> Model:
         """Migrate one model to another ignoring missmatch.
 

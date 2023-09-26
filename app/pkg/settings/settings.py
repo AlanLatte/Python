@@ -221,7 +221,8 @@ class RabbitMQ(_Settings):
 class Settings(_Settings):
     """Server settings.
 
-    Formed from `.env` or `.env.dev` if server running with parameter `dev`.
+    Formed from `.env` or `.env.dev` if server running with parameter
+    `dev`.
     """
 
     #: APIServer: API settings. Contains all settings for API.
@@ -242,7 +243,7 @@ class Settings(_Settings):
 
 # TODO: Возможно даже lru_cache не стоит использовать. Стоит использовать meta sigleton.
 #   Для класса настроек. А инициализацию перенести в `def __init__`
-@lru_cache()
+@lru_cache
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""
 

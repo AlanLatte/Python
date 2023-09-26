@@ -1,0 +1,67 @@
+files: ^app/.+\.py$
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-added-large-files
+    -   id: check-docstring-first
+
+-   repo: https://github.com/asottile/add-trailing-comma
+    rev: v2.2.1
+    hooks:
+    -   id: add-trailing-comma
+        args: [--py36-plus]
+
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.2
+    hooks:
+    -   id: pyupgrade
+        args: [--py38-plus]
+
+-   repo: https://github.com/PyCQA/bandit
+    rev: '1.7.1'
+    hooks:
+    -   id: bandit
+        args: [-x tests]
+
+-   repo: local
+    hooks:
+    -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args: [
+            '--rcfile=.pylintrc',
+            '-sn'
+        ]
+
+-   repo: https://github.com/PyCQA/docformatter
+    rev: v1.4
+    hooks:
+    -   id: docformatter
+        args: [-ir]
+
+-   repo: https://github.com/PyCQA/flake8
+    rev: 4.0.1
+    hooks:
+    -   id: flake8
+
+-   repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+    -   id: black
+
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v1.4
+    hooks:
+    -   id: autoflake
+        args: [
+            "--remove-all-unused-imports",
+            "--remove-unused-variables",
+            "--ignore-init-module-imports",
+            "--remove-all-unused-imports"
+        ]

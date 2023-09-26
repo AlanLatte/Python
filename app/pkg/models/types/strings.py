@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional
-
 from pydantic import SecretStr
 from pydantic.utils import update_not_none
 from pydantic.validators import constr_length_validator
@@ -21,11 +19,11 @@ class NotEmptySecretStr(SecretStr):
 class NotEmptyStr(str):
     """Validate, that length of string is less or equal than 1."""
 
-    min_length: Optional[int] = 1
-    max_length: Optional[int] = None
+    min_length: int | None = 1
+    max_length: int | None = None
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, str]) -> None:
+    def __modify_schema__(cls, field_schema: dict[str, str]) -> None:
         update_not_none(
             field_schema,
             type="string",

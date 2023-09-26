@@ -1,5 +1,6 @@
 """Repositories should be dumb, while services, on the contrary, should be
-smart. That's why :class:`.Repository` must contain a minimum set of
+smart. That's why :class:`.Repository` must contain a minimum set of.
+
 **C.R.U.D.** methods.
 
 - **C** - Create
