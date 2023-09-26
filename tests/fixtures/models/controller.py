@@ -1,3 +1,5 @@
+"""Model controller fixtures."""
+
 import typing
 from typing import Any, Callable, Coroutine
 
@@ -24,7 +26,9 @@ def create_model() -> Callable[..., Coroutine[Any, Any, Model]]:
             this::
                 >>> from app.pkg import models
                 >>> from app.internal.repository.postgresql import UserRepository
-                >>> async def test_correct(create_model, user_repository: UserRepository):
+                >>> async def test_correct(
+                ...     create_model, user_repository: UserRepository
+                ... ):
                 ...     cmd = await create_model(models.CreateUserCommand)
                 ...     user = await user_repository.create(cmd=cmd)
                 ...     assert user.username == cmd.username
@@ -33,7 +37,9 @@ def create_model() -> Callable[..., Coroutine[Any, Any, Model]]:
             fixture::
                 >>> from app.pkg import models
                 >>> from app.internal.repository.postgresql import UserRepository
-                >>> async def test_correct(create_model, user_repository: UserRepository):
+                >>> async def test_correct(
+                ...    create_model, user_repository: UserRepository
+                ... ):
                 ...     cmd = await create_model(
                 ...         models.CreateUserCommand,
                 ...         username="test@example.ru"

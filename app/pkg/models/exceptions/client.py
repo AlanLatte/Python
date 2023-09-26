@@ -1,3 +1,5 @@
+"""Exceptions for external clients."""
+
 from starlette import status
 
 from app.pkg.models.base import BaseAPIException
@@ -8,7 +10,7 @@ __all__ = ["BaseClientException", "BaseExternalClientException"]
 
 class BaseClientException(BaseAPIException):
     def __init__(self, client_name: str):
-        super(BaseClientException, self).__init__(
+        super().__init__(
             message=NotEmptyStr(self.message.format(client_name)),
         )
 

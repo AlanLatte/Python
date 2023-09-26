@@ -1,3 +1,5 @@
+"""Fixtures for auth services."""
+
 import pytest
 
 from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository

@@ -1,3 +1,5 @@
+"""Exceptions for auth module."""
+
 from starlette import status
 
 from app.pkg.models.base import BaseAPIException

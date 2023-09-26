@@ -1,12 +1,13 @@
+"""Test cases for POST: /auth/logout."""
+
 from starlette import status
 
 from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized
-from app.pkg.settings.settings import Settings
 from tests.fixtures.router.client import Client
 
 
-async def test_correct(authorized_first_client: Client, auth_router: str, create_model):
+async def test_correct(authorized_first_client: Client, auth_router: str):
     authorized_first_client.set_auth_header(use_access=False)
     assert authorized_first_client.user is not None
 
@@ -27,7 +28,6 @@ async def test_incorrect_refresh_token(
     auth_router: str,
     response_with_error,
     fist_auth_user: models.User,
-    settings: Settings,
 ):
     authorized_first_client.set_auth_header(use_access=False)
 

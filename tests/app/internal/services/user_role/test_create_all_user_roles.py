@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserService.create_user()`."""
+
 import pytest
 
 from app.internal.repository.postgresql import connection

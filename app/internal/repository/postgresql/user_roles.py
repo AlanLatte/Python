@@ -1,3 +1,5 @@
+"""User roles repository for PostgresSQL database."""
+
 from typing import List
 
 from app.internal.repository.postgresql.connection import get_connection
@@ -12,6 +14,8 @@ __all__ = ["UserRoleRepository"]
 
 
 class UserRoleRepository(Repository):
+    """Repository for user roles."""
+
     @handle_exception
     async def create(self, cmd: models.CreateUserRoleCommand) -> None:
         q = """

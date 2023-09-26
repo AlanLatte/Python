@@ -1,3 +1,5 @@
+"""Tests cases for :meth:`.UserService.change_password()`."""
+
 import pytest
 from pydantic import ValidationError
 
@@ -28,7 +30,6 @@ async def test_correct(
 async def test_incorrect_old_password(
     user_postgres_service: UserService,
     insert_first_user: models.User,
-    first_user: models.User,
     create_model,
 ):
     cmd = await create_model(models.ChangeUserPasswordCommand, id=insert_first_user.id)

@@ -1,4 +1,4 @@
-"""Module for decorator `collect_response`."""
+"""Collect response from aiopg and convert it to an annotated model."""
 
 from functools import wraps
 from typing import List, Type, Union
@@ -6,39 +6,47 @@ from typing import List, Type, Union
 import pydantic
 from psycopg2.extras import RealDictRow  # type: ignore
 
+from app.internal.repository.postgresql.handlers.handle_exception import (
+    handle_exception,
+)
 from app.pkg.models.base import Model
 from app.pkg.models.exceptions.repository import EmptyResult
-
-from .handle_exception import handle_exception
 
 __all__ = ["collect_response"]
 
 
 def collect_response(fn):
-    """Convert response from aiopg to annotated model.
+    """Convert response from aiopg to an annotated model.
 
     Args:
-        fn: Target function that contains a query in postgresql.
+        fn:
+            Target function that contains a query in postgresql.
 
     Examples:
-        For example, if you have a function that contains a query in postgresql,
-        decorator ``collect_response`` will convert the response from aiopg to
-        annotated model::
-        >>> from app.pkg.models.user import User, ReadUserByIdQuery
-        >>> from app.internal.repository.postgresql.connection import get_connection
+        If you have a function that contains a query in postgresql,
+        decorator :func:`.collect_response` will convert the response from aiopg to
+        an annotated model::
 
-        >>> @collect_response
-        ... async def get_user_by_id(query: ReadUserByIdQuery) -> User:
-        ...    q = "SELECT * FROM users WHERE id = %(id)s"
-        ...    async with get_connection() as cur:
-        ...        await cur.execute(q, query.to_dict(show_secrets=True))
-        ...        return await cur.fetchone()
+            >>> from app.pkg.models.user import User, ReadUserByIdQuery
+            >>> from app.internal.repository.postgresql.connection import get_connection
+            >>>
+            >>> @collect_response
+            ... async def get_user_by_id(query: ReadUserByIdQuery) -> User:
+            ...    q = "SELECT * FROM users WHERE id = %(id)s"
+            ...    async with get_connection() as cur:
+            ...        await cur.execute(q, query.to_dict(show_secrets=True))
+            ...        return await cur.fetchone()
+
+    Warnings:
+        The function must return a single row or a list of rows in format like::
+
+            >>> ({"key": "value"}, ...)
 
     Returns:
         The model that is specified in type hints of `fn`.
 
     Raises:
-        EmptyResult: when query of `fn` returns None.
+        EmptyResult: when a query of `fn` returns None.
     """
 
     @wraps(fn)
@@ -47,14 +55,17 @@ def collect_response(fn):
         *args: object,
         **kwargs: object,
     ) -> Union[List[Type[Model]], Type[Model]]:
-        """Inner function. Convert response from aiopg to annotated model.
+        """Inner function of :func:`.collect_response`. Convert response from
+        aiopg to an annotated model.
 
         Args:
-            *args: Positional arguments.
-            **kwargs: Keyword arguments.
+            *args:
+                Positional arguments.
+            **kwargs:
+                Keyword arguments.
 
         Raises:
-            EmptyResult: when query of `fn` returns None.
+            EmptyResult: when a query of `fn` returns None.
 
         Returns:
             The model that is specified in type hints of `fn`.
@@ -77,11 +88,14 @@ async def __convert_response(response: RealDictRow, annotations: str):
     model.
 
     Args:
-        response: Response of aiopg query.
-        annotations: Annotations of `fn`.
+        response:
+            Response of an aiopg query.
+        annotations:
+            Annotations of `fn`.
 
-    Returns: List[`Model`] if List is specified in the type annotations,
-            or a single `Model` if `Model` is specified in the type annotations.
+    Returns:
+        List[`Model`] if List is specified in the type annotations,
+        or a single `Model` if `Model` is specified in the type annotations.
     """
 
     r = response.copy()
@@ -94,7 +108,8 @@ async def __convert_response(response: RealDictRow, annotations: str):
 async def __convert_memory_viewer(r: RealDictRow):
     """Convert memory viewer in bytes.
 
-    Notes: aiopg returns memory viewer in query response,
+    Notes:
+        aiopg returns memory viewer in query response,
         when in database type of cell `bytes`.
 
     Returns:

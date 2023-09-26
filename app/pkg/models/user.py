@@ -1,3 +1,5 @@
+"""User model."""
+
 from pydantic.fields import Field
 from pydantic.types import PositiveInt
 
@@ -18,6 +20,8 @@ __all__ = [
 
 
 class UserFields:
+    """Fields for user model."""
+
     id = Field(description="User id.", example=2)
     username = Field(description="User Login", example="TestTest")
     password = Field(

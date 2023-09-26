@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserService.read_specific_user_by_username()`."""
+
 import pytest
 
 from app.internal.services import UserService

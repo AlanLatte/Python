@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRoleService.create_all_user_roles()`."""
+
 import pytest
 
 from app.internal.services import AuthService

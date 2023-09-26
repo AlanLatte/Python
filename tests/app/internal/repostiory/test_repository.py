@@ -1,3 +1,6 @@
+"""Test cases for :class:`.Repository`."""
+
+
 import pytest
 
 from app.internal.repository.repository import Repository

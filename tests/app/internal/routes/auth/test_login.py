@@ -1,3 +1,5 @@
+"""Test cases for POST: /auth/login."""
+
 import uuid
 
 import pytest
@@ -22,6 +24,7 @@ async def test_correct_sign_by_one_fingerprint(
         url=f"{auth_router}/login",
         json=fist_auth_user,
     )
+    print(response.json())
     assert response.status_code == status.HTTP_200_OK
 
     response_json = response.json()
@@ -45,7 +48,6 @@ async def test_incorrect_sign_by_small_password_length(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
-    settings: Settings,
     password: str,
 ):
     response = await client.request(
@@ -104,18 +106,18 @@ async def test_incorrect_user_incorrect_username(
 @pytest.mark.parametrize(
     "switch_fingerprint",
     [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
     ],
 )
 async def test_correct_sign_by_two_fingerprints(
     client: Client,
     auth_router: str,
     fist_auth_user: models.AuthCommand,
-    switch_fingerprint: str,
+    switch_fingerprint: uuid.UUID,
 ):
     response = await client.request(
         method="POST",
@@ -126,7 +128,7 @@ async def test_correct_sign_by_two_fingerprints(
 
     fist_auth_user = fist_auth_user.copy()
 
-    fist_auth_user.fingerprint = switch_fingerprint
+    fist_auth_user.fingerprint = str(switch_fingerprint)
     response = await client.request(
         method="POST",
         url=f"{auth_router}/login",

@@ -1,3 +1,5 @@
+"""Exceptions for JWT authentication."""
+
 from fastapi import status
 
 from app.pkg.models.base import BaseAPIException
@@ -23,6 +25,8 @@ class TokenTimeExpired(BaseAPIException):
         if message:
             self.message = f"Token time expired: {message}"
 
+        super().__init__(message=self.message)
+
     message = "Token time expired"
     status_code = status.HTTP_401_UNAUTHORIZED
 
@@ -37,6 +41,8 @@ class AlgorithIsNotSupported(BaseAPIException):
         if message:
             self.message = f"{message} is not supported"
 
+        super().__init__(message=self.message)
+
     message = "Algorithm is not supported"
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -45,6 +51,8 @@ class WrongToken(BaseAPIException):
     def __init__(self, message: Exception = None):
         if message:
             self.message = f"Wrong token: {message}"
+
+        super().__init__(message=self.message)
 
     message = "Wrong token"
     status_code = status.HTTP_401_UNAUTHORIZED

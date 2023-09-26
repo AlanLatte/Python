@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRepository.read_all()`."""
+
 import asyncio
 
 import pytest
@@ -55,4 +57,4 @@ async def test_correct_many_users(
     await asyncio.gather(*tasks)
 
     users = await user_repository.read_all()
-    assert users.__len__() == count
+    assert len(users) == count

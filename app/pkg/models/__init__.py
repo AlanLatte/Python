@@ -1,6 +1,6 @@
 """Business models."""
 
-from .auth import *
-from .refresh_token import *
-from .user import *
-from .user_role import *
+from app.pkg.models.auth import *
+from app.pkg.models.refresh_token import *
+from app.pkg.models.user import *
+from app.pkg.models.user_role import *

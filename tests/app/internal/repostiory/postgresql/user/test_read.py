@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRepository.read()`."""
+
 import pytest
 
 from app.internal.repository.postgresql import UserRepository
@@ -16,9 +18,9 @@ async def test_correct_by_id(
 
 
 @pytest.mark.parametrize(
-    "_id",
+    "user_id",
     [1, 2, 3],
 )
-async def test_incorrect_by_id(user_repository: UserRepository, _id: int):
+async def test_incorrect_by_id(user_repository: UserRepository, user_id: int):
     with pytest.raises(EmptyResult):
-        await user_repository.read(query=models.ReadUserByIdQuery(id=_id))
+        await user_repository.read(query=models.ReadUserByIdQuery(id=user_id))

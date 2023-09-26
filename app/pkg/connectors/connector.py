@@ -1,7 +1,8 @@
 """Abstract connector.
 
-Note:
-    All connectors must be inherited by ``BaseConnector`` and implement its method.
+Notes:
+    All connectors must be inherited by :class:`.BaseConnector` and implement
+        its method.
 """
 
 from abc import abstractmethod
@@ -14,12 +15,14 @@ class BaseConnector:
 
     @abstractmethod
     async def get_connect(self, *args, **kwargs):
-        """Getting connection pool in asynchronous."""
+        """Getting connection pool in asynchronous.
 
-        try:
-            _ = args, kwargs
-        finally:
-            raise NotImplementedError
+        Args:
+            *args: Positional arguments for ``get_connect`` method.
+            **kwargs: Keyword arguments for ``get_connect`` method.
+        """
+
+        raise NotImplementedError
 
     @abstractmethod
     async def close(self, *args, **kwargs):

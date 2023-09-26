@@ -1,3 +1,5 @@
+"""Test password module."""
+
 import pydantic
 import pytest
 

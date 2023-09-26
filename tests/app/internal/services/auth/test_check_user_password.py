@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserService.read_specific_user_by_username()`."""
+
 import pytest
 from pydantic import ValidationError
 
@@ -39,7 +41,6 @@ async def test_incorrect_password(
 @pytest.mark.repeat(10)
 async def test_user_not_exist(
     auth_postgres_service: AuthService,
-    insert_first_user: models.User,
     first_user: models.User,
     create_model,
 ):
@@ -57,7 +58,6 @@ async def test_user_not_exist(
 )
 async def test_small_length_fingerprint(
     auth_postgres_service: AuthService,
-    insert_first_user: models.User,
     first_user: models.User,
     fingerprint: str,
     create_model,

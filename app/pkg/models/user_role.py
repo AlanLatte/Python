@@ -1,3 +1,6 @@
+"""User role model."""
+
+
 from pydantic import Field
 
 from app.pkg.models.base import BaseEnum, BaseModel

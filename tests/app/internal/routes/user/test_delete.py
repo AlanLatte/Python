@@ -1,3 +1,5 @@
+"""Test cases for DELETE: /users/{user_id}."""
+
 import pytest
 from starlette import status
 

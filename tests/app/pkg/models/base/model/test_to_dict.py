@@ -1,3 +1,5 @@
+"""Tests for :meth:`.BaseModel.to_dict()`."""
+
 import datetime
 import typing
 import uuid
@@ -10,7 +12,7 @@ from app.pkg.models.base import BaseModel
 
 
 @pytest.mark.correct
-async def test_cast_types_base(create_model):
+async def test_cast_types_base():
     class TestModel(BaseModel):
         some_value: int
         some_value_two: str
@@ -36,7 +38,7 @@ async def test_cast_types_base(create_model):
 
 
 @pytest.mark.correct
-async def test_cast_types_base_with_default(create_model):
+async def test_cast_types_base_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
         some_value_two: str = "1"
@@ -179,7 +181,7 @@ async def test_cast_to_string_complex_types_tuple_with_deciphering(create_model)
         for item in value:
             assert isinstance(item, dict)
             for key_2, value_2 in item.items():
-                assert isinstance(value_2, str)
+                assert isinstance(key_2, str)
                 assert isinstance(value_2, str)
 
 

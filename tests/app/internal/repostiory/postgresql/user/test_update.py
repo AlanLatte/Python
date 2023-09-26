@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRepository.update()`."""
+
 import pytest
 from pydantic import ValidationError
 

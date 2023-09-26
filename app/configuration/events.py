@@ -6,7 +6,7 @@ async def on_startup() -> None:
 
     Warnings:
         **Don't use this function for insert default data in database.
-        For this action we have scripts/migrate.py.**
+        For this action, we have scripts/migrate.py.**
 
     Returns:
         None

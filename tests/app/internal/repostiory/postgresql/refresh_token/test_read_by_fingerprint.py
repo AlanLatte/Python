@@ -1,3 +1,6 @@
+"""Test cases for :meth:`.JWTRefreshTokenRepository.read_by_fingerprint()`."""
+
+
 import uuid
 
 import pytest
@@ -24,21 +27,21 @@ async def test_correct(
 @pytest.mark.parametrize(
     "fingerprint",
     [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
     ],
 )
 async def test_incorrect_empty_result(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_refresh_token: models.JWTRefreshToken,
-    fingerprint: str,
+    fingerprint: uuid.UUID,
     create_model,
 ):
     query = await create_model(
         models.ReadJWTRefreshTokenQueryByFingerprint,
         user_id=insert_first_refresh_token.user_id,
-        fingerprint=fingerprint,
+        fingerprint=str(fingerprint),
     )
     with pytest.raises(EmptyResult):
         await refresh_token_repository.read_by_fingerprint(query=query)

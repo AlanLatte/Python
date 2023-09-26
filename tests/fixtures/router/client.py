@@ -8,7 +8,7 @@ from httpx import AsyncClient, Response
 from app import create_app
 from app.pkg import models
 from app.pkg.models.base import BaseModel, Model
-from app.pkg.settings import Settings
+from app.pkg.settings.settings import Settings
 from tests.fixtures.models.user import User
 
 

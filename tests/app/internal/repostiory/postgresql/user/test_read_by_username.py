@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRepository.read_by_username()`."""
+
 import pytest
 
 from app.internal.repository.postgresql import UserRepository

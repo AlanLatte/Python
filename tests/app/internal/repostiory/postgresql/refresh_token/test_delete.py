@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.JWTRefreshTokenRepository.delete()`."""
+
 import pytest
 
 from app.internal.repository.postgresql.refresh_tokens import JWTRefreshTokenRepository

@@ -1,3 +1,5 @@
+"""Service for auth methods."""
+
 from typing import Optional
 
 from app.internal.pkg.password import password
@@ -21,7 +23,11 @@ __all__ = ["AuthService"]
 
 
 class AuthService:
+    """Service for authorization and authentication methods."""
+
+    #: JWTRefreshTokenRepository: JWTRefreshTokenRepository repository implementation.
     refresh_token_repository: JWTRefreshTokenRepository
+    #: UserService: User service implementation.
     user_service: UserService
 
     def __init__(
@@ -32,8 +38,10 @@ class AuthService:
         """Initialize class for auth methods.
 
         Args:
-            user_service: User interface implementation.
-            refresh_token_repository: Refresh token interface implementation.
+            user_service:
+                User interface implementation.
+            refresh_token_repository:
+                Refresh token interface implementation.
         """
         self.user_service = user_service
         self.refresh_token_repository = refresh_token_repository
@@ -42,13 +50,14 @@ class AuthService:
         """Check user password.
 
         Args:
-            cmd: `AuthCommand`.
+            cmd:
+                :class:`.AuthCommand`.
 
         Raises:
             IncorrectUsernameOrPassword: when username or password is incorrect.
 
         Returns:
-            `User` model.
+            :class:`.User` model.
         """
         user = await self.user_service.read_specific_user_by_username(
             query=ReadUserByUserNameQuery(username=cmd.username),
@@ -65,10 +74,12 @@ class AuthService:
         """Check user exist refresh token.
 
         Args:
-            query: `ReadJWTRefreshTokenQueryByFingerprint`.
+            query:
+                :class:`.ReadJWTRefreshTokenQueryByFingerprint`.
 
         Returns:
-            `JWTRefreshToken` model. If user not exist refresh token, return `None`.
+            :class:`.JWTRefreshToken` model.
+            If a user does not exist refresh token, return `None`.
         """
         try:
             return await self.refresh_token_repository.read_by_fingerprint(
@@ -84,10 +95,12 @@ class AuthService:
         """Check refresh token exists.
 
         Args:
-            query: `ReadJWTRefreshTokenQuery`.
+            query:
+                :class:`.ReadJWTRefreshTokenQuery`.
 
         Raises:
-            UnAuthorized: when refresh token not exists.
+            UnAuthorized:
+                when refresh token does not exist.
 
         Returns:
             `JWTRefreshToken` model
@@ -96,8 +109,8 @@ class AuthService:
             return await self.refresh_token_repository.read(
                 query=query,
             )
-        except EmptyResult:
-            raise UnAuthorized
+        except EmptyResult as empty_result:
+            raise UnAuthorized from empty_result
 
     async def create_refresh_token(
         self,
@@ -106,11 +119,12 @@ class AuthService:
         """Create refresh token.
 
         Args:
-            cmd: `CreateJWTRefreshTokenCommand`.
+            cmd:
+                :class:`.CreateJWTRefreshTokenCommand`.
 
         Returns:
             `JWTRefreshToken` model.
-            If user exist refresh token, then update data in database`.
+            If a user exists, refresh token, then update data in database`.
         """
         try:
             return await self.refresh_token_repository.create(cmd=cmd)
@@ -130,10 +144,11 @@ class AuthService:
         """Update refresh token.
 
         Args:
-            cmd: `UpdateJWTRefreshTokenCommand`.
+            cmd:
+                :class:`.UpdateJWTRefreshTokenCommand`.
 
         Returns:
-            `JWTRefreshToken` model.
+            :class:`.JWTRefreshToken` model.
         """
         return await self.refresh_token_repository.update(cmd)
 
@@ -144,17 +159,19 @@ class AuthService:
         """Delete refresh token.
 
         Args:
-            cmd: `DeleteJWTRefreshTokenCommand`.
+            cmd:
+                :class:`.DeleteJWTRefreshTokenCommand`.
 
         Raises:
-            UnAuthorized: when refresh token not exists.
+            UnAuthorized:
+                when refresh token does not exist.
 
         Returns:
-            `JWTRefreshToken` model.
+            :class:`.JWTRefreshToken` model.
         """
         try:
             return await self.refresh_token_repository.delete(
                 cmd=cmd,
             )
-        except EmptyResult:
-            raise UnAuthorized
+        except EmptyResult as empty_result:
+            raise UnAuthorized from empty_result

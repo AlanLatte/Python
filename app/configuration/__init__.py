@@ -1,7 +1,22 @@
-"""Server configuration.
+"""Collect or build all requirements for startup server.
 
-Collect or build all requirements for startup. Provide global point to
-``Server`` instance.
+In this module, you can add all your middlewares, routes, dependencies,
+etc.
+
+Containers need for register all dependencies in ``FastAPI`` server. For
+start building your application, you **MUST** call wire_packages.
+
+Examples:
+    When you're using containers without FastAPI::
+
+        >>> __containers__.wire_packages()
+
+    When you using ``FastAPI`` server, you **MUST** pass an argument
+    application instance::
+
+        >>> from fastapi import FastAPI
+        >>> app = FastAPI()
+        >>> __containers__.wire_packages(app=app)
 """
 
 from app.internal.services import Services
@@ -24,17 +39,3 @@ __containers__ = Containers(
         ),
     ],
 )
-"""
-Containers: Containers needs for register all containers.
-For start building you *MUST* call wire_packages.
-
-Examples:
-    When you using containers without `FastAPI`::
-        >>> __containers__.wire_packages()
-
-    When you using ``FastAPI`` server, you *MUST* pass an argument
-    application instance::
-        >>> from fastapi import FastAPI
-        >>> app = FastAPI()
-        >>> __containers__.wire_packages(app=app)
-"""

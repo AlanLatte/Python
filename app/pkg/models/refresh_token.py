@@ -1,3 +1,5 @@
+"""Refresh token models."""
+
 from pydantic import PositiveInt
 
 from app.pkg.models.base import BaseModel

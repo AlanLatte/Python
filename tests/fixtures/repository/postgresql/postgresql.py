@@ -1,3 +1,5 @@
+"""Automatically truncate all tables before each test."""
+
 import pytest
 
 from app.internal.repository.postgresql import connection

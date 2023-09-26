@@ -1,3 +1,5 @@
+"""REST API for user management."""
+
 from typing import List
 
 from dependency_injector.wiring import Provide, inject

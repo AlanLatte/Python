@@ -1,43 +1,55 @@
+"""Models for dependency_injector containers."""
+
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional, Type, Union
 
 from dependency_injector import containers, providers
-from dependency_injector.containers import Container
-from dependency_injector.containers import Container as _Container
+from dependency_injector.containers import Container as _DIContainer
 from fastapi import FastAPI
 
 from app.pkg import handlers
+from app.pkg.models.core.meta import SingletonMeta
 
 __all__ = ["Container", "Containers", "Resource"]
-
-from app.pkg.models.core.meta import SingletonMeta
 
 
 @dataclass(frozen=True)
 class Resource:
-    #: containers.Container: dependency_injector resource container callable object.
-    container: Type[Container]
+    """Model for contain single resource.
 
-    #: List[Callable[..., containers.Container]]: List of dependency_injector
-    #       containers.
-    #  This containers MUST be wired to the main container.
-    #  Default: []
+    Attributes:
+        container:
+            dependency_injector resource container-callable object.
+        depends_on:
+            List of dependency_injector containers.
+            Those containers MUST be wired to the main container.
+            Default: []
+        packages:
+            Array of packages to which the injector will be available.
+            Default: ["app"]
+    """
+
+    container: Type[_DIContainer]
+
     depends_on: List[containers.Container] = field(default_factory=list)
 
-    #: List[str]: Array of packages to which the injector will be available.
-    #  Default: ["app"]
     packages: List[str] = field(default_factory=lambda: ["app"])
 
 
 @dataclass(frozen=True)
 class Container:
-    """Model for contain single container."""
+    """Model for contain single container.
 
-    #: containers.Container: dependency_injector declarative container callable object.
+    Attributes:
+        container:
+            dependency_injector declarative container callable object.
+        packages:
+            Array of packages to which the injector will be available.
+            Default: ["app"]
+    """
+
     container: Union[Callable[..., containers.Container]]
 
-    #: List[str]: Array of packages to which the injector will be available.
-    #  Default: ["app"]
     packages: List[str] = field(default_factory=lambda: ["app"])
 
 
@@ -51,11 +63,13 @@ class WiredContainer(dict, metaclass=SingletonMeta):
             item: Container object.
 
         Examples:
-            >>> from app import __containers__
-            >>> from app.pkg.connectors import PostgresSQL
+            ::
 
-            >>> __containers__.wire_packages(pkg_name=__name__)
-            >>> __containers__.wired_containers[PostgresSQL]
+                >>> from app import __containers__
+                >>> from app.pkg.connectors import PostgresSQL
+
+                >>> __containers__.wire_packages(pkg_name=__name__)
+                >>> __containers__.wired_containers[PostgresSQL]
 
         Returns:
             Container instance.
@@ -68,7 +82,7 @@ class WiredContainer(dict, metaclass=SingletonMeta):
 class Containers:
     """Frozen dataclass model, for contains all declarative containers."""
 
-    #: str: __name__ of main package.
+    #: str: __name__ of the main package.
     pkg_name: str
 
     #: List[Container]: List of `Container` model.
@@ -77,7 +91,7 @@ class Containers:
     #: List[_Container]: List of instance dependency_injector containers.
     __wired_containers__: WiredContainer = field(
         init=False,
-        default_factory=lambda: WiredContainer(),
+        default_factory=WiredContainer,
     )
 
     def wire_packages(
@@ -89,45 +103,45 @@ class Containers:
         """Wire packages to the declarative containers.
 
         Args:
-            app: Optional ``FastAPI`` instance.
+            app:
+                Optional ``FastAPI`` instance.
                 If passed, the containers will be written to the application context.
-            pkg_name: Optional __name__ of running module.
-
-            unwire: Optional bool parameter. If `True`, un wiring all containers.
+            pkg_name:
+                Optional ``__name__`` of running module.
+            unwire:
+                Optional bool parameter. If `True`, un wiring all containers.
 
         Notes:
             If you want to use the injector in other modules, you need to set
             ``pkg_name`` parameter to the name of the module in which the injector
             is running.
-            For example, you have module tree like:
-            ```
-            ProjectName
-            ├── app
-            │    ├── api
-            │    │   ├── endpoints
-            │    │   │   └── users.py
-            │    │   └── __init__.py
-            │    ├── internal
-            │    │   ├── repository
-            │    │   │   └── postgresql
-            │    │   └── __init__.py
-            │    ├── pkg
-            │    │   ├── connectors
-            │    │   │   └── postgresql
-            │    │   └── __init__.py
-            │
-            └── tests
-                ├── api
-                │   ├── endpoints
-                │   │   └── users.py
-                ...
-            ```
+            For example, you have module tree like::
+
+                ProjectName
+                ├── app
+                │    ├── api
+                │    │   ├── endpoints
+                │    │   │   └── users.py
+                │    │   └── __init__.py
+                │    ├── internal
+                │    │   ├── repository
+                │    │   │   └── postgresql
+                │    │   └── __init__.py
+                │    ├── pkg
+                │    │   ├── connectors
+                │    │   │   └── postgresql
+                │    │   └── __init__.py
+                │
+                └── tests
+                    ├── api
+                    │   ├── endpoints
+                    │   │   └── users.py
+                    ...
 
             If you want to use the injector in ``users.py`` endpoints, you need to
             set ``pkg_name="app.api.endpoints"`` in ``wire_packages`` method.
-
             But you also can set ``pkg_name="app"`` for use injector in all modules
-                in the project (expect tests).
+            in the project (expect tests).
             And you can set ``pkg_name="tests"`` for use injector in all modules
             in the project (with tests).
 
@@ -184,7 +198,7 @@ class Containers:
 
     def set_environment(
         self,
-        connectors: List[Type[_Container]],
+        connectors: List[Type[_DIContainer]],
         *,
         pkg_name: Optional[str] = None,
         testing: bool = False,
@@ -194,16 +208,19 @@ class Containers:
         """Set environment for injection.
 
         Using `container.configuration` for rewrite
-        `{{database_configuration_name}}` parameter in `settings`.
+        ``{{database_configuration_name}}`` parameter in `settings`.
 
         Args:
-            database_configuration_path: Pydantic settings field name that contains
-                database name
-            connectors: Type of database connector
-            testing: If `true` then adding prefix from argument `prefix`
-                to database name
-            pkg_name: Optional __name__ of running module.
-            prefix: A `prefix` that can be concatenated with the database name
+            database_configuration_path:
+                Pydantic settings field name that contains database name
+            connectors:
+                Type of database connector
+            testing:
+                If ``True`` then adding prefix from argument ``prefix`` to database name
+            pkg_name:
+                Optional ``__name__`` of running module.
+            prefix:
+                A `prefix` that can be concatenated with the database name
 
         Returns:
             None
@@ -214,14 +231,14 @@ class Containers:
             for container in self.containers:
                 if not (
                     container.container.__name__
-                    in [_class.__name__ for _class in connectors]
-                    or type(container) is Resource
+                    in [connector_class.__name__ for connector_class in connectors]
+                    or isinstance(container, Resource)
                 ):
                     continue
 
-                for _container in container.depends_on:
+                for depends_on_container in container.depends_on:
                     self.__patch_container_configuration(
-                        _container,
+                        depends_on_container,
                         database_configuration_path,
                         prefix,
                     )
@@ -233,7 +250,7 @@ class Containers:
         container: Container,
         database_configuration_path: str,
         prefix: str,
-    ) -> Optional[_Container]:
+    ) -> Optional[_DIContainer]:
         """Patch container configuration.
 
         Args:

@@ -1,3 +1,5 @@
+"""Logger model."""
+
 from app.pkg.models.base import BaseEnum
 
 __all__ = ["Logger"]

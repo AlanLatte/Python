@@ -1,1 +1,3 @@
-from .logger import get_logger
+"""Logger module."""
+
+from app.pkg.logger.logger import get_logger

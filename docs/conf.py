@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "Architecture template"
-copyright = "2022, Alan Latte"
+copyright = "2023, Alan Latte"
 author = "Alan Latte"
 
 

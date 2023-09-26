@@ -18,20 +18,21 @@ __all__ = ["Settings", "get_settings"]
 
 
 class _Settings(BaseSettings):
-    """Base settings. for all settings.
+    """Base settings for all settings.
 
     Use double underscore for nested env variables.
+
     Examples:
-    - .env:
+        `.env` file should look like::
 
-        TELEGRAM__TOKEN=...
-        TELEGRAM__WEBHOOK_DOMAIN_URL=...
+            TELEGRAM__TOKEN=...
+            TELEGRAM__WEBHOOK_DOMAIN_URL=...
 
-        LOGGER__PATH_TO_LOG="./src/logs"
-        LOGGER__LEVEL="DEBUG"
+            LOGGER__PATH_TO_LOG="./src/logs"
+            LOGGER__LEVEL="DEBUG"
 
-        API_SERVER__HOST="127.0.0.1"
-        API_SERVER__PORT=9191
+            API_SERVER__HOST="127.0.0.1"
+            API_SERVER__PORT=9191
 
     Warnings:
         In the case where a value is specified for the same Settings field in multiple
@@ -44,7 +45,8 @@ class _Settings(BaseSettings):
         4. Variables loaded from the secrets directory.
         5. The default field values for the Settings model.
 
-    See Also: https://docs.pydantic.dev/latest/usage/pydantic_settings/
+    See Also:
+        https://docs.pydantic.dev/latest/usage/pydantic_settings/
     """
 
     class Config:
@@ -84,7 +86,7 @@ class Postgresql(_Settings):
     DSN: typing.Optional[str] = None
 
     @root_validator(pre=True)
-    def build_dsn(cls, values: dict):
+    def build_dsn(cls, values: dict):  # pylint: disable=no-self-argument
         """Build DSN for postgresql.
 
         Args:
@@ -117,13 +119,14 @@ class Postgresql(_Settings):
 
 
 class DefaultUser(_Settings):
-    """Default user settings."""
+    """User default settings that are written to the database when running
+    migrations."""
 
     #: str: Default username.
     USERNAME: str = "admin"
     #: EncryptedSecretBytes: Default user password.
     PASSWORD: EncryptedSecretBytes = "admin_admin"
-    #: UserRole: Enum validation of user role.
+    #: UserRole: Enum validation of a user role.
     ROLE: UserRole = UserRole.USER
 
 
@@ -158,7 +161,10 @@ class Logging(_Settings):
     FILE_PATH: pathlib.Path = pathlib.Path("./src/logs")
 
     @validator("FILE_PATH")
-    def __create_dir_if_not_exist(cls, v: pathlib.Path):
+    def __create_dir_if_not_exist(  # pylint: disable=unused-private-member, no-self-argument
+        cls,
+        v: pathlib.Path,
+    ):
         """Create directory if not exist."""
 
         if not v.exists():
@@ -191,6 +197,8 @@ class APIServer(_Settings):
 
 
 class Centrifugo(_Settings):
+    """Centrifugo settings."""
+
     #: str: Centrifugo host.
     HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of centrifugo.
@@ -213,7 +221,8 @@ class RabbitMQ(_Settings):
 class Settings(_Settings):
     """Server settings.
 
-    Formed from `.env` or `.env.dev` if server running with parameter `dev`.
+    Formed from `.env` or `.env.dev` if server running with parameter
+    `dev`.
     """
 
     #: APIServer: API settings. Contains all settings for API.
@@ -234,7 +243,7 @@ class Settings(_Settings):
 
 # TODO: Возможно даже lru_cache не стоит использовать. Стоит использовать meta sigleton.
 #   Для класса настроек. А инициализацию перенести в `def __init__`
-@lru_cache()
+@lru_cache
 def get_settings(env_file: str = ".env") -> Settings:
     """Create settings instance."""
 

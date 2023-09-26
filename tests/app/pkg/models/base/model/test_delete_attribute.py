@@ -1,3 +1,5 @@
+"""Testing the :meth:`BaseModel.delete_attribute()`."""
+
 import pytest
 
 from app.pkg.models.base import BaseModel

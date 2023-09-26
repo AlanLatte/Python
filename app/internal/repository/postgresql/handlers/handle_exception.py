@@ -15,38 +15,47 @@ def handle_exception(func: Callable[..., Model]):
     """Decorator Catching Postgresql Query Exceptions.
 
     Args:
-        func: callable function object.
+        func:
+            callable function object.
 
     Examples:
-        For example, if you have a function that contains a query in postgresql,
-        decorator ``handle_exception`` will catch the exceptions that can be
+        If you have a function that contains a query in postgresql,
+        decorator :func:`.handle_exception` will catch the exceptions that can be
         raised by the query::
-        >>> from app.pkg import models
-        >>> from app.internal.repository.postgresql.connection import get_connection
-        >>> @handle_exception
-        ... async def create(self, cmd: models.CreateUserRoleCommand) -> None:
-        ...     q = "insert into user_roles(role_name) values (%(role_name)s) on conflict do nothing returning role_name;"
-        ...     async with get_connection() as cur:
-        ...         await cur.execute(q, cmd.to_dict(show_secrets=True))
+
+            >>> from app.pkg import models
+            >>> from app.internal.repository.postgresql.connection import get_connection
+            >>> @handle_exception
+            ... async def create(self, cmd: models.CreateUserRoleCommand) -> None:
+            ...     q = \"""
+            ...         insert into user_roles(role_name) values (%(role_name)s)
+            ...         on conflict do nothing returning role_name;
+            ...     \"""
+            ...     async with get_connection() as cur:
+            ...         await cur.execute(q, cmd.to_dict(show_secrets=True))
+
     Returns:
         Result of call function.
+
     Raises:
         UniqueViolation: The query violates the domain uniqueness constraints
             of the database set.
-        DriverError: Invalid database query/
+        DriverError: Any error during execution query on a database.
     """
 
     async def wrapper(*args: object, **kwargs: object) -> Model:
         """Inner function. Catching Postgresql Query Exceptions.
 
         Args:
-            *args: Positional arguments.
-            **kwargs: Keyword arguments.
+            *args:
+                Positional arguments.
+            **kwargs:
+                Keyword arguments.
 
         Raises:
             UniqueViolation: The query violates the domain uniqueness constraints
                 of the database set.
-            DriverError: Invalid database query
+            DriverError: Any error during execution query on an database.
 
         Returns:
             Result of call function.
@@ -54,10 +63,10 @@ def handle_exception(func: Callable[..., Model]):
 
         try:
             return await func(*args, **kwargs)
-        except psycopg2.Error as e:
-            if e.pgcode == errorcodes.UNIQUE_VIOLATION:
-                raise UniqueViolation
+        except psycopg2.Error as error:
+            if error.pgcode == errorcodes.UNIQUE_VIOLATION:
+                raise UniqueViolation from error
 
-            raise DriverError(message=e.pgerror)
+            raise DriverError(message=error.pgerror) from error
 
     return wrapper

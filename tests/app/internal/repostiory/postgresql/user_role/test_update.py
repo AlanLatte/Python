@@ -1,3 +1,6 @@
+"""Test cases for :meth:`.UserRoleRepository.update()`"""
+
+
 import pytest
 
 from app.internal.repository.postgresql.user_roles import UserRoleRepository

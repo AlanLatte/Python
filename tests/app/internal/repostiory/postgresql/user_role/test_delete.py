@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRoleRepository.delete()`."""
+
 import pytest
 
 from app.internal.repository.postgresql.user_roles import UserRoleRepository

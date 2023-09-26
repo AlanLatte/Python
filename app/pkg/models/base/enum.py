@@ -1,4 +1,5 @@
-"""All enum inside models must be inherited by `BaseEnum`"""
+"""All enum inside models must be inherited by :class:`.BaseEnum`"""
+
 from enum import Enum
 
 __all__ = ["BaseEnum"]
