@@ -37,6 +37,7 @@ jobs:
         poetry run flake8 ${{ env.FILES_TO_CHECK }}
         poetry run docformatter -cr ${{ env.FILES_TO_CHECK }}
         poetry run black --check ${{ env.FILES_TO_CHECK }}
+        poetry run pylint ${{ env.FILES_TO_CHECK }}
 #        poetry run mypy ${{ env.FILES_TO_CHECK }}
 
   sasts:
