@@ -12,7 +12,6 @@ __all__ = ["UserService"]
 
 
 class UserService:
-
     #: UserRepository: UserRepository repository implementation.
     repository: UserRepository
 

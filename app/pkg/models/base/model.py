@@ -1,3 +1,5 @@
+"""Base model for all models in API server."""
+
 from __future__ import annotations
 
 import time
@@ -86,7 +88,10 @@ class BaseModel(pydantic.BaseModel):
                 >>> model = TestModel(some_value="key", some_value_two="value")
                 >>> assert isinstance(model.some_value, pydantic.SecretStr)
                 >>> assert isinstance(model.some_value_two, pydantic.SecretBytes)
-                >>> dict_model = model.to_dict(show_secrets=True, values={"some_value": "value"})
+                >>> dict_model = model.to_dict(
+                ...     show_secrets=True,
+                ...     values={"some_value": "value"}
+                ... )
                 >>> assert isinstance(dict_model["some_value"], str)
                 >>> assert isinstance(dict_model["some_value_two"], str)
                 >>> print(dict_model["some_value"])
@@ -123,7 +128,8 @@ class BaseModel(pydantic.BaseModel):
 
         if isinstance(v, (List, Tuple)):
             return [
-                self.__cast_values(v=ve, show_secrets=show_secrets, **kwargs) for ve in v
+                self.__cast_values(v=ve, show_secrets=show_secrets, **kwargs)
+                for ve in v
             ]
 
         elif isinstance(v, (pydantic.SecretBytes, pydantic.SecretStr)):
@@ -132,8 +138,8 @@ class BaseModel(pydantic.BaseModel):
         elif isinstance(v, Dict) and v:
             return self.to_dict(show_secrets=show_secrets, values=v, **kwargs)
 
-        elif isinstance(v, UUID) or isinstance(v, UUID4):
-            return v.__str__()
+        elif isinstance(v, (UUID, UUID4)):
+            return str(v)
 
         elif isinstance(v, datetime):
             return v.timestamp()

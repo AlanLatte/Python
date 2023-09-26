@@ -1,6 +1,5 @@
 from starlette import status
 
-from app.pkg import models
 from app.pkg.models.exceptions.jwt import UnAuthorized, WrongToken
 from app.pkg.settings.settings import Settings
 from tests.fixtures.router.client import Client
@@ -8,7 +7,6 @@ from tests.fixtures.router.client import Client
 
 async def test_correct_new_token_pair(
     authorized_first_client: Client,
-    first_user: models.User,
     auth_router: str,
     settings: Settings,
 ):
@@ -28,7 +26,6 @@ async def test_correct_new_token_pair(
 
 async def test_incorrect_old_token_not_usable(
     authorized_first_client: Client,
-    first_user: models.User,
     auth_router: str,
     response_with_error,
     settings: Settings,
@@ -65,9 +62,7 @@ async def test_incorrect_old_token_not_usable(
 
 async def test_incorrect_token_signature(
     authorized_first_client: Client,
-    first_user: models.User,
     auth_router: str,
-    settings: Settings,
     response_with_error,
 ):
     authorized_first_client.set_auth_header(use_access=False, token="FAKE.SIGNATURE")

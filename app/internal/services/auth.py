@@ -23,7 +23,6 @@ __all__ = ["AuthService"]
 
 
 class AuthService:
-
     #: JWTRefreshTokenRepository: JWTRefreshTokenRepository repository implementation.
     refresh_token_repository: JWTRefreshTokenRepository
     #: UserService: User service implementation.

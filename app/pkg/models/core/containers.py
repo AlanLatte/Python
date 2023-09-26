@@ -4,13 +4,11 @@ from dataclasses import dataclass, field
 from typing import Callable, List, Optional, Type, Union
 
 from dependency_injector import containers, providers
-from dependency_injector.containers import Container
-from dependency_injector.containers import Container as _Container
+from dependency_injector.containers import Container as _DIContainer
 from fastapi import FastAPI
 
 from app.pkg import handlers
 from app.pkg.models.core.meta import SingletonMeta
-
 
 __all__ = ["Container", "Containers", "Resource"]
 
@@ -31,7 +29,7 @@ class Resource:
             Default: ["app"]
     """
 
-    container: Type[Container]
+    container: Type[_DIContainer]
 
     depends_on: List[containers.Container] = field(default_factory=list)
 
@@ -93,7 +91,7 @@ class Containers:
     #: List[_Container]: List of instance dependency_injector containers.
     __wired_containers__: WiredContainer = field(
         init=False,
-        default_factory=lambda: WiredContainer(),
+        default_factory=WiredContainer,
     )
 
     def wire_packages(
@@ -200,7 +198,7 @@ class Containers:
 
     def set_environment(
         self,
-        connectors: List[Type[_Container]],
+        connectors: List[Type[_DIContainer]],
         *,
         pkg_name: Optional[str] = None,
         testing: bool = False,
@@ -233,14 +231,14 @@ class Containers:
             for container in self.containers:
                 if not (
                     container.container.__name__
-                    in [_class.__name__ for _class in connectors]
-                    or type(container) is Resource
+                    in [connector_class.__name__ for connector_class in connectors]
+                    or isinstance(container, Resource)
                 ):
                     continue
 
-                for _container in container.depends_on:
+                for depends_on_container in container.depends_on:
                     self.__patch_container_configuration(
-                        _container,
+                        depends_on_container,
                         database_configuration_path,
                         prefix,
                     )
@@ -252,7 +250,7 @@ class Containers:
         container: Container,
         database_configuration_path: str,
         prefix: str,
-    ) -> Optional[_Container]:
+    ) -> Optional[_DIContainer]:
         """Patch container configuration.
 
         Args:

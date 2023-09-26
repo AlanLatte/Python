@@ -23,7 +23,9 @@ def create_app() -> FastAPI:
         ``FastAPI`` instance::
 
             >>> from fastapi import FastAPI, Depends
-            >>> from app.internal.pkg.middlewares.token_based_verification import token_based_verification
+            >>> from app.internal.pkg.middlewares.token_based_verification import (
+            ...     token_based_verification
+            ... )
             >>> app = FastAPI(dependencies=[Depends(token_based_verification)])
     """
     app = FastAPI()

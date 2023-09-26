@@ -1,3 +1,5 @@
+"""Recursive attribute access and setting."""
+
 from functools import reduce
 from typing import TypeVar
 

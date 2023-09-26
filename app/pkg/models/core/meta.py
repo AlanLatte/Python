@@ -1,3 +1,5 @@
+"""Singleton type for models."""
+
 __all__ = ["SingletonMeta"]
 
 

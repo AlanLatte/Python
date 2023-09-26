@@ -41,7 +41,7 @@ class BaseAPIException(HTTPException):
     message: Optional[Union[NotEmptyStr, str]] = "Base API Exception"
     status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    def __init__(self, message: Optional[NotEmptyStr] = None):
+    def __init__(self, message: Optional[Union[NotEmptyStr, str, Exception]] = None):
         """Init BaseAPIException.
 
         Args:
@@ -50,5 +50,8 @@ class BaseAPIException(HTTPException):
         """
         if message is not None:
             self.message = message
+
+        if isinstance(message, Exception):
+            self.message = str(message)
 
         super().__init__(status_code=self.status_code, detail=self.message)

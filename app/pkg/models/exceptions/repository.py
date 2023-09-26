@@ -26,9 +26,11 @@ class DriverError(BaseAPIException):
     """Exception for internal driver errors."""
 
     def __init__(self, message: str = None):
-        """In case of message is None, default message will be used."""
+        """In case of message is None, a default message will be used."""
         if message:
             self.message = message
+
+        super().__init__(message=message)
 
     message = "Internal driver error"
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

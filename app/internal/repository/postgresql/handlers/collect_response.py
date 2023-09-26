@@ -6,11 +6,11 @@ from typing import List, Type, Union
 import pydantic
 from psycopg2.extras import RealDictRow  # type: ignore
 
+from app.internal.repository.postgresql.handlers.handle_exception import (
+    handle_exception,
+)
 from app.pkg.models.base import Model
 from app.pkg.models.exceptions.repository import EmptyResult
-
-from app.internal.repository.postgresql.handlers.handle_exception import \
-    handle_exception
 
 __all__ = ["collect_response"]
 
@@ -55,8 +55,8 @@ def collect_response(fn):
         *args: object,
         **kwargs: object,
     ) -> Union[List[Type[Model]], Type[Model]]:
-        """Inner function of :func:`.collect_response`.
-        Convert response from aiopg to an annotated model.
+        """Inner function of :func:`.collect_response`. Convert response from
+        aiopg to an annotated model.
 
         Args:
             *args:
