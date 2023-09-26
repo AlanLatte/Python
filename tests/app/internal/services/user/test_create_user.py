@@ -1,3 +1,6 @@
+"""Test cases for :meth:`.UserService.create_user()`."""
+
+
 import uuid
 
 import pytest
@@ -37,7 +40,7 @@ async def test_incorrect_not_exists_user_role(
     with pytest.raises(ValidationError):
         cmd = await create_model(
             models.CreateUserCommand,
-            role_name=uuid.uuid4().__str__(),
+            role_name=str(uuid.uuid4()),
         )
         await user_postgres_service.create_user(cmd=cmd)
 
@@ -62,7 +65,6 @@ async def test_incorrect_password_length(
 async def test_incorrect_unique(
     user_postgres_service: UserService,
     insert_first_user: models.User,
-    first_user: models.User,
     create_model,
 ):
     cmd = await create_model(

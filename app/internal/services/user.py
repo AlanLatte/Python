@@ -12,6 +12,8 @@ __all__ = ["UserService"]
 
 
 class UserService:
+    """Service for user management methods."""
+
     #: UserRepository: UserRepository repository implementation.
     repository: UserRepository
 
@@ -43,8 +45,8 @@ class UserService:
         try:
             cmd.password.crypt_password()
             return await self.repository.create(cmd=cmd)
-        except UniqueViolation:
-            raise UserAlreadyExist
+        except UniqueViolation as unique_violation:
+            raise UserAlreadyExist from unique_violation
 
     async def read_all_users(self) -> List[models.User]:
         """Read all users from the repository.

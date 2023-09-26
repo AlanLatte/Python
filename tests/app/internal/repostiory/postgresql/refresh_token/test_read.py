@@ -1,3 +1,6 @@
+"""Test cases for :meth:`.JWTRefreshTokenRepository.read()`."""
+
+
 import uuid
 
 import pytest
@@ -26,21 +29,21 @@ async def test_correct(
 @pytest.mark.parametrize(
     "refresh_token",
     [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
     ],
 )
 async def test_empty_result(
     refresh_token_repository: JWTRefreshTokenRepository,
     insert_first_user: models.User,
-    refresh_token: str,
+    refresh_token: uuid.UUID,
     create_model,
 ):
     query = await create_model(
         models.ReadJWTRefreshTokenQuery,
         user_id=insert_first_user.id,
-        refresh_token=refresh_token,
+        refresh_token=str(refresh_token),
     )
     with pytest.raises(EmptyResult):
         await refresh_token_repository.read(query=query)

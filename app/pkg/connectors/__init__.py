@@ -3,7 +3,7 @@
 from dependency_injector import containers, providers
 
 from .postgresql import PostgresSQL
-from .resourсes import BaseAsyncResource
+from .resources import BaseAsyncResource
 
 __all__ = ["Connectors", "PostgresSQL"]
 

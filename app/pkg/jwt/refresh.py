@@ -1,3 +1,5 @@
+"""Jwt refresh token security scheme."""
+
 from datetime import timedelta
 from typing import Optional, Set
 
@@ -13,6 +15,8 @@ __all__ = ["JwtRefreshBearer"]
 
 
 class JwtRefresh(JwtAuthBase):
+    """Refresh token security scheme."""
+
     _bearer = JwtAuthBase.JwtRefreshBearer()
     _cookie = JwtAuthBase.JwtRefreshCookie()
 
@@ -51,6 +55,8 @@ class JwtRefresh(JwtAuthBase):
 
 
 class JwtRefreshBearer(JwtRefresh):
+    """Jwt refresh token bearer security scheme."""
+
     def __init__(
         self,
         secret_key: SecretStr,

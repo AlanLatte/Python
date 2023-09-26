@@ -1,3 +1,5 @@
+"""Test cases for POST: /users/"""
+
 import pytest
 from starlette import status
 
@@ -48,7 +50,6 @@ async def test_password_length(
     second_user: models.User,
     user_router: str,
     password: str,
-    response_with_error,
 ):
     cmd = second_user.migrate(models.CreateUserCommand)
     request_json = cmd.to_dict(show_secrets=True)

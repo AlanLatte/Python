@@ -23,7 +23,7 @@ class _Settings(BaseSettings):
     Use double underscore for nested env variables.
 
     Examples:
-        `.env`::
+        `.env` file should look like::
 
             TELEGRAM__TOKEN=...
             TELEGRAM__WEBHOOK_DOMAIN_URL=...
@@ -86,7 +86,7 @@ class Postgresql(_Settings):
     DSN: typing.Optional[str] = None
 
     @root_validator(pre=True)
-    def build_dsn(cls, values: dict):
+    def build_dsn(cls, values: dict):  # pylint: disable=no-self-argument
         """Build DSN for postgresql.
 
         Args:
@@ -161,7 +161,10 @@ class Logging(_Settings):
     FILE_PATH: pathlib.Path = pathlib.Path("./src/logs")
 
     @validator("FILE_PATH")
-    def __create_dir_if_not_exist(cls, v: pathlib.Path):
+    def __create_dir_if_not_exist(  # pylint: disable=unused-private-member, no-self-argument
+        cls,
+        v: pathlib.Path,
+    ):
         """Create directory if not exist."""
 
         if not v.exists():

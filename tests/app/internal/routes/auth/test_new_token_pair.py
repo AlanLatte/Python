@@ -1,3 +1,5 @@
+"""Test cases for PATCH: /auth/refresh/."""
+
 from starlette import status
 
 from app.pkg.models.exceptions.jwt import UnAuthorized, WrongToken

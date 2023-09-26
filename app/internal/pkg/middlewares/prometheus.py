@@ -23,9 +23,11 @@ __all__ = ["PrometheusMiddleware"]
 
 
 class PrometheusMiddleware(BaseHTTPMiddleware):
-    app: FastAPITypes.FastAPIInstance
+    """Middleware for collecting metrics from FastAPI application."""
 
-    __FILTER_UNHANDLED_PATHS: bool
+    app: FastAPITypes.instance
+
+    __filter_unhandled_paths: bool
     __app_name: str
 
     __INFO = Gauge("fastapi_app_info", "FastAPI application information.", ["app_name"])
@@ -64,7 +66,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.__app_name = app_name
         self.__INFO.labels(app_name=self.__app_name).inc()
-        self.__FILTER_UNHANDLED_PATHS = filter_unhandled_paths
+        self.__filter_unhandled_paths = filter_unhandled_paths
 
     async def dispatch(
         self,
@@ -91,7 +93,10 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         status_code = HTTP_500_INTERNAL_SERVER_ERROR
         try:
             response = await call_next(request)
-        except (BaseAPIException, Exception) as e:
+        except (  # pylint: disable=broad-exception-caught
+            BaseAPIException,
+            Exception,
+        ) as e:
             self.__EXCEPTIONS.labels(
                 method=method,
                 path=path_template,
@@ -130,11 +135,11 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
     @staticmethod
     def __get_path_template(request: Request) -> Tuple[str, bool]:
         for route in request.app.routes:
-            match, child_scope = route.matches(request.scope)
+            match, _ = route.matches(request.scope)
             if match == Match.FULL:
                 return route.path, True
 
         return request.url.path, False
 
     def __is_path_filtered(self, is_handled_path: bool) -> bool:
-        return self.__FILTER_UNHANDLED_PATHS and not is_handled_path
+        return self.__filter_unhandled_paths and not is_handled_path

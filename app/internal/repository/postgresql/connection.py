@@ -1,3 +1,5 @@
+"""Create connection to postgresql."""
+
 from contextlib import asynccontextmanager
 from typing import Optional, Union
 
@@ -86,5 +88,5 @@ async def acquire_connection(
         cursor_factory = RealDictCursor
 
     async with pool.acquire() as conn:
-        __cursor = await conn.cursor(cursor_factory=cursor_factory)
-        yield __cursor
+        acquire_cursor = await conn.cursor(cursor_factory=cursor_factory)
+        yield acquire_cursor

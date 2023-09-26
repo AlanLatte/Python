@@ -1,3 +1,5 @@
+"""Jwt access token security scheme."""
+
 from datetime import timedelta
 from typing import Optional, Set
 
@@ -13,6 +15,8 @@ __all__ = ["JwtAccessBearer"]
 
 
 class JwtAccess(JwtAuthBase):
+    """Access a token security scheme."""
+
     _bearer = JwtAuthBase.JwtAccessBearer()
     _cookie = JwtAuthBase.JwtAccessCookie()
 
@@ -51,6 +55,8 @@ class JwtAccess(JwtAuthBase):
 
 
 class JwtAccessBearer(JwtAccess):
+    """Jwt access token bearer security scheme."""
+
     def __init__(
         self,
         secret_key: SecretStr,

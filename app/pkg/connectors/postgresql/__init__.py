@@ -1,3 +1,5 @@
+"""Container with PostgresSQL connector."""
+
 from dependency_injector import containers, providers
 
 from app.pkg.connectors.postgresql.resource import Postgresql

@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.AuthService.delete_refresh_token()`."""
+
 import uuid
 
 import pytest
@@ -44,20 +46,20 @@ async def test_incorrect_user_not_exists(
 @pytest.mark.parametrize(
     "fingerprint",
     [
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
-        uuid.uuid4().__str__(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
+        uuid.uuid4(),
     ],
 )
 async def test_incorrect_user_fingerprint_not_exists(
     auth_postgres_service: AuthService,
     insert_first_refresh_token: models.JWTRefreshToken,
-    fingerprint: str,
+    fingerprint: uuid.UUID,
 ):
     insert_first_refresh_token = insert_first_refresh_token.copy()
 
-    insert_first_refresh_token.fingerprint = NotEmptySecretStr(fingerprint)
+    insert_first_refresh_token.fingerprint = NotEmptySecretStr(str(fingerprint))
     with pytest.raises(UnAuthorized):
         await auth_postgres_service.delete_refresh_token(
             cmd=insert_first_refresh_token.migrate(models.DeleteJWTRefreshTokenCommand),

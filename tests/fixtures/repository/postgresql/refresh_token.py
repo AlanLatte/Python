@@ -1,3 +1,5 @@
+"""Refresh token repository fixtures."""
+
 import pytest
 
 from app.internal.repository.postgresql import JWTRefreshTokenRepository

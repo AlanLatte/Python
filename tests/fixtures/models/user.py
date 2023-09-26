@@ -1,3 +1,5 @@
+"""User models fixtures."""
+
 from dataclasses import dataclass
 from typing import Any, Callable, Coroutine
 
@@ -24,10 +26,14 @@ def new_user_generator() -> Callable[[], Any]:
 
 
 @pytest.fixture()
-async def first_user(new_user_generator) -> Coroutine[Any, Any, User]:
+async def first_user(
+    new_user_generator,  # pylint: disable=redefined-outer-name
+) -> Coroutine[Any, Any, User]:
     return new_user_generator()
 
 
 @pytest.fixture()
-async def second_user(new_user_generator) -> Coroutine[Any, Any, User]:
+async def second_user(
+    new_user_generator,  # pylint: disable=redefined-outer-name
+) -> Coroutine[Any, Any, User]:
     return new_user_generator()

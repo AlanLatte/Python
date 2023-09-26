@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.UserRepository.delete()`."""
+
 import pytest
 
 from app.internal.repository.postgresql import UserRepository
@@ -13,9 +15,11 @@ async def test_correct(user_repository: UserRepository, insert_first_user: model
 
 
 @pytest.mark.parametrize(
-    "_id",
+    "user_id",
     [1, 2, 3, 4],
 )
-async def test_incorrect_user_id_not_found(user_repository: UserRepository, _id: int):
+async def test_incorrect_user_id_not_found(
+    user_repository: UserRepository, user_id: int,
+):
     with pytest.raises(EmptyResult):
-        await user_repository.delete(cmd=models.DeleteUserCommand(id=_id))
+        await user_repository.delete(cmd=models.DeleteUserCommand(id=user_id))

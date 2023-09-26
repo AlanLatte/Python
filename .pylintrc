@@ -190,7 +190,7 @@ include-naming-hint=no
 property-classes=abc.abstractproperty,cached_property.cached_property,cached_property.threaded_cached_property,cached_property.cached_property_with_ttl,cached_property.threaded_cached_property_with_ttl
 
 # Regular expression matching correct function names
-function-rgx=^(?:(?P<exempt>setUp|tearDown|setUpModule|tearDownModule)|(?P<camel_case>_?[A-Z][a-zA-Z0-9]*)|(?P<snake_case>_?[a-z][a-z0-9_]*))$
+function-rgx=^(?:(?P<exempt>setUp|tearDown|setUpModule|tearDownModule)|(?P<camel_case>(_|__)?[A-Z][a-zA-Z0-9]*)|(?P<snake_case>(_|__)?[a-z][a-z0-9_]*))$
 
 # Regular expression matching correct variable names
 variable-rgx=^[a-z][a-z0-9_]*$
@@ -205,7 +205,7 @@ attr-rgx=^_{0,2}[a-z][a-z0-9_]*$
 argument-rgx=^[a-z][a-z0-9_]*$
 
 # Regular expression matching correct class attribute names
-class-attribute-rgx=^(_?[A-Z][A-Z0-9_]*|__[a-z0-9_]+__|_?[a-z][a-z0-9_]*)$
+class-attribute-rgx=^((_|__)?[A-Z][A-Z0-9_]*|__[a-z0-9_]+__|(_|__)?[a-z][a-z0-9_]*)$
 
 # Regular expression matching correct inline iteration names
 inlinevar-rgx=^[a-z][a-z0-9_]*$

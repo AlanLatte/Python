@@ -1,3 +1,5 @@
+"""Fixtures for user role service."""
+
 import pytest
 
 from app.internal.repository.postgresql.user_roles import UserRoleRepository

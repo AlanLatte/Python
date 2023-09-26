@@ -1,3 +1,5 @@
+"""Tests for :meth:`.BaseModel.migrate()`."""
+
 import pydantic
 import pytest
 

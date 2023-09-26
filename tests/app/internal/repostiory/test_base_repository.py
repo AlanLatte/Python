@@ -1,3 +1,5 @@
+"""Test cases for :class:`.BaseConnector`."""
+
 import pytest
 
 from app.pkg.connectors.connector import BaseConnector

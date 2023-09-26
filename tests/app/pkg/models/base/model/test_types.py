@@ -1,3 +1,5 @@
+"""Test manual wrote types."""
+
 from typing import List
 
 import pydantic
@@ -18,7 +20,7 @@ async def test_native_types(create_model):
 
 
 @pytest.mark.incorrect
-async def test_native_types_miss_type(create_model):
+async def test_native_types_miss_type():
     class TestModel(BaseModel):
         some_value: int
         some_value_two: str
@@ -41,7 +43,7 @@ async def test_convert_native_types():
 
 
 @pytest.mark.correct
-async def test_native_types_with_default(create_model):
+async def test_native_types_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
         some_value_two: str = "1"

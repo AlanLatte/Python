@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.AuthService.update_refresh_token()`."""
+
 import pytest
 
 from app.internal.services import AuthService

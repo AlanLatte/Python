@@ -1,3 +1,5 @@
+"""Classes for type checking in `router.responses` module."""
+
 import typing
 
 import httpx

@@ -1,3 +1,5 @@
+"""User postgresql repository fixtures."""
+
 import pytest
 
 from app.internal.repository.postgresql.user import UserRepository

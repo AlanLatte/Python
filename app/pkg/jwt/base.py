@@ -1,3 +1,5 @@
+"""Base class for JWT authentication."""
+
 import uuid
 from abc import ABC
 from datetime import datetime, timedelta
@@ -25,6 +27,8 @@ __all__ = ["JwtAuthBase"]
 
 
 class JwtAuthBase(ABC):
+    """Base class for JWT authentication."""
+
     class JwtAccessCookie(APIKeyCookie):
         def __init__(self, *args: Any, **kwargs: Any):
             APIKeyCookie.__init__(
@@ -128,12 +132,12 @@ class JwtAuthBase(ABC):
             )
         except jwt.ExpiredSignatureError as e:
             if self.auto_error:
-                raise TokenTimeExpired(e)
+                raise TokenTimeExpired(e) from e
             else:
                 return None
         except jwt.JWTError as e:
             if self.auto_error:
-                raise WrongToken(e)
+                raise WrongToken(e) from e
             else:
                 return None
         else:

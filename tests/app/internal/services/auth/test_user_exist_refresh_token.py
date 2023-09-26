@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.AuthService.create_refresh_token()`."""
+
 import pytest
 
 from app.internal.services.auth import AuthService
@@ -6,7 +8,6 @@ from app.pkg import models
 
 async def test_correct(
     auth_postgres_service: AuthService,
-    first_user: models.User,
     insert_first_refresh_token: models.JWTRefreshToken,
     create_model,
 ):

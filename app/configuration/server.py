@@ -56,7 +56,7 @@ class Server:
         return self.__app
 
     @staticmethod
-    def _register_events(app: FastAPITypes.FastAPIInstance) -> None:
+    def _register_events(app: FastAPITypes.instance) -> None:
         """Register :func:`.on_startup` and :func:`.on_shutdown` events.
 
         Args:
@@ -71,7 +71,7 @@ class Server:
         app.on_event("shutdown")(on_shutdown)
 
     @staticmethod
-    def _register_routes(app: FastAPITypes.FastAPIInstance) -> None:
+    def _register_routes(app: FastAPITypes.instance) -> None:
         """Include routers in ``FastAPI`` instance from ``__routes__``.
 
         Args:
@@ -85,10 +85,10 @@ class Server:
         __routes__.register_routes(app)
 
     @staticmethod
-    def _register_http_exceptions(app: FastAPITypes.FastAPIInstance) -> None:
+    def _register_http_exceptions(app: FastAPITypes.instance) -> None:
         """Register http exceptions.
 
-        FastAPIInstance handle ``BaseApiExceptions`` raises inside functions.
+        instance handle ``BaseApiExceptions`` raises inside functions.
 
         Args:
             app:
@@ -101,7 +101,7 @@ class Server:
         app.add_exception_handler(BaseAPIException, handle_api_exceptions)
 
     @staticmethod
-    def __register_cors_origins(app: FastAPITypes.FastAPIInstance) -> None:
+    def __register_cors_origins(app: FastAPITypes.instance) -> None:
         """Register cors origins. In production, you should use only trusted
         origins.
 
@@ -126,7 +126,7 @@ class Server:
             allow_headers=["*"],
         )
 
-    def __register_prometheus(self, app: FastAPITypes.FastAPIInstance) -> None:
+    def __register_prometheus(self, app: FastAPITypes.instance) -> None:
         """Register prometheus middleware.
 
         Args:
@@ -146,7 +146,7 @@ class Server:
 
     def __register_metrics_collector(
         self,
-        app: FastAPITypes.FastAPIInstance,
+        app: FastAPITypes.instance,
     ) -> None:
         """Expose internal aggregated metrics to public endpoint.
 

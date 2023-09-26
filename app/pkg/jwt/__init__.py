@@ -1,3 +1,5 @@
+"""Initialize JWT package."""
+
 from dependency_injector import containers, providers
 from dependency_injector.providers import Singleton
 

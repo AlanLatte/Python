@@ -1,3 +1,8 @@
+"""Package resource's module.
+
+All resources should be inherited from :class:`.BaseAsyncResource`.
+"""
+
 from abc import abstractmethod
 from typing import TypeVar
 
@@ -10,6 +15,8 @@ _T = TypeVar("_T")
 
 
 class BaseAsyncResource(resources.AsyncResource):
+    """Abstract base class for async resources."""
+
     @abstractmethod
     async def init(self, *args, **kwargs) -> _T:
         """Getting connection.
@@ -26,7 +33,9 @@ class BaseAsyncResource(resources.AsyncResource):
                 >>> from dependency_injector import containers, providers
                 >>> from dependency_injector.wiring import Provide, inject
                 >>>
-                >>> from app.internal.repository.postgresql.connection import acquire_connection
+                >>> from app.internal.repository.postgresql.connection import (
+                ...     acquire_connection
+                ... )
                 >>> from app.pkg.connectors import Connectors
                 >>>
                 >>> class Container(containers.DeclarativeContainer):
@@ -48,7 +57,9 @@ class BaseAsyncResource(resources.AsyncResource):
                 >>>
                 >>> @inject
                 ... async def native_closed_pool(
-                ...     psql: Pool = Closing[Provide[Container.connector.postgresql.connector]],
+                ...     psql: Pool = Closing[
+                ...         Provide[Container.connector.postgresql.connector]
+                ...     ],
                 ... ):
                 ...     async with acquire_connection(pool=psql) as cur:
                 ...         await cur.execute("SELECT '1'")
@@ -56,11 +67,11 @@ class BaseAsyncResource(resources.AsyncResource):
         """
 
     @abstractmethod
-    async def shutdown(self, connector: _T):
+    async def shutdown(self, resource: _T):
         """Close connection.
 
         Args:
-            connector: Resource returned by :meth:`BaseAsyncResource.init()` method.
+            resource: Resource returned by :meth:`BaseAsyncResource.init()` method.
 
         Notes:
             You should implement ``close`` method of your connector here.

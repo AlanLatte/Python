@@ -1,3 +1,5 @@
+"""Authentication middleware for token-based authentication."""
+
 from fastapi import Security
 from fastapi.security import APIKeyHeader
 
@@ -29,7 +31,9 @@ async def token_based_verification(
 
             >>> from fastapi import APIRouter, Depends
             >>>
-            >>> from app.internal.pkg.middlewares.token_based_verification import token_based_verification
+            >>> from app.internal.pkg.middlewares.token_based_verification import (
+            ...     token_based_verification
+            ... )
             >>>
             >>> router = APIRouter(dependencies=[Depends(token_based_verification)])
             >>>

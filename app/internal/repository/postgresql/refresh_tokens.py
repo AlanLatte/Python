@@ -1,3 +1,5 @@
+"""Refresh tokens repository for PostgresSQL database."""
+
 from typing import List
 
 from app.internal.repository.postgresql.connection import get_connection
@@ -17,6 +19,8 @@ from app.pkg.models.refresh_token import (
 
 
 class JWTRefreshTokenRepository(Repository):
+    """Repository for refresh tokens."""
+
     @collect_response
     async def create(self, cmd: CreateJWTRefreshTokenCommand) -> JWTRefreshToken:
         q = """

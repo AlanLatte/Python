@@ -1,3 +1,5 @@
+"""Tests cases for :meth:`.UserService.delete_specific_user()`."""
+
 import pytest
 
 from app.internal.services import UserService

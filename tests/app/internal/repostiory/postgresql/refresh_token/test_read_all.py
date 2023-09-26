@@ -1,3 +1,5 @@
+"""Test cases for :meth:`.JWTRefreshTokenRepository.read_all()`."""
+
 import pytest
 
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
