@@ -13,8 +13,9 @@ from app.pkg.jwt import (
     JwtRefreshBearer,
     refresh_security,
 )
-from app.pkg.models.auth import Auth, AuthCommand
-from app.pkg.models.refresh_token import (
+from app.pkg.models import (
+    Auth,
+    AuthCommand,
     CreateJWTRefreshTokenCommand,
     DeleteJWTRefreshTokenCommand,
     ReadJWTRefreshTokenQuery,

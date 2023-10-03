@@ -40,7 +40,7 @@ class _Settings(BaseSettings):
         (in descending order of priority):
 
         1. Arguments passed to the Settings class initializer.
-        2. Environment variables, e.g. my_prefix_special_function as described above.
+        2. Environment variables, e.g., my_prefix_special_function as described above.
         3. Variables loaded from a dotenv (.env) file.
         4. Variables loaded from the secrets directory.
         5. The default field values for the Settings model.

@@ -4,8 +4,8 @@ from pydantic import Field
 
 from app.pkg.models.base import BaseModel
 from app.pkg.models.types import EncryptedSecretBytes, NotEmptySecretStr
-from app.pkg.models.user import UserFields
-from app.pkg.models.user_role import UserRole
+from app.pkg.models.app.user import UserFields
+from app.pkg.models.app.user_role import UserRole
 
 __all__ = ["Auth", "AuthCommand", "LogoutCommand"]
 
