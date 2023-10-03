@@ -1,10 +1,13 @@
-"""
-    TODO: Добавить ассоциацию статусов с исключениями.
-    К примеру:
-        - errorcodes.UNIQUE_VIOLATION: UniqueViolation
-        - errorcodes.FOREIGN_KEY_VIOLATION: ForeignKeyViolation
-        - errorcodes.CHECK_VIOLATION: CheckViolation
+"""Here you can pass the postgres error codes with association python
+exceptions."""
 
-    Для того, что бы подключить его в декораторе handle_exception.
-    Все ассоциации должны быть в app/internal/pkg/models/exceptions/association/aiopg.py
-"""
+from psycopg2 import errorcodes
+from app.pkg.models.exceptions import repository
+
+
+__all__ = ["__aiopg__"]
+
+
+__aiopg__ = {
+    errorcodes.UNIQUE_VIOLATION: repository.UniqueViolation,
+}
