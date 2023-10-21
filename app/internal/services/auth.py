@@ -6,10 +6,12 @@ from app.internal.pkg.password import password
 from app.internal.repository.postgresql import JWTRefreshTokenRepository
 from app.internal.services.user import UserService
 from app.pkg.jwt import UnAuthorized
-from app.pkg.models.auth import AuthCommand
 from app.pkg.models.exceptions.auth import IncorrectUsernameOrPassword
 from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
-from app.pkg.models.refresh_token import (
+from app.pkg.models import (
+    AuthCommand,
+    ReadUserByUserNameQuery,
+    User,
     CreateJWTRefreshTokenCommand,
     DeleteJWTRefreshTokenCommand,
     JWTRefreshToken,
@@ -17,7 +19,6 @@ from app.pkg.models.refresh_token import (
     ReadJWTRefreshTokenQueryByFingerprint,
     UpdateJWTRefreshTokenCommand,
 )
-from app.pkg.models.user import ReadUserByUserNameQuery, User
 
 __all__ = ["AuthService"]
 

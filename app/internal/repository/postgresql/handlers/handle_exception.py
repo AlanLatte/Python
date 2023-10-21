@@ -3,10 +3,11 @@
 from typing import Callable
 
 import psycopg2
-from psycopg2 import errorcodes
 
 from app.pkg.models.base import Model
-from app.pkg.models.exceptions.repository import DriverError, UniqueViolation
+
+from app.pkg.models.exceptions.association import __aiopg__
+from app.pkg.models.exceptions.repository import DriverError
 
 __all__ = ["handle_exception"]
 
@@ -64,8 +65,8 @@ def handle_exception(func: Callable[..., Model]):
         try:
             return await func(*args, **kwargs)
         except psycopg2.Error as error:
-            if error.pgcode == errorcodes.UNIQUE_VIOLATION:
-                raise UniqueViolation from error
+            if exc := __aiopg__.get(error.pgcode):
+                raise exc from error
 
             raise DriverError(message=error.pgerror) from error
 

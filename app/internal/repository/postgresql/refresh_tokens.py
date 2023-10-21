@@ -8,7 +8,7 @@ from app.internal.repository.postgresql.handlers.collect_response import (
 )
 from app.internal.repository.repository import Repository
 from app.pkg.models.base import Model
-from app.pkg.models.refresh_token import (
+from app.pkg.models import (
     CreateJWTRefreshTokenCommand,
     DeleteJWTRefreshTokenCommand,
     JWTRefreshToken,
