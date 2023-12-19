@@ -1,3 +1,5 @@
+"""Module for testing delete method of contacts repository."""
+
 import pytest
 
 from app.internal.repository.postgresql import ContactsRepository
@@ -28,7 +30,8 @@ async def test_delete(
 
 @pytest.mark.postgresql
 async def test_delete_not_found(
-    contact_repository: ContactsRepository, contact_generator
+    contact_repository: ContactsRepository,
+    contact_generator,
 ):
     cmd = contact_generator().migrate(model=models.DeleteContactsCommand)
     with pytest.raises(EmptyResult):

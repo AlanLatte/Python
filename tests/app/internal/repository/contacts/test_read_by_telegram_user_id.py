@@ -1,3 +1,6 @@
+"""Module for testing read_by_telegram_user_id method of ContactsRepository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import ContactsRepository

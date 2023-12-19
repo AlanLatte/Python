@@ -1,3 +1,5 @@
+"""Module for testing batch_read_all method of DirectionRepository."""
+
 import pytest
 
 from app.internal.repository.postgresql import DirectionRepository
@@ -41,7 +43,8 @@ async def test_not_found(
 ):
     expected, _ = await direction_inserter()
     query = expected.migrate(
-        models.ReadAllDirectionByIdQuery, extra_fields={"ids": [expected.id + 1]}
+        models.ReadAllDirectionByIdQuery,
+        extra_fields={"ids": [expected.id + 1]},
     )
 
     with pytest.raises(EmptyResult):
@@ -50,7 +53,9 @@ async def test_not_found(
 
 @pytest.mark.postgresql
 async def test_duplicate(
-    direction_repository: DirectionRepository, direction_inserter, check_array_equality
+    direction_repository: DirectionRepository,
+    direction_inserter,
+    check_array_equality,
 ):
     expected, _ = await direction_inserter()
     query = expected.migrate(
@@ -65,7 +70,9 @@ async def test_duplicate(
 
 @pytest.mark.postgresql
 async def test_one_of_ids_incorrect(
-    direction_repository: DirectionRepository, direction_inserter, check_array_equality
+    direction_repository: DirectionRepository,
+    direction_inserter,
+    check_array_equality,
 ):
     expected, _ = await direction_inserter()
     query = expected.migrate(

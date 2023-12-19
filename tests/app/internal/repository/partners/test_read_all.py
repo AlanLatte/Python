@@ -1,3 +1,6 @@
+"""Module for testing read_all method of PartnerRepository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import PartnerRepository
@@ -7,7 +10,9 @@ from app.pkg.models.exceptions.repository import EmptyResult
 @pytest.mark.postgresql
 @pytest.mark.slow
 async def test_read_all(
-    partner_inserter, partner_repository: PartnerRepository, clean_postgres,
+    partner_inserter,
+    partner_repository: PartnerRepository,
+    clean_postgres,
 ):
     _ = clean_postgres
 
@@ -19,7 +24,8 @@ async def test_read_all(
 @pytest.mark.postgresql
 @pytest.mark.slow
 async def test_read_all_not_found(
-    partner_repository: PartnerRepository, clean_postgres,
+    partner_repository: PartnerRepository,
+    clean_postgres,
 ):
     _ = clean_postgres
 

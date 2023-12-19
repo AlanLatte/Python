@@ -1,9 +1,9 @@
+"""Module for testing read_all method in ContactsRepository."""
+
+
 import pytest
 
-from app.internal.repository.postgresql import (
-    ContactsRepository,
-)
-
+from app.internal.repository.postgresql import ContactsRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import EmptyResult
 
@@ -28,7 +28,8 @@ async def test_read_all(
 @pytest.mark.postgresql
 @pytest.mark.slow
 async def test_read_all_not_found(
-    contact_repository: ContactsRepository, clean_postgres
+    contact_repository: ContactsRepository,
+    clean_postgres,
 ):
     _ = clean_postgres
 

@@ -1,3 +1,5 @@
+"""Module for testing create city command."""
+
 import asyncio
 
 import pytest
@@ -28,14 +30,22 @@ async def test_country_not_found(city_repository: CityRepository, create_model):
 
 @pytest.mark.postgresql
 async def test_duplicate_city_code(
-    city_repository: CityRepository, create_model, country_inserter,
+    city_repository: CityRepository,
+    create_model,
+    country_inserter,
 ):
     result, _ = await country_inserter()
     cmd_1 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Ufa",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Ufa",
     )
     cmd_2 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Moscow",
     )
     tasks = [
         asyncio.create_task(city_repository.create(cmd=cmd_1)),
@@ -48,14 +58,22 @@ async def test_duplicate_city_code(
 
 @pytest.mark.postgresql
 async def test_duplicate_city_name(
-    city_repository: CityRepository, create_model, country_inserter,
+    city_repository: CityRepository,
+    create_model,
+    country_inserter,
 ):
-    result, cmd = await country_inserter()
+    result, _ = await country_inserter()
     cmd_1 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="UFA", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="UFA",
+        name="Moscow",
     )
     cmd_2 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Moscow",
     )
 
     tasks = [
@@ -82,5 +100,8 @@ async def test_duplicate_city_name(
 async def test_code_length_equal_3(create_model, code: str):
     with pytest.raises(ValidationError):
         await create_model(
-            models.CreateCityCommand, code=code, name="Moscow", country_id=1,
+            models.CreateCityCommand,
+            code=code,
+            name="Moscow",
+            country_id=1,
         )

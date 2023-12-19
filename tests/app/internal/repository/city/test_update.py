@@ -1,3 +1,6 @@
+"""Module for testing city repository update method."""
+
+
 import asyncio
 
 import pytest
@@ -10,7 +13,7 @@ from app.pkg.models.exceptions.repository import EmptyResult
 @pytest.mark.postgresql
 async def test_update(city_repository, city_inserter, country_inserter):
     country, _ = await country_inserter(country_code="RUS")
-    city, city_cmd = await city_inserter(country_id=country.id)
+    city, _ = await city_inserter(country_id=country.id)
 
     cmd = city.migrate(
         models.UpdateCityCommand,
@@ -28,7 +31,10 @@ async def test_update(city_repository, city_inserter, country_inserter):
 
 @pytest.mark.postgresql
 async def test_city_not_found(
-    city_repository, create_model, country_inserter, city_inserter,
+    city_repository,
+    create_model,
+    country_inserter,
+    city_inserter,
 ):
     result, _ = await country_inserter()
     city, _ = await city_inserter(country_id=result.id)
@@ -40,19 +46,26 @@ async def test_city_not_found(
 
 @pytest.mark.postgresql
 async def test_duplicate_city_code(
-    city_repository, create_model, country_inserter, city_inserter, clean_postgres,
+    city_repository,
+    create_model,
+    country_inserter,
+    clean_postgres,
 ):
     _ = clean_postgres
 
     result, _ = await country_inserter()
 
-    city, _ = await city_inserter(country_id=result.id)
-
     cmd_1 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Ufa",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Ufa",
     )
     cmd_2 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Moscow",
     )
 
     tasks = [
@@ -66,18 +79,26 @@ async def test_duplicate_city_code(
 
 @pytest.mark.postgresql
 async def test_duplicate_city_name(
-    city_repository, create_model, country_inserter, city_inserter, clean_postgres,
+    city_repository,
+    create_model,
+    country_inserter,
+    clean_postgres,
 ):
     _ = clean_postgres
 
     result, _ = await country_inserter()
-    city, _ = await city_inserter(country_id=result.id)
 
     cmd_1 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="UFA", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="UFA",
+        name="Moscow",
     )
     cmd_2 = await create_model(
-        models.CreateCityCommand, country_id=result.id, code="MSK", name="Moscow",
+        models.CreateCityCommand,
+        country_id=result.id,
+        code="MSK",
+        name="Moscow",
     )
 
     tasks = [

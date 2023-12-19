@@ -1,3 +1,6 @@
+"""Module for testing skill creation."""
+
+
 import asyncio
 
 import pytest
@@ -12,11 +15,12 @@ async def test_create(skill_generator, skill_repository: SkillRepository):
     skill = skill_generator()
 
     created_skill = await skill_repository.create(
-        cmd=skill.migrate(model=models.CreateSkillCommand)
+        cmd=skill.migrate(model=models.CreateSkillCommand),
     )
 
     assert created_skill == skill.migrate(
-        model=models.Skill, extra_fields={"id": created_skill.id}
+        model=models.Skill,
+        extra_fields={"id": created_skill.id},
     )
 
 
@@ -28,13 +32,13 @@ async def test_not_unique_name(skill_generator, skill_repository: SkillRepositor
         tasks = [
             asyncio.create_task(
                 skill_repository.create(
-                    cmd=skill.migrate(model=models.CreateSkillCommand)
-                )
+                    cmd=skill.migrate(model=models.CreateSkillCommand),
+                ),
             ),
             asyncio.create_task(
                 skill_repository.create(
-                    cmd=skill.migrate(model=models.CreateSkillCommand)
-                )
+                    cmd=skill.migrate(model=models.CreateSkillCommand),
+                ),
             ),
         ]
         await asyncio.gather(*tasks)

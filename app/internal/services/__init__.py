@@ -7,9 +7,9 @@ from app.internal.services.city import CityService
 from app.internal.services.contacts import ContactsService
 from app.internal.services.country import CountryService
 from app.internal.services.direction import DirectionService
+from app.internal.services.partners import PartnerService
 from app.internal.services.skill import SkillService
 from app.internal.services.skill_levels import SkillLevelService
-from app.internal.services.partners import PartnerService
 
 
 class Services(containers.DeclarativeContainer):

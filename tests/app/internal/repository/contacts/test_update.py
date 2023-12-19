@@ -1,16 +1,16 @@
+"""Module for testing update method of contacts repository."""
+
+
 import uuid
 
 import pytest
 
-from app.internal.repository.postgresql import (
-    ContactsRepository,
-)
-
+from app.internal.repository.postgresql import ContactsRepository
 from app.pkg import models
 from app.pkg.models.exceptions.contacts import (
+    EmailAlreadyExists,
     TelegramUsernameAlreadyExists,
     TokenAlreadyExists,
-    EmailAlreadyExists,
 )
 from app.pkg.models.exceptions.repository import EmptyResult
 
@@ -23,7 +23,8 @@ async def test_update(
 ):
     partner, _ = await partner_inserter()
     contact, _ = await contact_inserter(
-        partner_id=partner.id, telegram_username="@{}".format(uuid.uuid4().hex)
+        partner_id=partner.id,
+        telegram_username=f"@{uuid.uuid4().hex}",
     )
     new_contact = contact.migrate(
         model=models.Contacts,
@@ -31,7 +32,7 @@ async def test_update(
     )
 
     result = await contact_repository.update(
-        cmd=new_contact.migrate(model=models.UpdateContactsCommand)
+        cmd=new_contact.migrate(model=models.UpdateContactsCommand),
     )
 
     assert result == new_contact
@@ -60,7 +61,7 @@ async def test_token_already_exists(
             cmd=contact.migrate(
                 model=models.UpdateContactsCommand,
                 extra_fields={"token": cmd.token},
-            )
+            ),
         )
 
 
@@ -77,7 +78,7 @@ async def test_email_already_exists(
     new_contact = await create_model(
         models.Contacts,
         telegram_user_id=contact.telegram_user_id,
-        email="{}@{}.com".format(uuid.uuid4().hex, uuid.uuid4().hex),
+        email=f"{uuid.uuid4().hex}@{uuid.uuid4().hex}.com",
     )
 
     _, cmd = await contact_inserter(partner_id=partner.id, email=new_contact.email)
@@ -87,7 +88,7 @@ async def test_email_already_exists(
             cmd=contact.migrate(
                 model=models.UpdateContactsCommand,
                 extra_fields={"email": cmd.email},
-            )
+            ),
         )
 
 
@@ -100,15 +101,18 @@ async def test_telegram_username_already_exists(
 ):
     partner, _ = await partner_inserter()
     contact, _ = await contact_inserter(
-        partner_id=partner.id, telegram_username="@{}".format(uuid.uuid4().hex)
+        partner_id=partner.id,
+        telegram_username=f"@{uuid.uuid4().hex}",
     )
 
     new_contact = await create_model(
-        models.Contacts, telegram_username="@{}".format(uuid.uuid4().hex)
+        models.Contacts,
+        telegram_username=f"@{uuid.uuid4().hex}",
     )
 
     _, cmd = await contact_inserter(
-        partner_id=partner.id, telegram_username=new_contact.telegram_username
+        partner_id=partner.id,
+        telegram_username=new_contact.telegram_username,
     )
 
     with pytest.raises(TelegramUsernameAlreadyExists):
@@ -116,7 +120,7 @@ async def test_telegram_username_already_exists(
             cmd=contact.migrate(
                 model=models.UpdateContactsCommand,
                 extra_fields={"telegram_username": cmd.telegram_username},
-            )
+            ),
         )
 
 
@@ -134,5 +138,5 @@ async def test_update_not_found(
             cmd=contact.migrate(
                 model=models.UpdateContactsCommand,
                 extra_fields={"telegram_user_id": contact.telegram_user_id + 1},
-            )
+            ),
         )

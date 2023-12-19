@@ -17,9 +17,9 @@ from app.pkg.models.exceptions import (
     contacts,
     country,
     direction,
+    partners,
     skill,
     skill_levels,
-    partners,
 )
 
 __all__ = [

@@ -1,3 +1,6 @@
+"""Module for testing delete method in country repository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import CountryRepository
@@ -18,7 +21,9 @@ async def test_correct(country_repository: CountryRepository, country_inserter):
 
 @pytest.mark.postgresql
 async def test_country_not_found(
-    country_repository: CountryRepository, country_inserter, create_model,
+    country_repository: CountryRepository,
+    country_inserter,
+    create_model,
 ):
     result, _ = await country_inserter()
     cmd = await create_model(models.DeleteCountryCommand, id=result.id + 1)

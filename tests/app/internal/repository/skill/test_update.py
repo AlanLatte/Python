@@ -1,3 +1,6 @@
+"""Module for testing skill update method."""
+
+
 import asyncio
 
 import pytest
@@ -10,24 +13,25 @@ from app.pkg.models.exceptions.skill import SkillNameAlreadyExists
 
 @pytest.mark.postgresql
 async def test_update(skill_inserter, skill_repository: SkillRepository):
-    skill, cmd = await skill_inserter()
+    skill, _ = await skill_inserter()
 
     updated_skill = await skill_repository.update(
         cmd=skill.migrate(
             model=models.UpdateSkillCommand,
-            extra_fields={"name": "{}_new_name".format(skill.name)},
-        )
+            extra_fields={"name": f"{skill.name}_new_name"},
+        ),
     )
 
     assert updated_skill == skill.migrate(
-        model=models.Skill, extra_fields={"name": "{}_new_name".format(skill.name)}
+        model=models.Skill,
+        extra_fields={"name": f"{skill.name}_new_name"},
     )
 
 
 @pytest.mark.postgresql
 async def test_not_unique_name(skill_inserter, skill_repository: SkillRepository):
-    skill, cmd = await skill_inserter()
-    skill2, cmd2 = await skill_inserter()
+    skill, _ = await skill_inserter()
+    skill2, _ = await skill_inserter()
 
     with pytest.raises(SkillNameAlreadyExists):
         tasks = [
@@ -36,16 +40,16 @@ async def test_not_unique_name(skill_inserter, skill_repository: SkillRepository
                     cmd=skill.migrate(
                         model=models.UpdateSkillCommand,
                         extra_fields={"name": skill2.name},
-                    )
-                )
+                    ),
+                ),
             ),
             asyncio.create_task(
                 skill_repository.update(
                     cmd=skill2.migrate(
                         model=models.UpdateSkillCommand,
                         extra_fields={"name": skill.name},
-                    )
-                )
+                    ),
+                ),
             ),
         ]
         await asyncio.gather(*tasks)
@@ -55,5 +59,5 @@ async def test_not_unique_name(skill_inserter, skill_repository: SkillRepository
 async def test_not_found(skill_generator, skill_repository: SkillRepository):
     with pytest.raises(EmptyResult):
         await skill_repository.update(
-            cmd=skill_generator().migrate(model=models.UpdateSkillCommand)
+            cmd=skill_generator().migrate(model=models.UpdateSkillCommand),
         )

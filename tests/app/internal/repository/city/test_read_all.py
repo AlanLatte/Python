@@ -1,3 +1,5 @@
+"""Model City read_all method tests."""
+
 import pytest
 
 from app.pkg import models
@@ -7,7 +9,10 @@ from app.pkg.models.exceptions.repository import EmptyResult
 @pytest.mark.postgresql
 @pytest.mark.slow
 async def test_read_all(
-    city_repository, city_inserter, country_inserter, clean_postgres,
+    city_repository,
+    city_inserter,
+    country_inserter,
+    clean_postgres,
 ):
     _ = clean_postgres
 
@@ -19,10 +24,11 @@ async def test_read_all(
     assert isinstance(cities, list)
     assert len(cities) == 1
 
-    for __city in cities:
-        assert isinstance(__city, models.City)
-        assert __city == city_cmd.migrate(
-            model=models.City, extra_fields={"id": city.id},
+    for response_city in cities:
+        assert isinstance(response_city, models.City)
+        assert response_city == city_cmd.migrate(
+            model=models.City,
+            extra_fields={"id": city.id},
         )
 
 

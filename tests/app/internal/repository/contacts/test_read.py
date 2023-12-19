@@ -1,8 +1,9 @@
+"""Module for testing read method of contacts repository."""
+
 import pytest
 
 from app.internal.repository.postgresql import ContactsRepository
 from app.pkg import models
-from app.pkg.models.exceptions.contacts import ContactsNotFound
 from app.pkg.models.exceptions.repository import EmptyResult
 
 
@@ -34,6 +35,6 @@ async def test_read_not_found(
     with pytest.raises(EmptyResult):
         await contact_repository.read(
             query=models.ReadContactsQuery(
-                token=contact.token.get_secret_value() + "1"
+                token=contact.token.get_secret_value() + "1",
             ),
         )

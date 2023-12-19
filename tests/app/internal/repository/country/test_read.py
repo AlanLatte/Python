@@ -1,3 +1,6 @@
+"""Module for testing read method of country repository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql.country import CountryRepository
@@ -21,7 +24,9 @@ async def test_correct(country_code, country_inserter):
 
 @pytest.mark.postgresql
 async def test_country_not_found(
-    country_repository: CountryRepository, country_inserter, create_model,
+    country_repository: CountryRepository,
+    country_inserter,
+    create_model,
 ):
     result, _ = await country_inserter()
 

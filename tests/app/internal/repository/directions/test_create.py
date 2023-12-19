@@ -1,3 +1,6 @@
+"""Module for testing create method of directions repository."""
+
+
 import pytest
 
 from app.pkg import models
@@ -12,11 +15,12 @@ async def test_create(
     direction = direction_generator()
 
     result = await direction_repository.create(
-        cmd=direction.migrate(model=models.CreateDirectionCommand)
+        cmd=direction.migrate(model=models.CreateDirectionCommand),
     )
 
     assert result == direction.migrate(
-        model=models.Direction, extra_fields={"id": result.id}
+        model=models.Direction,
+        extra_fields={"id": result.id},
     )
 
 
@@ -25,7 +29,7 @@ async def test_create_duplicate(
     direction_repository,
     direction_inserter,
 ):
-    result, cmd = await direction_inserter()
+    _, cmd = await direction_inserter()
 
     with pytest.raises(DirectionNameAlreadyExists):
         await direction_repository.create(cmd=cmd)

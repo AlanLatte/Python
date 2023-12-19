@@ -1,3 +1,6 @@
+"""Module for testing read method of city repository."""
+
+
 import pytest
 
 from app.pkg import models

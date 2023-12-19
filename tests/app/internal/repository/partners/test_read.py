@@ -1,3 +1,6 @@
+"""Model tests for read repository method."""
+
+
 import pytest
 
 from app.pkg import models

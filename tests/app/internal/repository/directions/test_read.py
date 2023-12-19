@@ -1,3 +1,6 @@
+"""Module for testing delete city repository method."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import CountryRepository, DirectionRepository
@@ -13,18 +16,20 @@ async def test_read(
     expected, _ = await country_inserter()
 
     result = await country_repository.read(
-        query=models.ReadCountryQuery(id=expected.id)
+        query=models.ReadCountryQuery(id=expected.id),
     )
     assert result == expected
 
 
 @pytest.mark.postgresql
 async def test_country_not_found(
-    direction_repository: DirectionRepository, direction_inserter
+    direction_repository: DirectionRepository,
+    direction_inserter,
 ):
     expected, _ = await direction_inserter()
     query = expected.migrate(
-        models.ReadDirectionQuery, extra_fields={"id": expected.id + 1}
+        models.ReadDirectionQuery,
+        extra_fields={"id": expected.id + 1},
     )
 
     with pytest.raises(EmptyResult):

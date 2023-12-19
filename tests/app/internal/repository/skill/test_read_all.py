@@ -1,13 +1,18 @@
+"""Module for testing read_all method."""
+
+
 import pytest
 
-from app.pkg.models.exceptions.repository import EmptyResult
 from app.internal.repository.postgresql import SkillRepository
+from app.pkg.models.exceptions.repository import EmptyResult
 
 
 @pytest.mark.postgresql
 @pytest.mark.slow
 async def test_read_all(
-    skill_repository: SkillRepository, skill_inserter, clean_postgres
+    skill_repository: SkillRepository,
+    skill_inserter,
+    clean_postgres,
 ):
     _ = clean_postgres
 

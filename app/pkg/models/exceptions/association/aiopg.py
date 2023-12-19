@@ -8,9 +8,9 @@ from app.pkg.models.exceptions import (
     contacts,
     country,
     direction,
+    partners,
     repository,
     skill,
-    partners,
     skill_levels,
 )
 

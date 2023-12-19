@@ -1,3 +1,5 @@
+"""Module for testing create country command."""
+
 import asyncio
 
 import pytest
@@ -20,7 +22,9 @@ from app.pkg.models.exceptions.country import (
     ],
 )
 async def test_correct(
-    country_repository: CountryRepository, create_model, country_code,
+    country_repository: CountryRepository,
+    create_model,
+    country_code,
 ):
     cmd = await create_model(models.CreateCountryCommand, code=country_code)
 
@@ -37,7 +41,9 @@ async def test_correct(
     ],
 )
 async def test_unique_country_name(
-    country_repository: CountryRepository, country_name: str, create_model,
+    country_repository: CountryRepository,
+    country_name: str,
+    create_model,
 ):
     commands = []
     for _ in range(2):
@@ -95,7 +101,9 @@ async def test_strip_whitespace_country_code(country_code: str, create_model):
     ],
 )
 async def test_country_code_already_exists(
-    country_repository: CountryRepository, country_code: str, create_model,
+    country_repository: CountryRepository,
+    country_code: str,
+    create_model,
 ):
     commands = []
     for _ in range(2):

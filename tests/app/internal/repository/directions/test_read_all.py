@@ -1,3 +1,6 @@
+"""Module for testing update direction repository method."""
+
+
 import pytest
 
 from app.pkg.models.exceptions.repository import EmptyResult

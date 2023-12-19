@@ -1,3 +1,6 @@
+"""Model tests for the create method of the partner repository."""
+
+
 import uuid
 
 import pytest
@@ -17,7 +20,8 @@ async def test_create(partner_generator, partner_repository):
     result = await partner_repository.create(cmd=cmd)
 
     assert result == partner.migrate(
-        model=models.Partner, extra_fields={"id": result.id},
+        model=models.Partner,
+        extra_fields={"id": result.id},
     )
 
 
@@ -37,7 +41,8 @@ async def test_unique_token(partner_generator, partner_repository):
     partner = partner_generator()
     token = str(uuid.uuid4())
     cmd = partner.migrate(
-        model=models.CreatePartnerCommand, extra_fields={"token": token},
+        model=models.CreatePartnerCommand,
+        extra_fields={"token": token},
     )
 
     await partner_repository.create(cmd=cmd)

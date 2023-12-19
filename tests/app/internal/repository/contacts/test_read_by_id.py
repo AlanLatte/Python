@@ -1,9 +1,9 @@
+"""Module for testing read_by_id method in ContactsRepository."""
+
+
 import pytest
 
-from app.internal.repository.postgresql import (
-    ContactsRepository,
-)
-
+from app.internal.repository.postgresql import ContactsRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import EmptyResult
 

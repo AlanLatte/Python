@@ -1,3 +1,5 @@
+"""Generators for models."""
+
 from typing import Any, Callable, Type
 
 import pydantic

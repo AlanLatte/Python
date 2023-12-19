@@ -1,3 +1,6 @@
+"""Module for testing delete method of skill repository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import SkillRepository
@@ -7,7 +10,7 @@ from app.pkg.models.exceptions.repository import EmptyResult
 
 @pytest.mark.postgresql
 async def test_delete(skill_inserter, skill_repository: SkillRepository):
-    skill, cmd = await skill_inserter()
+    skill, _ = await skill_inserter()
 
     await skill_repository.delete(cmd=skill.migrate(model=models.DeleteSkillCommand))
 
@@ -19,5 +22,5 @@ async def test_delete(skill_inserter, skill_repository: SkillRepository):
 async def test_not_found(skill_repository: SkillRepository, skill_generator):
     with pytest.raises(EmptyResult):
         await skill_repository.delete(
-            cmd=skill_generator().migrate(model=models.DeleteSkillCommand)
+            cmd=skill_generator().migrate(model=models.DeleteSkillCommand),
         )

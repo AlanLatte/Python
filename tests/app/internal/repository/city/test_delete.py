@@ -1,3 +1,5 @@
+"""Module for testing update method of country repository."""
+
 import pytest
 
 from app.pkg import models
@@ -11,7 +13,7 @@ async def test_delete(city_repository, country_inserter, city_inserter, clean_po
 
     result, _ = await country_inserter(country_code="RUS")
 
-    city, city_cmd = await city_inserter(country_id=result.id)
+    city, _ = await city_inserter(country_id=result.id)
 
     cmd = city.migrate(
         models.DeleteCityCommand,

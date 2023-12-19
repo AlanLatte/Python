@@ -1,3 +1,6 @@
+"""Module for testing update method of partner repository."""
+
+
 from uuid import uuid4
 
 import pytest
@@ -42,7 +45,8 @@ async def test_update_not_found(partner_repository: PartnerRepository):
 
 @pytest.mark.postgresql
 async def test_update_duplicate_name(
-    partner_inserter, partner_repository: PartnerRepository,
+    partner_inserter,
+    partner_repository: PartnerRepository,
 ):
     partner, _ = await partner_inserter()
     partner2, _ = await partner_inserter()
@@ -58,7 +62,8 @@ async def test_update_duplicate_name(
 
 @pytest.mark.postgresql
 async def test_update_duplicate_token(
-    partner_inserter, partner_repository: PartnerRepository,
+    partner_inserter,
+    partner_repository: PartnerRepository,
 ):
     partner, _ = await partner_inserter()
     partner2, _ = await partner_inserter()

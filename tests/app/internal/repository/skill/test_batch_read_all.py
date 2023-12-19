@@ -1,13 +1,18 @@
+"""Module for testing batch_read_all method of SkillRepository."""
+
+
 import pytest
 
+from app.internal.repository.postgresql import SkillRepository
 from app.pkg import models
 from app.pkg.models.exceptions.repository import EmptyResult
-from app.internal.repository.postgresql import SkillRepository
 
 
 @pytest.mark.postgresql
 async def test_batch_read_all(
-    skill_repository: SkillRepository, skill_inserter, check_array_equality
+    skill_repository: SkillRepository,
+    skill_inserter,
+    check_array_equality,
 ):
     expected = []
     cmds = []

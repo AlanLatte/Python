@@ -1,3 +1,6 @@
+"""Module for testing delete method of PartnerRepository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import PartnerRepository
@@ -21,7 +24,8 @@ async def test_delete(partner_inserter, partner_repository: PartnerRepository):
 
 @pytest.mark.postgresql
 async def test_delete_not_found(
-    partner_repository: PartnerRepository, partner_inserter,
+    partner_repository: PartnerRepository,
+    partner_inserter,
 ):
     partner, _ = await partner_inserter()
 

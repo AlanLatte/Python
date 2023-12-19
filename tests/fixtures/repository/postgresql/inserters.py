@@ -1,3 +1,10 @@
+"""Inserters for PostgreSQL repository.
+
+This module contains fixtures for inserting models to database using JSF
+generators.
+"""
+
+
 from typing import Type
 
 import pytest

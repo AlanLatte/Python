@@ -9,6 +9,7 @@ from dotenv import find_dotenv
 from pydantic import PostgresDsn, root_validator, validator
 from pydantic.env_settings import BaseSettings
 from pydantic.types import PositiveInt, SecretStr
+
 from app.pkg.models.core.logger import LoggerLevel
 
 __all__ = ["Settings", "get_settings"]

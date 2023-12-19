@@ -1,3 +1,5 @@
+"""Module for testing delete method of direction repository."""
+
 import pytest
 
 from app.internal.repository.postgresql import DirectionRepository
@@ -17,11 +19,13 @@ async def test_delete(direction_repository: DirectionRepository, direction_inser
 
 @pytest.mark.postgresql
 async def test_direction_not_found(
-    direction_repository: DirectionRepository, direction_inserter
+    direction_repository: DirectionRepository,
+    direction_inserter,
 ):
     expected, _ = await direction_inserter()
     cmd = expected.migrate(
-        models.DeleteDirectionCommand, extra_fields={"id": expected.id + 1}
+        models.DeleteDirectionCommand,
+        extra_fields={"id": expected.id + 1},
     )
 
     with pytest.raises(EmptyResult):

@@ -1,3 +1,6 @@
+"""Module for testing update method of skill level repository."""
+
+
 import pytest
 
 from app.internal.repository.postgresql import SkillLevelRepository
@@ -14,7 +17,8 @@ async def test_update(
 ):
     result, cmd = await skill_level_inserter()
     cmd = skill_level_generator().migrate(
-        model=models.UpdateSkillLevelCommand, extra_fields={"id": result.id}
+        model=models.UpdateSkillLevelCommand,
+        extra_fields={"id": result.id},
     )
 
     after_update = await skill_level_repository.update(cmd=cmd)
@@ -26,7 +30,8 @@ async def test_update(
 
 @pytest.mark.postgresql
 async def test_not_found(
-    skill_level_repository: SkillLevelRepository, skill_level_generator
+    skill_level_repository: SkillLevelRepository,
+    skill_level_generator,
 ):
     cmd = skill_level_generator().migrate(model=models.UpdateSkillLevelCommand)
 
@@ -45,6 +50,7 @@ async def test_level_not_unique(
     with pytest.raises(SkillLevelAlreadyExists):
         await skill_level_repository.update(
             cmd=cmd.migrate(
-                model=models.UpdateSkillLevelCommand, extra_fields={"id": result.id}
-            )
+                model=models.UpdateSkillLevelCommand,
+                extra_fields={"id": result.id},
+            ),
         )

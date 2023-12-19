@@ -1,3 +1,5 @@
+"""Module for testing create method of contacts repository."""
+
 from uuid import uuid4
 
 import pytest
@@ -79,7 +81,7 @@ async def test_duplicate_email(
     partner, _ = await partner_inserter()
     contact, _ = await contact_inserter(
         partner_id=partner.id,
-        email="{}@example.com".format(uuid4().hex),
+        email=f"{uuid4().hex}@example.com",
         token=uuid4().hex,
     )
 
@@ -101,7 +103,7 @@ async def test_duplicate_telegram_username(
     partner, _ = await partner_inserter()
     contact, _ = await contact_inserter(
         partner_id=partner.id,
-        telegram_username="@{}".format(uuid4().hex),
+        telegram_username=f"@{uuid4().hex}",
         email=None,
     )
 

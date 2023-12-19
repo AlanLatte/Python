@@ -1,3 +1,5 @@
+"""Module for testing read_all method in country repository."""
+
 import pytest
 
 from app.pkg.models.exceptions.repository import EmptyResult
