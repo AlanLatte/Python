@@ -6,7 +6,6 @@ import pytest
 from app.pkg.models.base import BaseModel
 
 
-@pytest.mark.incorrect
 async def test_with_some_missing_fields():
     class TestModel(BaseModel):
         some_value: int
@@ -24,7 +23,6 @@ async def test_with_some_missing_fields():
         model.migrate(AnotherTestModel)
 
 
-@pytest.mark.correct
 async def test_model():
     class TestModel(BaseModel):
         some_value: int
@@ -48,7 +46,6 @@ async def test_model():
     assert another_model.some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_with_matching_keys():
     class TestModel(BaseModel):
         some_value: int
@@ -69,7 +66,6 @@ async def test_with_matching_keys():
 
 
 @pytest.mark.repeat(5)
-@pytest.mark.correct
 async def test_with_filling_mismatching_fields():
     class TestModel(BaseModel):
         some_value: int
@@ -91,7 +87,6 @@ async def test_with_filling_mismatching_fields():
 
 
 @pytest.mark.repeat(5)
-@pytest.mark.correct
 async def test_with_extra_field():
     class TestModel(BaseModel):
         some_value: int

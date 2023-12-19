@@ -13,8 +13,8 @@ Note:
     target database.
 
 Examples:
-    Let's say we have a User repository. For its correct operation, five implemented
-    methods are sufficient.::
+    Let's say we have a StrictUser repository. For its correct operation,
+    five implemented methods are sufficient.::
 
         >>> from app.internal.repository.repository import Repository
         >>> from typing import List
@@ -23,23 +23,23 @@ Examples:
         ...     DeleteUserCommand,
         ...     UpdateUserCommand,
         ...     ReadUserByUserNameQuery,
-        ...     User,
+        ...     StrictUser,
         ... )
         ...
         >>> class UserRepository(Repository):
-        ...     async def create(self, cmd: CreateUserCommand) -> User:
+        ...     async def create(self, cmd: CreateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def read(self, query: ReadUserByUserNameQuery) -> User:
+        ...     async def read(self, query: ReadUserByUserNameQuery) -> StrictUser:
         ...         ...
         ...
-        ...     async def read_all(self) -> List[User]:
+        ...     async def read_all(self) -> List[StrictUser]:
         ...         ...
         ...
-        ...     async def update(self, cmd: UpdateUserCommand) -> User:
+        ...     async def update(self, cmd: UpdateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def delete(self, cmd: DeleteUserCommand) -> User:
+        ...     async def delete(self, cmd: DeleteUserCommand) -> StrictUser:
         ...         ...
 
 
@@ -61,7 +61,6 @@ Examples:
 from dependency_injector import containers, providers
 
 from app.internal.repository import postgresql
-from app.internal.repository.repository import BaseRepository
 
 __all__ = ["Repositories"]
 

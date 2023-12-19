@@ -179,9 +179,9 @@ class BaseModel(pydantic.BaseModel):
     def migrate(
         self,
         model: type[BaseModel],
-        match_keys: dict[str, str] = None,
         random_fill: bool = False,
-        extra_fields: dict[str, typing.Any] = None,
+        match_keys: dict[str, str] | None = None,
+        extra_fields: dict[str, typing.Any] | None = None,
     ) -> Model:
         """Migrate one model to another ignoring missmatch.
 
@@ -251,6 +251,20 @@ class BaseModel(pydantic.BaseModel):
                 >>> a = A(a=1, b=2, c=3)
                 >>> a.migrate(model=B, match_keys={"aa": "a"})  # B(aa=1, b=2, c=3)
 
+            If you need to add additional fields to the model, then you can use
+            the ``extra_fields`` argument::
+
+                >>> class A(BaseModel):
+                ...     a: int
+                ...     b: int
+                >>> class B(BaseModel):
+                ...     a: int
+                ...     b: int
+                ...     c: int
+                >>> a = A(a=1, b=2, c=3)
+                >>> a.migrate(model=B, extra_fields={"c": 3})  # B(a=1, b=2, c=3)
+
+
         Returns:
             pydantic model parsed from ``model``.
         """
@@ -301,3 +315,6 @@ class BaseModel(pydantic.BaseModel):
 
         # Allow validate assignment.
         validate_assignment = True
+
+        # Remove trailing whitespace
+        anystr_strip_whitespace = True

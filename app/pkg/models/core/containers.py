@@ -208,7 +208,7 @@ class Containers:
         """Set environment for injection.
 
         Using `container.configuration` for rewrite
-        ``{{database_configuration_name}}`` parameter in `settings`.
+        ``database_configuration_path`` parameter in `settings`.
 
         Args:
             database_configuration_path:

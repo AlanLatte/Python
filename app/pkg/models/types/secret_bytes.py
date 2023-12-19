@@ -5,8 +5,6 @@ from typing import Any
 from pydantic import SecretBytes
 from pydantic.validators import bytes_validator
 
-from app.internal.pkg.password import password
-
 __all__ = ["EncryptedSecretBytes"]
 
 
@@ -30,6 +28,3 @@ class EncryptedSecretBytes(SecretBytes):
             return value
         value = bytes_validator(value)
         return cls(value)
-
-    def crypt_password(self) -> None:
-        self._secret_value = password.crypt_password(self.get_secret_value())

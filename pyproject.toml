@@ -49,6 +49,7 @@ bandit = "^1.7.1"
 flake8 = "^4.0.1"
 mypy = "^0.931"
 pylint = "^2.17.6"
+ruff = "^0.1.8"
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = "^0.20.2"
@@ -64,6 +65,10 @@ sphinx-rtd-theme = "^1.1.1"
 
 [tool.poetry.group.benchmarks.dependencies]
 locust = "^2.14.2"
+
+
+[tool.poetry.group.sugar.dependencies]
+pytest-sugar = "^0.9.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

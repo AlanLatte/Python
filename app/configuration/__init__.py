@@ -21,7 +21,6 @@ Examples:
 
 from app.internal.services import Services
 from app.pkg.connectors import Connectors, PostgresSQL
-from app.pkg.jwt import JWT
 from app.pkg.models.core import Container, Containers
 from app.pkg.models.core.containers import Resource
 
@@ -32,7 +31,6 @@ __containers__ = Containers(
     pkg_name=__name__,
     containers=[
         Container(container=Services),
-        Container(container=JWT),
         Resource(
             container=Connectors,
             depends_on=[Container(container=PostgresSQL)],

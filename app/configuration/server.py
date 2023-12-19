@@ -7,7 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.configuration.events import on_shutdown, on_startup
 from app.configuration.logger import EndpointFilter
-from app.internal.pkg.middlewares.handle_http_exceptions import handle_api_exceptions
+from app.internal.pkg.middlewares.handle_http_exceptions import (
+    handle_api_exceptions,
+    handle_drivers_exceptions,
+    handle_internal_exception,
+)
 from app.internal.pkg.middlewares.metrics import metrics
 from app.internal.pkg.middlewares.prometheus import PrometheusMiddleware
 from app.internal.routes import __routes__
@@ -99,6 +103,8 @@ class Server:
         """
 
         app.add_exception_handler(BaseAPIException, handle_api_exceptions)
+        app.add_exception_handler(BaseAPIException, handle_drivers_exceptions)
+        app.add_exception_handler(BaseAPIException, handle_internal_exception)
 
     @staticmethod
     def __register_cors_origins(app: FastAPITypes.instance) -> None:
