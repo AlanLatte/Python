@@ -43,7 +43,7 @@ format: remove_imports isort black docformatter add-trailing-comma
 ## Check code quality
 chk: check
 lint: check
-check: flake8 pylint black_check docformatter_check safety bandit
+check: flake8 pylint ruff black_check docformatter_check safety bandit
 
 ## Migrate database
 migrate:
@@ -93,8 +93,13 @@ docformatter_check:
 flake8:
 	flake8 ${files_to_check}
 
+## Check google spec.
 pylint:
 	pylint ${files_to_check}
+
+## Check pep8
+ruff:
+	ruff ${files_to_check}
 
 ## Check typing
 mypy:
