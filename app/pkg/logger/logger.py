@@ -21,7 +21,7 @@ def get_file_handler(file_name: str) -> RotatingFileHandler:
 
     Notes:
         The file will be created in the directory
-        specified in the :attr:`.Settings.API.LOGGER.FILE_PATH` parameter.
+        specified in the :attr:`.Settings.API.LOGGER.FOLDER_PATH` parameter.
 
         If the directory does not exist, it will be created.
 
@@ -62,7 +62,7 @@ def get_logger(name):
             Name of the logger.
 
     Returns:
-        Logger instance.
+        LoggerLevel instance.
 
     Examples:
         ::
@@ -73,8 +73,13 @@ def get_logger(name):
             2021-01-01 00:00:00,000 - [INFO] - app.pkg.logger - (logger.py).get_logger(43) - Hello, World!  # pylint: disable=line-too-long
     """
     logger = logging.getLogger(name)
-    file_path = str(Path(settings.API.LOGGER.FILE_PATH).absolute())
+    file_path = str(
+        Path(
+            settings.API.LOGGER.FOLDER_PATH,
+            f"{settings.API.INSTANCE_APP_NAME}.log",
+        ).absolute(),
+    )
     logger.addHandler(get_file_handler(file_name=file_path))
     logger.addHandler(get_stream_handler())
-    logger.setLevel(settings.API.LOGGER.LEVEL)
+    logger.setLevel(settings.API.LOGGER.LEVEL.upper())
     return logger

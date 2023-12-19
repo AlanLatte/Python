@@ -57,8 +57,11 @@ def create_model() -> Callable[..., Coroutine[Any, Any, Model]]:
         Returns:
             Model with random data.
         """
+
         mock_model = JSF(model.schema()).generate()
-        mock_model.update(kwargs)
+
+        if kwargs:
+            mock_model.update(kwargs)
 
         return pydantic.parse_obj_as(model, mock_model)
 

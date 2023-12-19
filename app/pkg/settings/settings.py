@@ -5,14 +5,11 @@ import typing
 import urllib.parse
 from functools import lru_cache
 
-import pydantic
 from dotenv import find_dotenv
 from pydantic import PostgresDsn, root_validator, validator
 from pydantic.env_settings import BaseSettings
 from pydantic.types import PositiveInt, SecretStr
-
-from app.pkg.models import UserRole
-from app.pkg.models.types import EncryptedSecretBytes
+from app.pkg.models.core.logger import LoggerLevel
 
 __all__ = ["Settings", "get_settings"]
 
@@ -77,9 +74,9 @@ class Postgresql(_Settings):
     DATABASE_NAME: str = "postgres"
 
     #: PositiveInt: Min count of connections in one pool to postgresql.
-    MIN_CONNECTION: PositiveInt = 100
+    MIN_CONNECTION: PositiveInt = 1
     #: PositiveInt: Max count of connections in one pool  to postgresql.
-    MAX_CONNECTION: PositiveInt = 250
+    MAX_CONNECTION: PositiveInt = 16
 
     #: str: Concatenation all settings for postgresql in one string. (DSN)
     #  Builds in `root_validator` method.
@@ -118,49 +115,15 @@ class Postgresql(_Settings):
         return values
 
 
-class DefaultUser(_Settings):
-    """User default settings that are written to the database when running
-    migrations."""
-
-    #: str: Default username.
-    USERNAME: str = "admin"
-    #: EncryptedSecretBytes: Default user password.
-    PASSWORD: EncryptedSecretBytes = "admin_admin"
-    #: UserRole: Enum validation of a user role.
-    ROLE: UserRole = UserRole.USER
-
-
-class Redis(_Settings):
-    """Redis settings."""
-
-    #: str: Redis host.
-    HOST: str = "localhost"
-    #: PositiveInt: positive int (x > 0) port of redis.
-    PORT: PositiveInt = 6379
-    #: SecretStr: Redis password.
-    PASSWORD: SecretStr = "redis_redis"
-
-
-class JWT(_Settings):
-    """JWT settings."""
-
-    #: SecretStr: Key for encrypt payload in jwt.
-    SECRET_KEY: SecretStr = "secret"
-    #: str: Access token name in headers/body/cookies.
-    ACCESS_TOKEN_NAME: str = "access_token"
-    #: str: Refresh token name in headers/body/cookies.
-    REFRESH_TOKEN_NAME: str = "refresh_token"
-
-
 class Logging(_Settings):
     """Logging settings."""
 
     #: StrictStr: Level of logging which outs in std
-    LEVEL: pydantic.StrictStr = "DEBUG"
+    LEVEL: LoggerLevel = LoggerLevel.DEBUG
     #: pathlib.Path: Path of saving logs on local storage.
-    FILE_PATH: pathlib.Path = pathlib.Path("./src/logs")
+    FOLDER_PATH: pathlib.Path = pathlib.Path("./src/logs")
 
-    @validator("FILE_PATH")
+    @validator("FOLDER_PATH")
     def __create_dir_if_not_exist(  # pylint: disable=unused-private-member, no-self-argument
         cls,
         v: pathlib.Path,
@@ -177,23 +140,19 @@ class APIServer(_Settings):
 
     # --- API SETTINGS ---
     #: str: Name of API service
-    INSTANCE_APP_NAME: str = "API"
+    INSTANCE_APP_NAME: str = "project_name"
     #: str: API host.
     HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of API.
-    PORT: PositiveInt = 8000
+    PORT: PositiveInt = 5000
 
     # --- SECURITY SETTINGS ---
-    #: SecretStr: X-ACCESS-TOKEN for access to API.
+    #: SecretStr: Secret key for token auth.
     X_ACCESS_TOKEN: SecretStr = "secret"
-    #: JWT: JWT settings.
-    JWT: JWT
 
     # --- OTHER SETTINGS ---
     #: Logging: Logging settings.
     LOGGER: Logging
-    #: DefaultUser: Default user settings.
-    DEFAULT_USER: DefaultUser
 
 
 class Centrifugo(_Settings):
@@ -203,19 +162,6 @@ class Centrifugo(_Settings):
     HOST: str = "localhost"
     #: PositiveInt: positive int (x > 0) port of centrifugo.
     PORT: PositiveInt = 8001
-
-
-class RabbitMQ(_Settings):
-    """RabbitMQ settings."""
-
-    #: str: RabbitMQ host.
-    HOST: str = "localhost"
-    #: PositiveInt: positive int (x > 0) port of rabbitmq.
-    PORT: PositiveInt = 5672
-    #: str: RabbitMQ user.
-    USER: str = "rabbitmq"
-    #: SecretStr: RabbitMQ password.
-    PASSWORD: SecretStr = "rabbitmq"
 
 
 class Settings(_Settings):
@@ -230,15 +176,6 @@ class Settings(_Settings):
 
     #: Postgresql: Postgresql settings.
     POSTGRES: Postgresql
-
-    #: Redis: Redis settings.
-    REDIS: Redis
-
-    #: Centrifugo: Centrifugo settings.
-    CENTRIFUGO: Centrifugo
-
-    #: RabbitMQ: RabbitMQ settings.
-    RABBITMQ: RabbitMQ
 
 
 # TODO: Возможно даже lru_cache не стоит использовать. Стоит использовать meta sigleton.

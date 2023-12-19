@@ -5,8 +5,7 @@ from typing import Callable
 import psycopg2
 
 from app.pkg.models.base import Model
-
-from app.pkg.models.exceptions.association import __aiopg__
+from app.pkg.models.exceptions.association import __aiopg__, __constrains__
 from app.pkg.models.exceptions.repository import DriverError
 
 __all__ = ["handle_exception"]
@@ -65,9 +64,12 @@ def handle_exception(func: Callable[..., Model]):
         try:
             return await func(*args, **kwargs)
         except psycopg2.Error as error:
+            if exc := __constrains__.get(error.diag.constraint_name):
+                raise exc from error
+
             if exc := __aiopg__.get(error.pgcode):
                 raise exc from error
 
-            raise DriverError(message=error.pgerror) from error
+            raise DriverError(details=error.diag.message_detail) from error
 
     return wrapper

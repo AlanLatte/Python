@@ -16,7 +16,7 @@ class Repository(ABC):
     All repositories must implement this interface.
 
     Examples:
-        >>> from app.pkg.models.user import User
+        >>> from app.pkg.models.user import StrictUser
         >>> from app.pkg.models.user import (
         ...     CreateUserCommand,
         ...     UpdateUserCommand,
@@ -24,19 +24,19 @@ class Repository(ABC):
         ...     ReadUserByIdQuery,
         ... )
         >>> class UserRepository(Repository):
-        ...     async def create(self, cmd: CreateUserCommand) -> User:
+        ...     async def create(self, cmd: CreateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def read(self, query: ReadUserByIdQuery) -> User:
+        ...     async def read(self, query: ReadUserByIdQuery) -> StrictUser:
         ...         ...
         ...
-        ...     async def read_all(self) -> List[User]:
+        ...     async def read_all(self) -> List[StrictUser]:
         ...         ...
         ...
-        ...     async def update(self, cmd: UpdateUserCommand) -> User:
+        ...     async def update(self, cmd: UpdateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def delete(self, cmd: DeleteUserCommand) -> User:
+        ...     async def delete(self, cmd: DeleteUserCommand) -> StrictUser:
         ...         ...
 
     Notes:

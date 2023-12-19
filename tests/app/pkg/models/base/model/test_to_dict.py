@@ -11,7 +11,6 @@ from pydantic import UUID4
 from app.pkg.models.base import BaseModel
 
 
-@pytest.mark.correct
 async def test_cast_types_base():
     class TestModel(BaseModel):
         some_value: int
@@ -37,7 +36,6 @@ async def test_cast_types_base():
     assert dict_model["some_value_three"] == 0.0
 
 
-@pytest.mark.correct
 async def test_cast_types_base_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
@@ -54,7 +52,6 @@ async def test_cast_types_base_with_default():
     assert isinstance(dict_model["some_value_four"], bool)
 
 
-@pytest.mark.correct
 async def test_complex_types_dict():
     class TestModel(BaseModel):
         some_value: dict
@@ -66,7 +63,6 @@ async def test_complex_types_dict():
     assert dict_model["some_value"] == {"key": "value"}
 
 
-@pytest.mark.correct
 async def test_complex_types_list():
     class TestModel(BaseModel):
         some_value: list
@@ -78,7 +74,6 @@ async def test_complex_types_list():
     assert dict_model["some_value"] == ["key", "value"]
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_tuple():
     class TestModel(BaseModel):
         some_value: tuple
@@ -90,7 +85,6 @@ async def test_cast_to_string_complex_types_tuple():
     assert dict_model["some_value"] == ["key", "value"]
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_set():
     class TestModel(BaseModel):
         some_value: UUID4
@@ -101,7 +95,6 @@ async def test_cast_to_string_complex_types_set():
     assert isinstance(dict_model["some_value"], str)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_secret_without_deciphering():
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr
@@ -113,7 +106,6 @@ async def test_cast_to_string_complex_types_secret_without_deciphering():
     assert isinstance(dict_model["some_value_two"], str)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_secret_with_deciphering():
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr
@@ -129,7 +121,6 @@ async def test_cast_to_string_complex_types_secret_with_deciphering():
     assert dict_model["some_value_two"] == "value"
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_list_with_deciphering(create_model):
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr
@@ -144,7 +135,6 @@ async def test_cast_to_string_complex_types_list_with_deciphering(create_model):
         assert isinstance(item, str)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_dict_with_deciphering(create_model):
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr
@@ -161,7 +151,6 @@ async def test_cast_to_string_complex_types_dict_with_deciphering(create_model):
             assert isinstance(item_2, str)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_tuple_with_deciphering(create_model):
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr
@@ -185,7 +174,6 @@ async def test_cast_to_string_complex_types_tuple_with_deciphering(create_model)
                 assert isinstance(value_2, str)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_datatime(create_model):
     class TestModel(BaseModel):
         some_value: datetime.datetime
@@ -196,7 +184,6 @@ async def test_cast_to_string_complex_types_datatime(create_model):
     assert isinstance(dict_model["some_value"], float)
 
 
-@pytest.mark.correct
 async def test_cast_to_string_complex_types_datatime_with_deciphering(create_model):
     class TestModel(BaseModel):
         some_value: datetime.datetime
@@ -207,7 +194,6 @@ async def test_cast_to_string_complex_types_datatime_with_deciphering(create_mod
     assert isinstance(dict_model["some_value"], float)
 
 
-@pytest.mark.correct
 async def test_model_reduction(create_model):
     class TestModel(BaseModel):
         some_value: int
@@ -219,7 +205,6 @@ async def test_model_reduction(create_model):
         assert dict_model["some_value"]
 
 
-@pytest.mark.correct
 async def test_model_reduction_with_deciphering(create_model):
     class TestModel(BaseModel):
         some_value: pydantic.SecretStr

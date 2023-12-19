@@ -27,11 +27,11 @@ def collect_response(fn):
         decorator :func:`.collect_response` will convert the response from aiopg to
         an annotated model::
 
-            >>> from app.pkg.models.user import User, ReadUserByIdQuery
+            >>> from app.pkg.models.user import StrictUser, ReadUserByIdQuery
             >>> from app.internal.repository.postgresql.connection import get_connection
             >>>
             >>> @collect_response
-            ... async def get_user_by_id(query: ReadUserByIdQuery) -> User:
+            ... async def get_user_by_id(query: ReadUserByIdQuery) -> StrictUser:
             ...    q = "SELECT * FROM users WHERE id = %(id)s"
             ...    async with get_connection() as cur:
             ...        await cur.execute(q, query.to_dict(show_secrets=True))

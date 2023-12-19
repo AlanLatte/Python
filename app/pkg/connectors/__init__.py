@@ -2,8 +2,7 @@
 
 from dependency_injector import containers, providers
 
-from .postgresql import PostgresSQL
-from .resources import BaseAsyncResource
+from app.pkg.connectors.postgresql import PostgresSQL
 
 __all__ = ["Connectors", "PostgresSQL"]
 
