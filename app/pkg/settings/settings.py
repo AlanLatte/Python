@@ -70,7 +70,7 @@ class Postgresql(_Settings):
     #: str: Postgresql user.
     USER: str = "postgres"
     #: SecretStr: Postgresql password.
-    PASSWORD: SecretStr = "postgres"
+    PASSWORD: SecretStr = SecretStr("postgres")
     #: str: Postgresql database name.
     DATABASE_NAME: str = "postgres"
 
@@ -149,7 +149,7 @@ class APIServer(_Settings):
 
     # --- SECURITY SETTINGS ---
     #: SecretStr: Secret key for token auth.
-    X_ACCESS_TOKEN: SecretStr = "secret"
+    X_ACCESS_TOKEN: SecretStr = SecretStr("secret")
 
     # --- OTHER SETTINGS ---
     #: Logging: Logging settings.
