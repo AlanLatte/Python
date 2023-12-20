@@ -8,7 +8,7 @@ authors = ["AlanLatte <alan.latte.dev@gmail.com>"]
 python = "^3.9"
 fastapi = "^0.100.0"
 uvicorn = "^0.22.0"
-pydantic = {extras = ["dotenv", "email"], version = "^1.9.0"}
+pydantic = {extras = ["dotenv", "email"], version = "^1.10.13"}
 dependency-injector = "^4.40.0"
 yoyo-migrations = "^8.1.0"
 aiocache = {version = "^0.12.1", extras = ["redis"]}
