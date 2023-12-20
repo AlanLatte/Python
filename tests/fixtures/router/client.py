@@ -63,9 +63,7 @@ class Client:
 
 @pytest.fixture()
 async def client() -> typing.AsyncIterator[Client]:  # pylint: disable=W0621
-    # @SONAR_STOP@
     async with AsyncClient(app=create_app(), base_url="http://test") as async_client:
-        # @SONAR_START@
         yield Client(client=async_client)
 
 
