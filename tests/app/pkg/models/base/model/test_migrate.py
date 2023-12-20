@@ -1,10 +1,12 @@
+"""Tests for :meth:`.BaseModel.migrate()`."""
+import decimal
+
 import pydantic
 import pytest
 
 from app.pkg.models.base import BaseModel
 
 
-@pytest.mark.incorrect
 async def test_with_some_missing_fields():
     class TestModel(BaseModel):
         some_value: int
@@ -22,7 +24,6 @@ async def test_with_some_missing_fields():
         model.migrate(AnotherTestModel)
 
 
-@pytest.mark.correct
 async def test_model():
     class TestModel(BaseModel):
         some_value: int
@@ -46,7 +47,6 @@ async def test_model():
     assert another_model.some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_with_matching_keys():
     class TestModel(BaseModel):
         some_value: int
@@ -67,7 +67,6 @@ async def test_with_matching_keys():
 
 
 @pytest.mark.repeat(5)
-@pytest.mark.correct
 async def test_with_filling_mismatching_fields():
     class TestModel(BaseModel):
         some_value: int
@@ -89,7 +88,6 @@ async def test_with_filling_mismatching_fields():
 
 
 @pytest.mark.repeat(5)
-@pytest.mark.correct
 async def test_with_extra_field():
     class TestModel(BaseModel):
         some_value: int
@@ -99,16 +97,19 @@ async def test_with_extra_field():
         some_value: int
         some_value_two: str
         some_value_three: str
-        some_value_four: float
+        some_value_four: decimal.Decimal
 
     model = TestModel(some_value=1, some_value_two="1")
 
     another_model = model.migrate(
         AnotherTestModel,
-        extra_fields={"some_value_three": "1", "some_value_four": 1.0},
+        extra_fields={
+            "some_value_three": "1",
+            "some_value_four": decimal.Decimal("1.0"),
+        },
     )
 
     assert another_model.some_value == 1
     assert another_model.some_value_two == "1"
     assert another_model.some_value_three == "1"
-    assert another_model.some_value_four == 1.0
+    assert another_model.some_value_four == decimal.Decimal("1.0")

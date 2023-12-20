@@ -1,10 +1,15 @@
+"""Service layer."""
+
 from dependency_injector import containers, providers
 
 from app.internal.repository import Repositories, postgresql
-from app.internal.services import auth, user
-from app.internal.services.auth import AuthService
-from app.internal.services.user import UserService
-from app.internal.services.user_roles import UserRoleService
+from app.internal.services.city import CityService
+from app.internal.services.contacts import ContactsService
+from app.internal.services.country import CountryService
+from app.internal.services.direction import DirectionService
+from app.internal.services.partners import PartnerService
+from app.internal.services.skill import SkillService
+from app.internal.services.skill_levels import SkillLevelService
 
 
 class Services(containers.DeclarativeContainer):
@@ -14,15 +19,37 @@ class Services(containers.DeclarativeContainer):
         Repositories.postgres,
     )  # type: ignore
 
-    user_service = providers.Factory(UserService, repositories.user_repository)
-
-    auth_service = providers.Factory(
-        AuthService,
-        user_service=user_service,
-        refresh_token_repository=repositories.refresh_token_repository,
+    skill_levels_service = providers.Factory(
+        SkillLevelService,
+        skill_level_repository=repositories.skill_levels_repository,
     )
 
-    user_role_service = providers.Factory(
-        UserRoleService,
-        user_role_repository=repositories.user_role_repository,
+    skill_service = providers.Factory(
+        SkillService,
+        skill_repository=repositories.skill_repository,
+    )
+
+    direction_service = providers.Factory(
+        DirectionService,
+        direction_repository=repositories.direction_repository,
+    )
+
+    city_service = providers.Factory(
+        CityService,
+        city_repository=repositories.city_repository,
+    )
+
+    country_service = providers.Factory(
+        CountryService,
+        country_repository=repositories.country_repository,
+    )
+
+    contacts_service = providers.Factory(
+        ContactsService,
+        contacts_repository=repositories.contacts_repository,
+    )
+
+    partner_service = providers.Factory(
+        PartnerService,
+        partner_repository=repositories.partner_repository,
     )

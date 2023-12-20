@@ -1,3 +1,5 @@
+"""Test manual wrote types."""
+
 from typing import List
 
 import pydantic
@@ -6,7 +8,6 @@ import pytest
 from app.pkg.models.base import BaseModel
 
 
-@pytest.mark.correct
 async def test_native_types(create_model):
     class TestModel(BaseModel):
         some_value: int
@@ -17,8 +18,7 @@ async def test_native_types(create_model):
     assert isinstance(model.some_value_two, str)
 
 
-@pytest.mark.incorrect
-async def test_native_types_miss_type(create_model):
+async def test_native_types_miss_type():
     class TestModel(BaseModel):
         some_value: int
         some_value_two: str
@@ -27,7 +27,6 @@ async def test_native_types_miss_type(create_model):
         TestModel(some_value="STRING_TYPE", some_value_two=2)
 
 
-@pytest.mark.correct
 async def test_convert_native_types():
     class TestModel(BaseModel):
         some_value: int
@@ -40,8 +39,7 @@ async def test_convert_native_types():
     assert model.some_value_two == "2"
 
 
-@pytest.mark.correct
-async def test_native_types_with_default(create_model):
+async def test_native_types_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
         some_value_two: str = "1"
@@ -53,7 +51,6 @@ async def test_native_types_with_default(create_model):
     assert model.some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_native_types_with_default_and_value(create_model):
     class TestModel(BaseModel):
         some_value: int = 1
@@ -66,7 +63,6 @@ async def test_native_types_with_default_and_value(create_model):
     assert model.some_value_two == "2"
 
 
-@pytest.mark.correct
 async def test_object():
     class TestModel(BaseModel):
         some_value: int
@@ -83,7 +79,6 @@ async def test_object():
     assert model.some_class.some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_object_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
@@ -100,7 +95,6 @@ async def test_object_with_default():
     assert model.some_class.some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_object_with_default_and_value():
     class TestModel(BaseModel):
         some_value: int = 1
@@ -117,7 +111,6 @@ async def test_object_with_default_and_value():
     assert model.some_class.some_value_two == "2"
 
 
-@pytest.mark.correct
 async def test_list_of_native_types():
     class TestModel(BaseModel):
         some_value: int
@@ -132,7 +125,6 @@ async def test_list_of_native_types():
     assert model.some_list[0].some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_list_of_native_types_with_default():
     class TestModel(BaseModel):
         some_value: int = 1
@@ -147,7 +139,6 @@ async def test_list_of_native_types_with_default():
     assert model.some_list[0].some_value_two == "1"
 
 
-@pytest.mark.correct
 async def test_list_of_native_types_with_default_and_value():
     class TestModel(BaseModel):
         some_value: int = 1

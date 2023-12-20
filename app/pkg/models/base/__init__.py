@@ -1,8 +1,9 @@
 """Base business models.
 
-All models *must* be inherited by them.
+All models **must** inherit from them.
 """
+# ruff: noqa
 
-from .enum import BaseEnum
-from .exception import BaseAPIException
-from .model import BaseModel, Model
+from app.pkg.models.base.enum import BaseEnum
+from app.pkg.models.base.exception import BaseAPIException
+from app.pkg.models.base.model import BaseModel, Model

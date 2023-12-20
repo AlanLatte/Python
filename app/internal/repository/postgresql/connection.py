@@ -1,3 +1,5 @@
+"""Create connection to postgresql."""
+
 from contextlib import asynccontextmanager
 from typing import Optional, Union
 
@@ -18,20 +20,23 @@ async def get_connection(
     pool: Pool = Provide[Connectors.postgresql.connector],
     return_pool: bool = False,
 ) -> Union[Cursor, Pool]:
-    """Get async pool to postgresql of pool.
+    """Get async connection pool to postgresql.
 
     Args:
-        pool: postgresql pool.
-        return_pool: if True, return pool, else return connection.
+        pool:
+            postgresql connection pool.
+        return_pool:
+            if True, return pool, else return connection.
 
     Examples:
-        For example, if you have a function that contains a query in postgresql,
-        context manager ``get_connection`` will get async connection to postgresql
+        If you have a function that contains a query in postgresql,
+        context manager :func:`.get_connection`
+        will get async connection to postgresql
         of pool::
-        >>> from app.internal.repository.postgresql.connection import get_connection
-        >>> async def exec_some_sql_function() -> None:
-        ...     async with get_connection() as c:
-        ...         await c.execute("SELECT * FROM users")
+
+            >>> async def exec_some_sql_function() -> None:
+            ...     async with get_connection() as c:
+            ...         await c.execute("SELECT * FROM users")
 
     Returns:
         Async connection to postgresql.
@@ -56,21 +61,24 @@ async def acquire_connection(
     """Acquire connection from pool.
 
     Args:
-        pool: postgresql pool.
-        cursor_factory: cursor factory.
+        pool:
+            Getings from :func:`.get_connection` postgresql pool.
+        cursor_factory:
+            cursor factory.
 
     Examples:
-        For example, if you have a function that contains a query in postgresql,
-        context manager ``acquire_connection`` will get async connection to postgresql
+        If you have a function that contains a query in postgresql,
+        context manager :func:`.acquire_connection`
+        will get async connection to postgresql
         of pool::
-        >>> from app.internal.repository.postgresql import connection
-        >>> async def exec_some_sql_function() -> None:
-        ...     q = "select * from users;"
-        ...     async with connection.get_connection(return_pool=True) as __pool:
-        ...         async with connection.acquire_connection(__pool) as _cursor:
-        ...             await _cursor.execute(q)
-        ...         async with connection.acquire_connection(__pool) as _cursor:
-        ...             await _cursor.execute(q)
+
+            >>> async def exec_some_sql_function() -> None:
+            ...     q = "select * from users;"
+            ...     async with get_connection(return_pool=True) as __pool:
+            ...         async with acquire_connection(__pool) as _cursor:
+            ...             await _cursor.execute(q)
+            ...         async with acquire_connection(__pool) as _cursor:
+            ...             await _cursor.execute(q)
 
     Returns:
         Async connection to postgresql.
@@ -80,5 +88,5 @@ async def acquire_connection(
         cursor_factory = RealDictCursor
 
     async with pool.acquire() as conn:
-        __cursor = await conn.cursor(cursor_factory=cursor_factory)
-        yield __cursor
+        acquire_cursor = await conn.cursor(cursor_factory=cursor_factory)
+        yield acquire_cursor

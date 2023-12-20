@@ -1,10 +1,11 @@
+"""Automatically truncate all tables before each test."""
+
 import pytest
 
 from app.internal.repository.postgresql import connection
 
 
-@pytest.fixture(autouse=True)
-async def clean_postgres():
+async def __clean_postgres():
     """Truncate all tables (except yoyo migrations) before each test."""
 
     q = """
@@ -28,4 +29,15 @@ async def clean_postgres():
             await cursor.execute(q)
             await cursor.execute("select truncate_tables();")
 
-    yield
+
+@pytest.fixture(autouse=True)
+async def auto_clean_postgres():
+    """Automatically clean postgres before each test module."""
+
+    await __clean_postgres()
+
+
+@pytest.fixture()
+async def clean_postgres():
+    """Clean postgres."""
+    await __clean_postgres()

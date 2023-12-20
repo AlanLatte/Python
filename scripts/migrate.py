@@ -3,16 +3,11 @@
 import asyncio
 from argparse import ArgumentParser
 
-from dependency_injector.wiring import Provide, inject
+from dependency_injector.wiring import inject
 from yoyo import get_backend, read_migrations
 
 from app.configuration import __containers__
-from app.internal.services import Services, UserService
-from app.internal.services.user_roles import UserRoleService
-from app.pkg import models
 from app.pkg.connectors import PostgresSQL
-from app.pkg.models.base import BaseAPIException
-from app.pkg.models.exceptions.repository import EmptyResult
 from app.pkg.settings import settings
 
 
@@ -44,44 +39,10 @@ def _reload(backend, migrations):
         backend.apply_migrations(backend.to_apply(migrations))
 
 
-@inject
-async def insert_default_user(
-    user_service: UserService = Provide[Services.user_service],
-) -> models.User:
-    try:
-        user = await user_service.read_specific_user_by_username(
-            query=models.ReadUserByUserNameQuery(
-                username=settings.API.DEFAULT_USER.USERNAME
-            )
-        )
-    except EmptyResult:
-        user = await user_service.create_user(
-            cmd=models.CreateUserCommand(
-                username=settings.API.DEFAULT_USER.USERNAME,
-                password=settings.API.DEFAULT_USER.PASSWORD.get_secret_value(),
-                role_name=settings.API.DEFAULT_USER.ROLE,
-            )
-        )
-
-    return user
-
-
-@inject
-async def insert_roles(
-    user_role_service: UserRoleService = Provide[Services.user_role_service],
-) -> None:
-    async for role in user_role_service.create_all_user_roles():
-        if isinstance(role, BaseAPIException):
-            print(f"ERROR ON INSERT: {role}")
-
-
 async def inserter() -> None:
     """Function for pre-insert data before running main application instance"""
-    await insert_roles()
 
-    inserters = [
-        insert_default_user(),
-    ]
+    inserters = []
 
     await asyncio.gather(*inserters)
 

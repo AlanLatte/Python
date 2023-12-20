@@ -4,4 +4,6 @@ Note:
     Use this package to host logic that affects the entire project.
 """
 
-from .containers import Container, Containers
+# ruff: noqa
+
+from app.pkg.models.core.containers import Container, Containers

@@ -1,11 +1,11 @@
+"""Fixtures for routes."""
+
+
 import pytest
 
-
-@pytest.fixture()
-async def user_router() -> str:
-    return "/user"
+from app.internal.routes import city_router
 
 
 @pytest.fixture()
-async def auth_router() -> str:
-    return "/auth"
+async def city_route() -> str:
+    return city_router.prefix

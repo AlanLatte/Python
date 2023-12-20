@@ -1,18 +1,20 @@
+"""Async resource for PostgresSQL connector."""
+
 import aiopg
 
-from app.pkg.connectors.resourсes import BaseAsyncResource
+from app.pkg.connectors.resources import BaseAsyncResource
 
 __all__ = ["Postgresql"]
 
 
 class Postgresql(BaseAsyncResource):
-    """PostgreSQL connector using aiopg."""
+    """PostgresSQL connector using aiopg."""
 
     async def init(self, dsn: str, *args, **kwargs) -> aiopg.Pool:
         """Getting connection pool in asynchronous.
 
         Args:
-            dsn: Data Source Name.
+            dsn: D.S.N - Data Source Name.
 
         Returns:
             Created connection pool.
@@ -20,15 +22,18 @@ class Postgresql(BaseAsyncResource):
 
         return await aiopg.create_pool(dsn=dsn, *args, **kwargs)
 
-    async def shutdown(self, connector: aiopg.Pool):
+    async def shutdown(self, resource: aiopg.Pool):
         """Close connection.
 
         Args:
-            connector: Resource returned by ``init`` method.
+            resource: Resource returned by :meth:`.Postgresql.init()` method.
 
         Notes:
-            This method is called automatically when the application is stopped.
+            This method is called automatically
+            when the application is stopped
+            or
+            ``Closing`` provider is used.
         """
 
-        connector.close()
-        await connector.wait_closed()
+        resource.close()
+        await resource.wait_closed()

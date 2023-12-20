@@ -1,3 +1,5 @@
+"""Settings for tests."""
+
 import pytest
 
 from app.pkg.settings import settings as _settings

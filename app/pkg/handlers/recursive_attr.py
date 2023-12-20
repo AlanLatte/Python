@@ -1,12 +1,14 @@
+"""Recursive attribute access and setting."""
+
 from functools import reduce
 from typing import TypeVar
 
 __all__ = ["rec_getattr", "rec_setattr"]
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 
-def rec_getattr(obj: object, attr: str) -> T:
+def rec_getattr(obj: object, attr: str) -> _T:
     """Recursively access an attribute of an object.
 
     Args:
@@ -14,12 +16,14 @@ def rec_getattr(obj: object, attr: str) -> T:
         attr: Attribute to access.
 
     Examples:
-        >>> class A:
-        ...     class B:
-        ...         class C:
-        ...             attr = 1
-        >>> rec_getattr(A, "B.C.attr")
-        1
+        ::
+
+            >>> class A:
+            ...     class B:
+            ...         class C:
+            ...             attr = 1
+            >>> rec_getattr(A, "B.C.attr")
+            1
 
     Returns:
         Attribute of an object.
@@ -27,7 +31,7 @@ def rec_getattr(obj: object, attr: str) -> T:
     return reduce(getattr, attr.split("."), obj)
 
 
-def rec_setattr(obj: object, attr: str, value: T) -> None:
+def rec_setattr(obj: object, attr: str, value: _T) -> None:
     """Recursively set an attribute of an object.
 
     Args:
@@ -36,13 +40,15 @@ def rec_setattr(obj: object, attr: str, value: T) -> None:
         value: Value to set.
 
     Examples:
-        >>> class A:
-        ...     class B:
-        ...         class C:
-        ...             attr = 1
-        >>> rec_setattr(A, "B.C.attr", 2)
-        >>> rec_getattr(A, "B.C.attr")
-        2
+        ::
+
+            >>> class A:
+            ...     class B:
+            ...         class C:
+            ...             attr = 1
+            >>> rec_setattr(A, "B.C.attr", 2)
+            >>> rec_getattr(A, "B.C.attr")
+            2
 
     Returns:
         None

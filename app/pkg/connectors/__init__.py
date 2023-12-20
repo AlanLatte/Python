@@ -2,13 +2,12 @@
 
 from dependency_injector import containers, providers
 
-from .postgresql import PostgresSQL
-from .resourсes import BaseAsyncResource
+from app.pkg.connectors.postgresql import PostgresSQL
 
 __all__ = ["Connectors", "PostgresSQL"]
 
 
 class Connectors(containers.DeclarativeContainer):
-    """Declarative container with connectors."""
+    """Declarative container with all connectors."""
 
     postgresql: PostgresSQL = providers.Container(PostgresSQL)

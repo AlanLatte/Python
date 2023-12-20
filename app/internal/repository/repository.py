@@ -1,10 +1,11 @@
+"""Abstract repository interface."""
+
 from abc import ABC
 from typing import List, TypeVar
 
 from app.pkg.models.base import Model
 
 __all__ = ["Repository", "BaseRepository"]
-
 
 BaseRepository = TypeVar("BaseRepository", bound="Repository")
 
@@ -15,7 +16,7 @@ class Repository(ABC):
     All repositories must implement this interface.
 
     Examples:
-        >>> from app.pkg.models.user import User
+        >>> from app.pkg.models.user import StrictUser
         >>> from app.pkg.models.user import (
         ...     CreateUserCommand,
         ...     UpdateUserCommand,
@@ -23,32 +24,33 @@ class Repository(ABC):
         ...     ReadUserByIdQuery,
         ... )
         >>> class UserRepository(Repository):
-        ...     async def create(self, cmd: CreateUserCommand) -> User:
+        ...     async def create(self, cmd: CreateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def read(self, query: ReadUserByIdQuery) -> User:
+        ...     async def read(self, query: ReadUserByIdQuery) -> StrictUser:
         ...         ...
         ...
-        ...     async def read_all(self) -> List[User]:
+        ...     async def read_all(self) -> List[StrictUser]:
         ...         ...
         ...
-        ...     async def update(self, cmd: UpdateUserCommand) -> User:
+        ...     async def update(self, cmd: UpdateUserCommand) -> StrictUser:
         ...         ...
         ...
-        ...     async def delete(self, cmd: DeleteUserCommand) -> User:
+        ...     async def delete(self, cmd: DeleteUserCommand) -> StrictUser:
         ...         ...
 
     Notes:
         All methods must be asynchronous.
 
     Warnings:
-        1. You must use ``query`` for search model in database and ``cmd`` for create,
-            update and delete model in database.
-        2. ``query`` and ``cmd`` must be inherited from ``Model`` returning type.
-        3. Delete method must return **MARKED** row for delete.  It is necessary for
-            correct work of the repository layer. Repository cant delete row from
-            database. It can only mark row as deleted.
-        4. All methods must return model contains all fields.
+        #. You must use ``query`` for search model in database and ``cmd`` for create,
+           update and delete model in database.
+        #. ``query`` and ``cmd`` must be inherited from ``Model`` returning type.
+        #. Delete method must return **MARKED** row for delete.
+           It is necessary for correct work of the repository layer.
+           Repository cant delete row from database.
+           It can only mark row as deleted.
+        #. All methods must return model contains all fields.
     """
 
     async def create(self, cmd: Model) -> Model:

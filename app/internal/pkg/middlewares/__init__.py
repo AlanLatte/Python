@@ -1,1 +1,1 @@
-"""API server middlewares."""
+"""Server middlewares."""
