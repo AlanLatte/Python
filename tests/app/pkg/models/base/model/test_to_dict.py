@@ -29,7 +29,7 @@ async def test_cast_types_base():
 
     assert isinstance(dict_model["some_value"], int)
     assert isinstance(dict_model["some_value_two"], str)
-    assert isinstance(dict_model["some_value_three"], float)
+    assert isinstance(dict_model["some_value_three"], decimal.Decimal)
     assert isinstance(dict_model["some_value_four"], bool)
 
     assert dict_model["some_value"] == 1
