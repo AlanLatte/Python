@@ -30,7 +30,7 @@ async def __clean_postgres():
             await cursor.execute("select truncate_tables();")
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True, scope="module")
 async def auto_clean_postgres():
     """Automatically clean postgres before each test module."""
 
