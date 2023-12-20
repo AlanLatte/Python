@@ -7,7 +7,7 @@ from app.internal.repository.postgresql import city
 from app.internal.repository.repository import BaseRepository
 from app.pkg import models
 from app.pkg.models.exceptions.city import CityNotFound, NoCityFoundForCountry
-from app.pkg.models.exceptions.repository import EmptyResult, UniqueViolation
+from app.pkg.models.exceptions.repository import EmptyResult
 
 __all__ = ["CityService"]
 
@@ -83,10 +83,8 @@ class CityService:
         Returns:
             City: Updated city.
         """
-        try:
-            return await self.repository.update(cmd=cmd)
-        except UniqueViolation as e:
-            raise e
+
+        return await self.repository.update(cmd=cmd)
 
     async def delete_city(self, cmd: models.DeleteCityCommand) -> models.City:
         """Delete city.

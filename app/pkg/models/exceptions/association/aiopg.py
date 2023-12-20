@@ -23,6 +23,7 @@ __aiopg__ = {
 
 # TODO: Make this dict more flexible.
 #       Like `Container` class in `/app/pkg/models/core/container.py`
+#       Add support for owerwrite exceptions in `__aiopg__` dict.
 __constrains__ = {
     **city.__constrains__,
     **country.__constrains__,

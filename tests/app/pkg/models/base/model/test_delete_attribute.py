@@ -16,7 +16,6 @@ async def test_delete_attribute():
 
     with pytest.raises(AttributeError):
         model.delete_attribute("some_value")
-        assert model.some_value
 
     assert model.some_value_two == "2"
 
@@ -32,6 +31,5 @@ async def test_delete_attribute_with_default():
 
     with pytest.raises(AttributeError):
         model.delete_attribute("some_value")
-        assert model.some_value
 
     assert model.some_value_two == "1"
