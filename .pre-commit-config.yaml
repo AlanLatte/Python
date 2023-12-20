@@ -49,7 +49,7 @@ repos:
     rev: '1.7.1'
     hooks:
     -   id: bandit
-        args: [--exclude ./tests/*]
+        args: [-x "./tests/*"]
 
 -   repo: local
     hooks:
