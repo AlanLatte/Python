@@ -2786,6 +2786,21 @@ spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
 
 [[package]]
+name = "pylint-pytest"
+version = "1.1.7"
+description = "A Pylint plugin to suppress pytest-related false positives."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pylint-pytest-1.1.7.tar.gz", hash = "sha256:7a38be02c014eb6d98791eb978e79ed292f1904d3a518289c6d7ac4fb4122e98"},
+    {file = "pylint_pytest-1.1.7-py3-none-any.whl", hash = "sha256:5d687a2f4b17e85654fc2a8f04944761efb11cb15dc46d008f420c377b149151"},
+]
+
+[package.dependencies]
+pylint = ">=2"
+pytest = ">=4.6"
+
+[[package]]
 name = "pymongo"
 version = "4.6.1"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
@@ -4361,4 +4376,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "302b437a1c0e3965e5f6f029ebd304aa6b6e9f70511ee4aec8220a2165611c7f"
+content-hash = "1879a9890f18f7e0827d23d723fb263b6805a44b9378b354801e5ee4f4f7e604"

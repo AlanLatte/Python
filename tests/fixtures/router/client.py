@@ -1,3 +1,5 @@
+"""Module for contains."""
+
 import typing
 
 import httpx
@@ -11,11 +13,13 @@ from app.pkg.settings.settings import Settings
 
 
 class Client:
+    """Client for testing API."""
+
     client: typing.Union[AsyncClient, TestClient]
 
     def __init__(
         self,
-        client: typing.Union[AsyncClient, TestClient],
+        client: typing.Union[AsyncClient, TestClient],  # pylint: disable=W0621
     ):
         self.client = client
 
@@ -58,9 +62,9 @@ class Client:
 
 
 @pytest.fixture()
-async def client() -> typing.AsyncIterator[Client]:
-    async with AsyncClient(app=create_app(), base_url="http://test") as client:
-        yield Client(client=client)
+async def client() -> typing.AsyncIterator[Client]:  # pylint: disable=W0621
+    async with AsyncClient(app=create_app(), base_url="http://test") as async_client:
+        yield Client(client=async_client)
 
 
 @pytest.fixture()

@@ -1,3 +1,6 @@
+"""Fixtures for routes."""
+
+
 import pytest
 
 from app.internal.routes import city_router

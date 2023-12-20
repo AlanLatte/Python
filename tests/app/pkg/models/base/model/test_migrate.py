@@ -103,7 +103,10 @@ async def test_with_extra_field():
 
     another_model = model.migrate(
         AnotherTestModel,
-        extra_fields={"some_value_three": "1", "some_value_four": decimal.Decimal('1.0')},
+        extra_fields={
+            "some_value_three": "1",
+            "some_value_four": decimal.Decimal("1.0"),
+        },
     )
 
     assert another_model.some_value == 1
